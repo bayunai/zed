@@ -364,7 +364,7 @@ impl CommitModal {
             .as_ref()
             .and_then(|repo| repo.read(cx).branch.as_ref())
             .map(|b| b.name().to_owned())
-            .unwrap_or_else(|| "<no branch>".to_owned());
+            .unwrap_or_else(|| "<无分支>".to_owned());
 
         let branch_picker_button = panel_button(branch)
             .start_icon(
@@ -391,7 +391,7 @@ impl CommitModal {
             .with_handle(self.branch_list_handle.clone())
             .trigger_with_tooltip(
                 branch_picker_button,
-                Tooltip::for_action_title("Switch Branch", &zed_actions::git::Branch),
+                Tooltip::for_action_title("切换分支", &zed_actions::git::Branch),
             )
             .anchor(Anchor::BottomLeft)
             .offset(gpui::Point {

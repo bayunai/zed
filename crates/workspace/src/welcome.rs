@@ -163,29 +163,29 @@ impl SectionEntry {
 
 const CONTENT: (Section<4>, Section<3>) = (
     Section {
-        title: "Get Started",
+        title: "开始使用",
         entries: [
             SectionEntry {
                 icon: IconName::Plus,
-                title: "New File",
+                title: "新建文件",
                 action: &NewFile,
                 visibility_guard: SectionVisibility::Always,
             },
             SectionEntry {
                 icon: IconName::FolderOpen,
-                title: "Open Project",
+                title: "打开项目",
                 action: &Open::DEFAULT,
                 visibility_guard: SectionVisibility::Always,
             },
             SectionEntry {
                 icon: IconName::CloudDownload,
-                title: "Clone Repository",
+                title: "克隆仓库",
                 action: &GitClone,
                 visibility_guard: SectionVisibility::Always,
             },
             SectionEntry {
                 icon: IconName::ListCollapse,
-                title: "Open Command Palette",
+                title: "打开命令面板",
                 action: &command_palette::Toggle,
                 visibility_guard: SectionVisibility::Always,
             },
@@ -388,7 +388,7 @@ impl WelcomePage {
     ) -> impl IntoElement {
         v_flex()
             .w_full()
-            .child(SectionHeader::new("Recent Projects"))
+            .child(SectionHeader::new("最近项目"))
             .children(recent_projects)
     }
 
@@ -450,9 +450,9 @@ impl Render for WelcomePage {
         };
 
         let welcome_label = if self.fallback_to_recent_projects {
-            "Welcome back to Zed"
+            "欢迎回到 Zed"
         } else {
-            "Welcome to Zed"
+            "欢迎使用 Zed"
         };
 
         h_flex()
@@ -482,7 +482,7 @@ impl Render for WelcomePage {
                             .child(Vector::square(VectorName::ZedLogo, rems_from_px(45.)))
                             .child(
                                 v_flex().child(Headline::new(welcome_label)).child(
-                                    Label::new("The editor for what's next")
+                                    Label::new("面向未来的编辑器")
                                         .size(LabelSize::Small)
                                         .color(Color::Muted)
                                         .italic(),

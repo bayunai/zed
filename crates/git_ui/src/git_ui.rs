@@ -728,7 +728,7 @@ mod remote_button {
     ) -> SplitButton {
         split_button(
             id,
-            "Fetch",
+            "获取",
             0,
             0,
             Some(IconName::ArrowCircle),
@@ -738,7 +738,7 @@ mod remote_button {
             },
             move |_window, cx| {
                 git_action_tooltip(
-                    "Fetch updates from remote",
+                    "从远程获取更新",
                     &git::Fetch,
                     "git fetch",
                     keybinding_target.clone(),
@@ -755,7 +755,7 @@ mod remote_button {
     ) -> SplitButton {
         split_button(
             id,
-            "Push",
+            "推送",
             ahead as usize,
             0,
             None,
@@ -765,7 +765,7 @@ mod remote_button {
             },
             move |_window, cx| {
                 git_action_tooltip(
-                    "Push committed changes to remote",
+                    "将已提交的更改推送到远程",
                     &git::Push,
                     "git push",
                     keybinding_target.clone(),
@@ -783,7 +783,7 @@ mod remote_button {
     ) -> SplitButton {
         split_button(
             id,
-            "Pull",
+            "拉取",
             ahead as usize,
             behind as usize,
             None,
@@ -793,7 +793,7 @@ mod remote_button {
             },
             move |_window, cx| {
                 git_action_tooltip(
-                    "Pull",
+                    "拉取",
                     &git::Pull,
                     "git pull",
                     keybinding_target.clone(),
@@ -809,7 +809,7 @@ mod remote_button {
     ) -> SplitButton {
         split_button(
             id,
-            "Publish",
+            "发布",
             0,
             0,
             Some(IconName::ExpandUp),
@@ -819,7 +819,7 @@ mod remote_button {
             },
             move |_window, cx| {
                 git_action_tooltip(
-                    "Publish branch to remote",
+                    "将分支发布到远程",
                     &git::Push,
                     "git push --set-upstream",
                     keybinding_target.clone(),
@@ -835,7 +835,7 @@ mod remote_button {
     ) -> SplitButton {
         split_button(
             id,
-            "Republish",
+            "重新发布",
             0,
             0,
             Some(IconName::ExpandUp),
@@ -845,7 +845,7 @@ mod remote_button {
             },
             move |_window, cx| {
                 git_action_tooltip(
-                    "Re-publish branch to remote",
+                    "重新将分支发布到远程",
                     &git::Push,
                     "git push --set-upstream",
                     keybinding_target.clone(),
@@ -1046,11 +1046,11 @@ impl Component for GitStatusIcon {
             v_flex()
                 .gap_6()
                 .children(vec![example_group(vec![
-                    single_example("Modified", GitStatusIcon::new(modified).into_any_element()),
-                    single_example("Added", GitStatusIcon::new(added).into_any_element()),
-                    single_example("Deleted", GitStatusIcon::new(deleted).into_any_element()),
+                    single_example("已修改", GitStatusIcon::new(modified).into_any_element()),
+                    single_example("添加", GitStatusIcon::new(added).into_any_element()),
+                    single_example("已删除", GitStatusIcon::new(deleted).into_any_element()),
                     single_example(
-                        "Conflicted",
+                        "冲突",
                         GitStatusIcon::new(conflict).into_any_element(),
                     ),
                 ])])

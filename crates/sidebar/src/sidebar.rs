@@ -4076,7 +4076,7 @@ impl Sidebar {
                     .selected_style(ButtonStyle::Tinted(TintColor::Accent)),
                 |_window, cx| {
                     Tooltip::for_action(
-                        "Add Project",
+                        "添加项目",
                         &OpenRecent {
                             create_new_window: false,
                         },
@@ -4378,7 +4378,7 @@ impl Sidebar {
             .gap_1()
             .track_focus(&self.focus_handle(cx))
             .child(
-                Button::new("open_project", "Open Project")
+                Button::new("open_project", "打开项目")
                     .full_width()
                     .key_binding(KeyBinding::for_action(&workspace::Open::default(), cx))
                     .on_click(|_, window, cx| {
@@ -4401,11 +4401,11 @@ impl Sidebar {
                     .w_1_2()
                     .gap_2()
                     .child(Divider::horizontal().color(ui::DividerColor::Border))
-                    .child(Label::new("or").size(LabelSize::XSmall).color(Color::Muted))
+                    .child(Label::new("或").size(LabelSize::XSmall).color(Color::Muted))
                     .child(Divider::horizontal().color(ui::DividerColor::Border)),
             )
             .child(
-                Button::new("clone_repo", "Clone Repository")
+                Button::new("clone_repo", "克隆仓库")
                     .full_width()
                     .on_click(|_, window, cx| {
                         window.dispatch_action(git::Clone.boxed_clone(), cx);
@@ -4532,7 +4532,7 @@ impl Sidebar {
                                 h_flex()
                                     .gap_2()
                                     .justify_between()
-                                    .child(Label::new("Toggle Sidebar"))
+                                    .child(Label::new("切换侧边栏"))
                                     .child(KeyBinding::for_action(&ToggleWorkspaceSidebar, cx)),
                             )
                             .child(
@@ -4542,7 +4542,7 @@ impl Sidebar {
                                     .border_t_1()
                                     .border_color(cx.theme().colors().border_variant)
                                     .justify_between()
-                                    .child(Label::new("Focus Sidebar"))
+                                    .child(Label::new("聚焦侧边栏"))
                                     .child(KeyBinding::for_action(&FocusWorkspaceSidebar, cx)),
                             )
                             .into_any_element()
@@ -4574,9 +4574,9 @@ impl Sidebar {
                     .toggle_state(is_archive)
                     .tooltip(move |_, cx| {
                         let label = if is_archive {
-                            "Hide Thread History"
+                            "隐藏会话历史"
                         } else {
-                            "Show Thread History"
+                            "显示会话历史"
                         };
                         Tooltip::for_action(label, &ToggleThreadHistory, cx)
                     })
@@ -4654,12 +4654,12 @@ impl Sidebar {
         });
         render_import_onboarding_banner(
             "acp",
-            "Looking for threads from external agents?",
-            "Import threads from agents like Claude Agent, Codex, and more, whether started in Zed or another client.",
+            "正在查找外部代理的会话？",
+            "导入 Claude Agent、Codex 等代理中的会话，无论这些会话是在 Zed 还是其他客户端中启动。",
             if verbose_labels {
-                "Import Threads from External Agents"
+                "从外部代理导入会话"
             } else {
-                "Import Threads"
+                "导入会话"
             },
             |_, _window, cx| AcpThreadImportOnboarding::dismiss(cx),
             on_import,
@@ -4701,9 +4701,9 @@ impl Sidebar {
             "Threads found from other channels",
             description,
             if verbose_labels {
-                "Import Threads from Other Channels"
+                "从其他渠道导入会话"
             } else {
-                "Import Threads"
+                "导入会话"
             },
             |_, _window, cx| CrossChannelImportOnboarding::dismiss(cx),
             on_import,

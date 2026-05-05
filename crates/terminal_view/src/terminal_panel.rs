@@ -1656,7 +1656,7 @@ impl Panel for TerminalPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Terminal Panel")
+        Some("终端面板")
     }
 
     fn toggle_action(&self) -> Box<dyn gpui::Action> {

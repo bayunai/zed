@@ -131,7 +131,7 @@ impl<T: 'static> Render for PromptEditor<T> {
             .icon_color(Color::Muted)
             .when(!menu_visible, |this| {
                 this.tooltip(move |_window, cx| {
-                    Tooltip::with_meta("Add Context", None, "Or type @ to include context", cx)
+                    Tooltip::with_meta("添加上下文", None, "Or type @ to include context", cx)
                 })
             })
             .on_click(cx.listener(move |this, _, window, cx| {
@@ -393,12 +393,12 @@ impl<T: 'static> PromptEditor<T> {
         let action = match mode {
             PromptEditorMode::Buffer { codegen, .. } => {
                 if codegen.read(cx).is_insertion {
-                    "Generate"
+                    "生成"
                 } else {
-                    "Transform"
+                    "转换"
                 }
             }
-            PromptEditorMode::Terminal { .. } => "Generate",
+            PromptEditorMode::Terminal { .. } => "生成",
         };
 
         let agent_panel_keybinding =
@@ -827,7 +827,7 @@ impl<T: 'static> PromptEditor<T> {
                         Tooltip::with_meta(
                             mode.tooltip_interrupt(),
                             Some(&menu::Cancel),
-                            "Changes won't be discarded",
+                            "更改不会被丢弃",
                             cx,
                         )
                     })
@@ -845,7 +845,7 @@ impl<T: 'static> PromptEditor<T> {
                                 Tooltip::with_meta(
                                     mode.tooltip_restart(),
                                     Some(&menu::Confirm),
-                                    "Changes will be discarded",
+                                    "更改将被丢弃",
                                     cx,
                                 )
                             })
@@ -1009,12 +1009,7 @@ impl<T: 'static> PromptEditor<T> {
             .shape(IconButtonShape::Square)
             .tooltip({
                 move |_window, cx| {
-                    Tooltip::for_action_in(
-                        "Close Assistant",
-                        &editor::actions::Cancel,
-                        &focus_handle,
-                        cx,
-                    )
+                    Tooltip::for_action_in("关闭助手", &editor::actions::Cancel, &focus_handle, cx)
                 }
             })
             .on_click(cx.listener(|_, _, _, cx| cx.emit(PromptEditorEvent::CancelRequested)))
@@ -1063,7 +1058,7 @@ impl<T: 'static> PromptEditor<T> {
                         let focus_handle = self.editor.focus_handle(cx);
                         move |_window, cx| {
                             cx.new(|cx| {
-                                let mut tooltip = Tooltip::new("Previous Alternative").key_binding(
+                                let mut tooltip = Tooltip::new("上一个替代方案").key_binding(
                                     KeyBinding::for_action_in(
                                         &CyclePreviousInlineAssist,
                                         &focus_handle,
@@ -1104,7 +1099,7 @@ impl<T: 'static> PromptEditor<T> {
                         let focus_handle = self.editor.focus_handle(cx);
                         move |_window, cx| {
                             cx.new(|cx| {
-                                let mut tooltip = Tooltip::new("Next Alternative").key_binding(
+                                let mut tooltip = Tooltip::new("下一个替代方案").key_binding(
                                     KeyBinding::for_action_in(
                                         &CycleNextInlineAssist,
                                         &focus_handle,
@@ -1550,28 +1545,28 @@ pub enum GenerationMode {
 impl GenerationMode {
     fn start_label(self) -> &'static str {
         match self {
-            GenerationMode::Generate => "Generate",
-            GenerationMode::Transform => "Transform",
+            GenerationMode::Generate => "生成",
+            GenerationMode::Transform => "转换",
         }
     }
     fn tooltip_interrupt(self) -> &'static str {
         match self {
-            GenerationMode::Generate => "Interrupt Generation",
-            GenerationMode::Transform => "Interrupt Transform",
+            GenerationMode::Generate => "中止生成",
+            GenerationMode::Transform => "中止转换",
         }
     }
 
     fn tooltip_restart(self) -> &'static str {
         match self {
-            GenerationMode::Generate => "Restart Generation",
-            GenerationMode::Transform => "Restart Transform",
+            GenerationMode::Generate => "重新生成",
+            GenerationMode::Transform => "重新转换",
         }
     }
 
     fn tooltip_accept(self) -> &'static str {
         match self {
-            GenerationMode::Generate => "Accept Generation",
-            GenerationMode::Transform => "Accept Transform",
+            GenerationMode::Generate => "接受生成",
+            GenerationMode::Transform => "接受转换",
         }
     }
 }

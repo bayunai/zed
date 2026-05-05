@@ -528,10 +528,10 @@ impl AgentRegistryPage {
                         });
                     })
             }
-            RegistryInstallStatus::InstalledCustom => Button::new(button_id, "Installed")
+            RegistryInstallStatus::InstalledCustom => Button::new(button_id, "已安装")
                 .style(ButtonStyle::OutlinedGhost)
                 .disabled(true),
-            RegistryInstallStatus::InstalledExtension => Button::new(button_id, "Installed")
+            RegistryInstallStatus::InstalledExtension => Button::new(button_id, "已安装")
                 .style(ButtonStyle::OutlinedGhost)
                 .disabled(true),
         }
@@ -581,7 +581,7 @@ impl Render for AgentRegistryPage {
                                         "registry-filter-buttons",
                                         [
                                             ToggleButtonSimple::new(
-                                                "All",
+                                                "全部",
                                                 cx.listener(|this, _event, _, cx| {
                                                     this.filter = RegistryFilter::All;
                                                     this.filter_registry_agents(cx);
@@ -589,7 +589,7 @@ impl Render for AgentRegistryPage {
                                                 }),
                                             ),
                                             ToggleButtonSimple::new(
-                                                "Installed",
+                                                "已安装",
                                                 cx.listener(|this, _event, _, cx| {
                                                     this.filter = RegistryFilter::Installed;
                                                     this.filter_registry_agents(cx);
@@ -597,7 +597,7 @@ impl Render for AgentRegistryPage {
                                                 }),
                                             ),
                                             ToggleButtonSimple::new(
-                                                "Not Installed",
+                                                "未安装",
                                                 cx.listener(|this, _event, _, cx| {
                                                     this.filter = RegistryFilter::NotInstalled;
                                                     this.filter_registry_agents(cx);

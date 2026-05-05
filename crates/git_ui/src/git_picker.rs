@@ -26,7 +26,7 @@ pub enum GitPickerTab {
 impl Display for GitPickerTab {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let label = match self {
-            GitPickerTab::Branches => "Branches",
+            GitPickerTab::Branches => "分支",
             GitPickerTab::Stash => "Stash",
         };
         write!(f, "{}", label)

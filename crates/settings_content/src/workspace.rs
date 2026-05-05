@@ -255,8 +255,11 @@ pub enum ShowCloseButton {
 #[serde(rename_all = "snake_case")]
 pub enum ShowDiagnostics {
     #[default]
+    #[strum(serialize = "关闭")]
     Off,
+    #[strum(serialize = "错误")]
     Errors,
+    #[strum(serialize = "全部")]
     All,
 }
 
@@ -402,11 +405,11 @@ impl CloseWindowWhenNoItems {
 pub enum CliDefaultOpenBehavior {
     /// Open directories as a new workspace in the current Zed window's sidebar.
     #[default]
-    #[strum(serialize = "Add to Existing Window")]
+    #[strum(serialize = "添加到现有窗口")]
     ExistingWindow,
     /// Open directories in a new window, but reuse an existing window when
     /// opening files that are already part of an open project.
-    #[strum(serialize = "Open a New Window")]
+    #[strum(serialize = "打开新窗口")]
     NewWindow,
 }
 
@@ -811,8 +814,10 @@ pub struct ProjectPanelSettingsContent {
 pub enum ProjectPanelEntrySpacing {
     /// Comfortable spacing of entries.
     #[default]
+    #[strum(serialize = "舒适")]
     Comfortable,
     /// The standard spacing of entries.
+    #[strum(serialize = "标准")]
     Standard,
 }
 
@@ -834,10 +839,13 @@ pub enum ProjectPanelEntrySpacing {
 pub enum ProjectPanelSortMode {
     /// Show directories first, then files
     #[default]
+    #[strum(serialize = "目录优先")]
     DirectoriesFirst,
     /// Mix directories and files together
+    #[strum(serialize = "混合")]
     Mixed,
     /// Show files first, then directories
+    #[strum(serialize = "文件优先")]
     FilesFirst,
 }
 
@@ -860,15 +868,19 @@ pub enum ProjectPanelSortOrder {
     /// Case-insensitive natural sort with lowercase preferred in ties.
     /// Numbers in file names are compared by value (e.g., `file2` before `file10`).
     #[default]
+    #[strum(serialize = "默认")]
     Default,
     /// Uppercase names are grouped before lowercase names, with case-insensitive
     /// natural sort within each group. Dot-prefixed names sort before both groups.
+    #[strum(serialize = "大写优先")]
     Upper,
     /// Lowercase names are grouped before uppercase names, with case-insensitive
     /// natural sort within each group. Dot-prefixed names sort before both groups.
+    #[strum(serialize = "小写优先")]
     Lower,
     /// Pure Unicode codepoint comparison. No case folding, no natural number sorting.
     /// Uppercase ASCII sorts before lowercase. Accented characters sort after ASCII.
+    #[strum(serialize = "Unicode")]
     Unicode,
 }
 

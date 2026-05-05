@@ -80,7 +80,7 @@ impl PromptContextAction {
 
     pub fn label(&self) -> &'static str {
         match self {
-            Self::AddSelections => "Selection",
+            Self::AddSelections => "选择",
         }
     }
 
@@ -123,13 +123,13 @@ impl PromptContextType {
 
     pub fn label(&self) -> &'static str {
         match self {
-            Self::File => "Files & Directories",
-            Self::Symbol => "Symbols",
-            Self::Fetch => "Fetch",
-            Self::Thread => "Threads",
-            Self::Rules => "Rules",
-            Self::Diagnostics => "Diagnostics",
-            Self::BranchDiff => "Branch Diff",
+            Self::File => "文件和目录",
+            Self::Symbol => "符号",
+            Self::Fetch => "获取",
+            Self::Thread => "会话",
+            Self::Rules => "规则",
+            Self::Diagnostics => "诊断",
+            Self::BranchDiff => "分支差异",
         }
     }
 
@@ -800,7 +800,7 @@ impl<T: PromptCompletionProviderDelegate> PromptCompletionProvider<T> {
         let uri = MentionUri::GitDiff {
             base_ref: base_ref.to_string(),
         };
-        let crease_text: SharedString = format!("Branch Diff (vs {})", base_ref).into();
+        let crease_text: SharedString = format!("分支差异（对比 {}）", base_ref).into();
         let display_text = format!("@{}", crease_text);
         let new_text = format!("[{}]({}) ", display_text, uri.to_uri());
         let new_text_len = new_text.len();
@@ -1768,7 +1768,7 @@ fn diagnostics_label(
     }
 
     if parts.is_empty() {
-        return "Diagnostics".into();
+        return "诊断".into();
     }
 
     let body = if parts.len() == 2 {
@@ -1805,7 +1805,7 @@ fn diagnostics_submenu_label(
             summary.warning_count,
             pluralize("warning", summary.warning_count)
         ),
-        _ => "Diagnostics".into(),
+        _ => "诊断".into(),
     }
 }
 

@@ -2814,14 +2814,11 @@ fn loading_contents_spinner(size: IconSize) -> AnyElement {
 
 fn placeholder_text(agent_name: &str, has_commands: bool) -> String {
     if agent_name == agent::ZED_AGENT_ID.as_ref() {
-        format!("Message the {} — @ to include context", agent_name)
+        format!("给 {} 发送消息 - @ 添加上下文", agent_name)
     } else if has_commands {
-        format!(
-            "Message {} — @ to include context, / for commands",
-            agent_name
-        )
+        format!("给 {} 发送消息 - @ 添加上下文，/ 输入命令", agent_name)
     } else {
-        format!("Message {} — @ to include context", agent_name)
+        format!("给 {} 发送消息 - @ 添加上下文", agent_name)
     }
 }
 
@@ -3134,7 +3131,9 @@ pub(crate) mod tests {
                 ConversationView::new(
                     Rc::new(StubAgentServer::new(ResumeOnlyAgentConnection)),
                     connection_store,
-                    Agent::Custom { id: "Test".into() },
+                    Agent::Custom {
+                        id: "测试".into()
+                    },
                     Some(acp::SessionId::new("resume-session")),
                     None,
                     None,
@@ -3271,7 +3270,9 @@ pub(crate) mod tests {
                 ConversationView::new(
                     Rc::new(StubAgentServer::new(RestoredAvailableCommandsConnection)),
                     connection_store,
-                    Agent::Custom { id: "Test".into() },
+                    Agent::Custom {
+                        id: "测试".into()
+                    },
                     Some(acp::SessionId::new("restored-session")),
                     None,
                     None,
@@ -3353,7 +3354,9 @@ pub(crate) mod tests {
                 ConversationView::new(
                     Rc::new(StubAgentServer::new(connection)),
                     connection_store,
-                    Agent::Custom { id: "Test".into() },
+                    Agent::Custom {
+                        id: "测试".into()
+                    },
                     Some(acp::SessionId::new("session-1")),
                     None,
                     Some(PathList::new(&[PathBuf::from("/project/subdir")])),
@@ -3434,7 +3437,7 @@ pub(crate) mod tests {
                     match other {
                         ServerState::Loading { .. } => "Loading (stuck!)",
                         ServerState::LoadError { .. } => "LoadError (wrong variant)",
-                        ServerState::Connected(_) => "Connected",
+                        ServerState::Connected(_) => "已连接",
                     }
                 ),
             }
@@ -3643,7 +3646,7 @@ pub(crate) mod tests {
                 tool_call_id,
                 PermissionOptions::Flat(vec![acp::PermissionOption::new(
                     "1",
-                    "Allow",
+                    "允许",
                     acp::PermissionOptionKind::AllowOnce,
                 )]),
             )]));
@@ -3792,7 +3795,9 @@ pub(crate) mod tests {
                 ConversationView::new(
                     Rc::new(StubAgentServer::default_response()),
                     connection_store,
-                    Agent::Custom { id: "Test".into() },
+                    Agent::Custom {
+                        id: "测试".into()
+                    },
                     None,
                     None,
                     None,
@@ -3890,7 +3895,9 @@ pub(crate) mod tests {
                 ConversationView::new(
                     Rc::new(StubAgentServer::default_response()),
                     connection_store,
-                    Agent::Custom { id: "Test".into() },
+                    Agent::Custom {
+                        id: "测试".into()
+                    },
                     None,
                     None,
                     None,
@@ -3959,7 +3966,9 @@ pub(crate) mod tests {
                 ConversationView::new(
                     Rc::new(StubAgentServer::default_response()),
                     connection_store,
-                    Agent::Custom { id: "Test".into() },
+                    Agent::Custom {
+                        id: "测试".into()
+                    },
                     None,
                     None,
                     None,
@@ -4081,7 +4090,9 @@ pub(crate) mod tests {
                 ConversationView::new(
                     Rc::new(StubAgentServer::new(RestoredAvailableCommandsConnection)),
                     connection_store,
-                    Agent::Custom { id: "Test".into() },
+                    Agent::Custom {
+                        id: "测试".into()
+                    },
                     None,
                     None,
                     None,
@@ -4296,7 +4307,9 @@ pub(crate) mod tests {
         let connection_store =
             cx.update(|_window, cx| cx.new(|cx| AgentConnectionStore::new(project.clone(), cx)));
 
-        let agent_key = Agent::Custom { id: "Test".into() };
+        let agent_key = Agent::Custom {
+            id: "测试".into()
+        };
 
         let conversation_view = cx.update(|window, cx| {
             cx.new(|cx| {
@@ -4351,7 +4364,7 @@ pub(crate) mod tests {
         }
 
         fn tab_content_text(&self, _detail: usize, _cx: &App) -> SharedString {
-            "Test".into()
+            "测试".into()
         }
     }
 
@@ -4406,7 +4419,7 @@ pub(crate) mod tests {
         }
 
         fn agent_id(&self) -> AgentId {
-            "Test".into()
+            "测试".into()
         }
 
         fn connect(

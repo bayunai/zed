@@ -2524,7 +2524,7 @@ impl Panel for AgentPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Agent Panel")
+        Some("代理面板")
     }
 
     fn toggle_action(&self) -> Box<dyn Action> {
@@ -2854,9 +2854,9 @@ impl AgentPanel {
                         }
 
                         menu = menu
-                            .header("MCP Servers")
+                            .header("MCP 服务器")
                             .action(
-                                "View Server Extensions",
+                                "查看服务器扩展",
                                 Box::new(zed_actions::Extensions {
                                     category_filter: Some(
                                         zed_actions::ExtensionCategoryFilter::ContextServers,
@@ -2864,16 +2864,16 @@ impl AgentPanel {
                                     id: None,
                                 }),
                             )
-                            .action("Add Custom Server…", Box::new(AddContextServer))
+                            .action("添加自定义服务器...", Box::new(AddContextServer))
                             .separator()
-                            .action("Rules", Box::new(OpenRulesLibrary::default()))
-                            .action("Profiles", Box::new(ManageProfiles::default()))
-                            .action("Settings", Box::new(OpenSettings))
+                            .action("规则", Box::new(OpenRulesLibrary::default()))
+                            .action("配置", Box::new(ManageProfiles::default()))
+                            .action("设置", Box::new(OpenSettings))
                             .separator()
-                            .action("Toggle Threads Sidebar", Box::new(ToggleWorkspaceSidebar));
+                            .action("切换会话侧边栏", Box::new(ToggleWorkspaceSidebar));
 
                         if has_auth_methods {
-                            menu = menu.action("Reauthenticate", Box::new(ReauthenticateAgent))
+                            menu = menu.action("重新认证", Box::new(ReauthenticateAgent))
                         }
 
                         menu
@@ -3025,7 +3025,7 @@ impl AgentPanel {
                                 .collect::<Vec<_>>();
 
                             if !agent_items.is_empty() {
-                                menu = menu.separator().header("External Agents");
+                                menu = menu.separator().header("外部代理");
                             }
                             for item in &agent_items {
                                 let mut entry = ContextMenuEntry::new(item.display_name.clone());
@@ -3215,7 +3215,7 @@ impl AgentPanel {
                 .trigger_with_tooltip(agent_selector_button, {
                     move |_window, cx| {
                         Tooltip::for_action_in(
-                            "New Thread…",
+                            "新建会话...",
                             &ToggleNewThreadMenu,
                             &focus_handle,
                             cx,
@@ -3260,7 +3260,7 @@ impl AgentPanel {
                     {
                         move |_window, cx| {
                             Tooltip::for_action_in(
-                                "New Thread\u{2026}",
+                                "新建会话...",
                                 &ToggleNewThreadMenu,
                                 &focus_handle,
                                 cx,

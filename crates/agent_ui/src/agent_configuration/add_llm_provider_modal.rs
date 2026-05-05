@@ -67,7 +67,7 @@ impl AddLlmProviderInput {
     fn new(provider: LlmCompatibleProvider, window: &mut Window, cx: &mut App) -> Self {
         let provider_name =
             single_line_input("Provider Name", provider.name(), None, 1, window, cx);
-        let api_url = single_line_input("API URL", provider.api_url(), None, 2, window, cx);
+        let api_url = single_line_input("API 地址", provider.api_url(), None, 2, window, cx);
         let api_key = cx.new(|cx| {
             InputField::new(
                 window,
@@ -135,16 +135,16 @@ impl ModelInput {
             cx,
         );
         let max_output_tokens = single_line_input(
-            "Max Output Tokens",
-            "Max Output Tokens",
+            "最大输出令牌数",
+            "最大输出令牌数",
             Some("32000"),
             base_tab_index + 3,
             window,
             cx,
         );
         let max_tokens = single_line_input(
-            "Max Tokens",
-            "Max Tokens",
+            "最大令牌数",
+            "最大令牌数",
             Some("200000"),
             base_tab_index + 4,
             window,
@@ -563,7 +563,7 @@ impl Render for AddLlmProviderModal {
                             h_flex()
                                 .gap_1()
                                 .child(
-                                    Button::new("cancel", "Cancel")
+                                    Button::new("cancel", "取消")
                                         .key_binding(
                                             KeyBinding::for_action_in(
                                                 &menu::Cancel,

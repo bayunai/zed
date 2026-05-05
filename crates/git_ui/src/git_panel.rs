@@ -176,12 +176,12 @@ fn git_panel_context_menu(
             .context(focus_handle)
             .action_disabled_when(
                 !state.has_unstaged_changes,
-                "Stage All",
+                "暂存所有",
                 StageAll.boxed_clone(),
             )
             .action_disabled_when(
                 !state.has_staged_changes,
-                "Unstage All",
+                "取消暂存所有",
                 UnstageAll.boxed_clone(),
             )
             .separator()
@@ -197,12 +197,12 @@ fn git_panel_context_menu(
             .separator()
             .action_disabled_when(
                 !state.has_tracked_changes,
-                "Discard Tracked Changes",
+                "放弃已追踪的更改",
                 RestoreTrackedFiles.boxed_clone(),
             )
             .action_disabled_when(
                 !state.has_new_changes,
-                "Trash Untracked Files",
+                "回收未追踪文件",
                 TrashUntrackedFiles.boxed_clone(),
             )
             .separator()
@@ -210,7 +210,7 @@ fn git_panel_context_menu(
                 if state.tree_view {
                     "Flat View"
                 } else {
-                    "Tree View"
+                    "树形视图"
                 },
                 Some(Box::new(ToggleTreeView)),
                 move |window, cx| window.dispatch_action(Box::new(ToggleTreeView), cx),
@@ -300,9 +300,9 @@ impl GitHeaderEntry {
     }
     pub fn title(&self) -> &'static str {
         match self.header {
-            Section::Conflict => "Conflicts",
-            Section::Tracked => "Tracked",
-            Section::New => "Untracked",
+            Section::Conflict => "冲突",
+            Section::Tracked => "追踪",
+            Section::New => "未追踪",
         }
     }
 }
@@ -1353,7 +1353,7 @@ impl GitPanel {
                 let item = open_task
                     .await
                     .notify_workspace_async_err(workspace, &mut cx)
-                    .ok_or_else(|| anyhow::anyhow!("Failed to open file"))?;
+                    .ok_or_else(|| anyhow::anyhow!("打开文件失败"))?;
                 if let Some(active_editor) = item.downcast::<Editor>() {
                     if let Some(diff_task) =
                         active_editor.update(cx, |editor, _cx| editor.wait_for_diff_to_load())
@@ -1412,7 +1412,7 @@ impl GitPanel {
                             .unwrap_or(entry.repo_path.display(path_style).as_ref()),
                     ),
                     None,
-                    &["Discard Changes", "Cancel"],
+                    &["Discard Changes", "取消"],
                     cx,
                 );
                 cx.background_spawn(prompt)
@@ -1494,7 +1494,7 @@ impl GitPanel {
             if !entry.status.is_created() {
                 self.perform_checkout(vec![entry.clone()], window, cx);
             } else {
-                let prompt = prompt(&format!("Trash {}?", filename), None, window, cx);
+                let prompt = prompt(&format!("回收 {}？", filename), None, window, cx);
                 cx.spawn_in(window, async move |_, cx| {
                     match prompt.await? {
                         TrashCancel::Trash => {}
@@ -1511,7 +1511,7 @@ impl GitPanel {
                     Ok(())
                 })
                 .detach_and_prompt_err(
-                    "Failed to trash file",
+                    "回收文件失败",
                     window,
                     cx,
                     |e, _, _| Some(format!("{e}")),
@@ -1621,7 +1621,7 @@ impl GitPanel {
             .take(5)
             .join("\n");
         if entries.len() > 5 {
-            details.push_str(&format!("\nand {} more…", entries.len() - 5))
+            details.push_str(&format!("\n和 {} 个更多…", entries.len() - 5))
         }
 
         #[derive(strum::EnumIter, strum::VariantNames)]
@@ -1631,7 +1631,7 @@ impl GitPanel {
             Cancel,
         }
         let prompt = prompt(
-            "Discard changes to these files?",
+            "丢弃这些文件的更改？",
             Some(&details),
             window,
             cx,
@@ -1680,10 +1680,10 @@ impl GitPanel {
             .join("\n");
 
         if to_delete.len() > 5 {
-            details.push_str(&format!("\nand {} more…", to_delete.len() - 5))
+            details.push_str(&format!("\n和 {} 个更多…", to_delete.len() - 5))
         }
 
-        let prompt = prompt("Trash these files?", Some(&details), window, cx);
+        let prompt = prompt("回收这些文件？", Some(&details), window, cx);
         cx.spawn_in(window, async move |this, cx| {
             match prompt.await? {
                 TrashCancel::Trash => {}
@@ -2291,7 +2291,7 @@ impl GitPanel {
 
         if self.has_unstaged_conflicts() {
             error_spawn(
-                "There are still conflicts. You must stage these before committing",
+                "仍然存在冲突。在提交之前，您必须暂存这些更改。",
                 window,
                 cx,
             );
@@ -2329,7 +2329,7 @@ impl GitPanel {
                 .collect::<Vec<_>>();
 
             if changed_files.is_empty() && !options.amend {
-                error_spawn("No changes to commit", window, cx);
+                error_spawn("无更改可提交", window, cx);
                 return;
             }
 
@@ -2436,11 +2436,11 @@ impl GitPanel {
                     Cancel,
                 }
                 let detail = format!(
-                    "This commit was already pushed to {}.",
+                    "此提交已被推送到 {}。",
                     pushed_to.into_iter().join(", ")
                 );
                 let result = cx
-                    .update(|window, cx| prompt("Are you sure?", Some(&detail), window, cx))?
+                    .update(|window, cx| prompt("您确定吗？", Some(&detail), window, cx))?
                     .await?;
 
                 match result {
@@ -2474,9 +2474,9 @@ impl GitPanel {
         let action_text = if git_status_entry.status.is_deleted() {
             Some("Delete")
         } else if git_status_entry.status.is_created() {
-            Some("Create")
+            Some("创建")
         } else if git_status_entry.status.is_modified() {
-            Some("Update")
+            Some("更新")
         } else {
             None
         }?;
@@ -6121,7 +6121,7 @@ impl Panel for GitPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Git Panel")
+        Some("Git 面板")
     }
 
     fn icon_label(&self, _: &Window, cx: &App) -> Option<String> {

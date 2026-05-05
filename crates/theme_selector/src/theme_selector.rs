@@ -217,7 +217,7 @@ impl ThemeSelectorDelegate {
                     Some(theme)
                 }
                 Err(error) => {
-                    log::error!("error loading theme {}: {}", mat.string, error);
+                    log::error!("加载主题 {} 时出错：{}", mat.string, error);
                     None
                 }
             }
@@ -358,7 +358,7 @@ impl PickerDelegate for ThemeSelectorDelegate {
     type ListItem = ui::ListItem;
 
     fn placeholder_text(&self, _window: &mut Window, _cx: &mut App) -> Arc<str> {
-        "Select Theme...".into()
+        "选择主题...".into()
     }
 
     fn match_count(&self) -> usize {

@@ -827,7 +827,7 @@ fn render_diff_hunk_controls(
                         .tooltip({
                             let focus_handle = editor.focus_handle(cx);
                             move |_window, cx| {
-                                Tooltip::for_action_in("Next Hunk", &GoToHunk, &focus_handle, cx)
+                                Tooltip::for_action_in("下一块", &GoToHunk, &focus_handle, cx)
                             }
                         })
                         .on_click({
@@ -859,7 +859,7 @@ fn render_diff_hunk_controls(
                             let focus_handle = editor.focus_handle(cx);
                             move |_window, cx| {
                                 Tooltip::for_action_in(
-                                    "Previous Hunk",
+                                    "上一块",
                                     &GoToPreviousHunk,
                                     &focus_handle,
                                     cx,
@@ -1058,7 +1058,7 @@ impl Render for AgentDiffToolbar {
                                 IconButton::new("hunk-up", IconName::ArrowUp)
                                     .icon_size(IconSize::Small)
                                     .tooltip(Tooltip::for_action_title_in(
-                                        "Previous Hunk",
+                                        "上一块",
                                         &GoToPreviousHunk,
                                         &editor_focus_handle,
                                     ))
@@ -1077,7 +1077,7 @@ impl Render for AgentDiffToolbar {
                                 IconButton::new("hunk-down", IconName::ArrowDown)
                                     .icon_size(IconSize::Small)
                                     .tooltip(Tooltip::for_action_title_in(
-                                        "Next Hunk",
+                                        "下一块",
                                         &GoToHunk,
                                         &editor_focus_handle,
                                     ))

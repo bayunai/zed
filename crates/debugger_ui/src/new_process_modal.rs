@@ -544,7 +544,7 @@ pub(crate) enum NewProcessMode {
 impl std::fmt::Display for NewProcessMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mode = match self {
-            NewProcessMode::Task => "Run",
+            NewProcessMode::Task => "运行",
             NewProcessMode::Debug => "Debug",
             NewProcessMode::Attach => "Attach",
             NewProcessMode::Launch => "Launch",

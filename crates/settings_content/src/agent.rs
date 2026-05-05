@@ -28,8 +28,10 @@ use crate::DockPosition;
 pub enum NewThreadLocation {
     /// Start threads in the current project.
     #[default]
+    #[strum(serialize = "本地项目")]
     LocalProject,
     /// Start threads in a new worktree.
+    #[strum(serialize = "新工作树")]
     NewWorktree,
 }
 
@@ -52,8 +54,10 @@ pub enum NewThreadLocation {
 pub enum SidebarDockPosition {
     /// Always show the sidebar on the left side.
     #[default]
+    #[strum(serialize = "左侧")]
     Left,
     /// Always show the sidebar on the right side.
+    #[strum(serialize = "右侧")]
     Right,
 }
 
@@ -84,14 +88,18 @@ pub enum ThinkingBlockDisplay {
     /// Thinking blocks fully expand during streaming, then auto-collapse
     /// when the model finishes thinking. Users can re-expand after collapse.
     #[default]
+    #[strum(serialize = "自动")]
     Auto,
     /// Thinking blocks auto-expand with a height constraint during streaming,
     /// then remain in their constrained state when complete. Users can click
     /// to fully expand or collapse.
+    #[strum(serialize = "预览")]
     Preview,
     /// Thinking blocks are always fully expanded by default (no height constraint).
+    #[strum(serialize = "始终展开")]
     AlwaysExpanded,
     /// Thinking blocks are always collapsed by default.
+    #[strum(serialize = "始终折叠")]
     AlwaysCollapsed,
 }
 
@@ -381,8 +389,11 @@ pub struct ContextServerPresetContent {
 #[serde(rename_all = "snake_case")]
 pub enum NotifyWhenAgentWaiting {
     #[default]
+    #[strum(serialize = "主屏幕")]
     PrimaryScreen,
+    #[strum(serialize = "所有屏幕")]
     AllScreens,
+    #[strum(serialize = "从不")]
     Never,
 }
 
@@ -402,8 +413,11 @@ pub enum NotifyWhenAgentWaiting {
 #[serde(rename_all = "snake_case")]
 pub enum PlaySoundWhenAgentDone {
     #[default]
+    #[strum(serialize = "从不")]
     Never,
+    #[strum(serialize = "隐藏时")]
     WhenHidden,
+    #[strum(serialize = "始终")]
     Always,
 }
 
@@ -716,9 +730,9 @@ pub enum ToolPermissionMode {
 impl std::fmt::Display for ToolPermissionMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ToolPermissionMode::Allow => write!(f, "Allow"),
-            ToolPermissionMode::Deny => write!(f, "Deny"),
-            ToolPermissionMode::Confirm => write!(f, "Confirm"),
+            ToolPermissionMode::Allow => write!(f, "允许"),
+            ToolPermissionMode::Deny => write!(f, "拒绝"),
+            ToolPermissionMode::Confirm => write!(f, "确认"),
         }
     }
 }

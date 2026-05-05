@@ -251,9 +251,12 @@ impl MacPlatform {
                 menu_item.setSubmenu_(menu);
                 application_menu.addItem_(menu_item);
 
-                if menu_config.name == "Window" {
+                if matches!(menu_config.name.as_ref(), "Window" | "窗口") {
                     let app: id = msg_send![APP_CLASS, sharedApplication];
                     app.setWindowsMenu_(menu);
+                } else if matches!(menu_config.name.as_ref(), "Help" | "帮助") {
+                    let app: id = msg_send![APP_CLASS, sharedApplication];
+                    let _: () = msg_send![app, setHelpMenu: menu];
                 }
             }
 

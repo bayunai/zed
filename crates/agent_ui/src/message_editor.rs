@@ -262,7 +262,7 @@ async fn resolve_pasted_context_items(
 ) -> (Vec<ResolvedPastedContextItem>, Vec<Entity<Worktree>>) {
     let mut items = Vec::new();
     let mut added_worktrees = Vec::new();
-    let default_image_name: SharedString = "Image".into();
+    let default_image_name: SharedString = "图像".into();
 
     for entry in entries {
         match entry {
@@ -438,7 +438,7 @@ impl MessageEditor {
                     menu.action("Cut", Box::new(editor::actions::Cut))
                         .action_disabled_when(
                             !has_selection,
-                            "Copy",
+                            "复制",
                             Box::new(editor::actions::Copy),
                         )
                         .action("Paste", Box::new(editor::actions::Paste))
@@ -1434,7 +1434,7 @@ impl MessageEditor {
                     _ => return Ok::<(), anyhow::Error>(()),
                 };
 
-                let default_image_name: SharedString = "Image".into();
+                let default_image_name: SharedString = "图像".into();
                 let images = cx
                     .background_spawn(async move {
                         paths
@@ -1571,7 +1571,7 @@ impl MessageEditor {
                         MentionUri::parse(&uri, path_style)
                     } else {
                         Ok(MentionUri::PastedImage {
-                            name: "Image".to_string(),
+                            name: "图像".to_string(),
                         })
                     };
                     let Some(mention_uri) = mention_uri.log_err() else {
@@ -2056,7 +2056,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -2157,7 +2157,7 @@ mod tests {
                     None,
                     session_capabilities.clone(),
                     "Claude Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -2262,7 +2262,7 @@ mod tests {
         }
 
         fn tab_content_text(&self, _detail: usize, _cx: &App) -> SharedString {
-            "Test".into()
+            "测试".into()
         }
     }
 
@@ -2323,7 +2323,7 @@ mod tests {
                     None,
                     session_capabilities.clone(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         max_lines: None,
                         min_lines: 1,
@@ -2549,7 +2549,7 @@ mod tests {
                     None,
                     session_capabilities.clone(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         max_lines: None,
                         min_lines: 1,
@@ -2624,7 +2624,7 @@ mod tests {
                     "Files & Directories".into(),
                     "Symbols".into(),
                     "Threads".into(),
-                    "Fetch".into()
+                    "获取".into()
                 ]
             );
         });
@@ -2768,7 +2768,7 @@ mod tests {
 
         let plain_text_language = Arc::new(language::Language::new(
             language::LanguageConfig {
-                name: "Plain Text".into(),
+                name: "纯文本".into(),
                 matcher: language::LanguageMatcher {
                     path_suffixes: vec!["txt".to_string()],
                     ..Default::default()
@@ -2783,7 +2783,7 @@ mod tests {
         language_registry.add(plain_text_language);
 
         let mut fake_language_servers = language_registry.register_fake_lsp(
-            "Plain Text",
+            "纯文本",
             language::FakeLspAdapter {
                 capabilities: lsp::ServerCapabilities {
                     workspace_symbol_provider: Some(lsp::OneOf::Left(true)),
@@ -3041,7 +3041,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -3142,7 +3142,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -3211,7 +3211,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -3264,7 +3264,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -3321,7 +3321,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -3379,7 +3379,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -3441,7 +3441,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -3601,7 +3601,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::full(),
                     window,
                     cx,
@@ -3715,7 +3715,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         max_lines: None,
                         min_lines: 1,
@@ -3794,7 +3794,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         max_lines: None,
                         min_lines: 1,
@@ -3967,7 +3967,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         max_lines: None,
                         min_lines: 1,
@@ -4204,7 +4204,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         max_lines: None,
                         min_lines: 1,
@@ -4459,7 +4459,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         max_lines: None,
                         min_lines: 1,
@@ -4552,7 +4552,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,
@@ -4701,7 +4701,7 @@ mod tests {
                     None,
                     Default::default(),
                     "Test Agent".into(),
-                    "Test",
+                    "测试",
                     EditorMode::AutoHeight {
                         min_lines: 1,
                         max_lines: None,

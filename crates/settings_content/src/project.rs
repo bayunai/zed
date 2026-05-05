@@ -559,8 +559,10 @@ impl GitEnabledSettings {
 pub enum GitGutterSetting {
     /// Show git gutter in tracked files.
     #[default]
+    #[strum(serialize = "已追踪文件")]
     TrackedFiles,
     /// Hide git gutter
+    #[strum(serialize = "隐藏")]
     Hide,
 }
 
@@ -630,8 +632,10 @@ pub struct BranchPickerSettingsContent {
 pub enum GitHunkStyleSetting {
     /// Show unstaged hunks with a filled background and staged hunks hollow.
     #[default]
+    #[strum(serialize = "已暂存空心")]
     StagedHollow,
     /// Show unstaged hunks hollow and staged hunks with a filled background.
+    #[strum(serialize = "未暂存空心")]
     UnstagedHollow,
 }
 
@@ -653,8 +657,10 @@ pub enum GitHunkStyleSetting {
 pub enum GitPathStyle {
     /// Show file name first, then path
     #[default]
+    #[strum(serialize = "文件名优先")]
     FileNameFirst,
     /// Show full path first
+    #[strum(serialize = "文件路径优先")]
     FilePathFirst,
 }
 
@@ -762,11 +768,17 @@ pub enum DirenvSettings {
 #[serde(rename_all = "snake_case")]
 pub enum DiagnosticSeverityContent {
     // No diagnostics are shown.
+    #[strum(serialize = "关闭")]
     Off,
+    #[strum(serialize = "错误")]
     Error,
+    #[strum(serialize = "警告")]
     Warning,
+    #[strum(serialize = "信息")]
     Info,
+    #[strum(serialize = "提示")]
     Hint,
+    #[strum(serialize = "全部")]
     All,
 }
 

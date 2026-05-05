@@ -858,7 +858,7 @@ impl PickerDelegate for BranchListDelegate {
                     anyhow::Ok(())
                 })
                 .detach_and_prompt_err(
-                    "Failed to change branch",
+                    "切换分支失败",
                     window,
                     cx,
                     |_, _, _| None,
@@ -1264,7 +1264,7 @@ impl PickerDelegate for BranchListDelegate {
                                     branch_from_default_button,
                                     |this, button| {
                                         this.child(button).child(
-                                            Button::new("create", "Create")
+                                            Button::new("create", "创建")
                                                 .key_binding(
                                                     KeyBinding::for_action_in(
                                                         &menu::Confirm,
@@ -1285,7 +1285,7 @@ impl PickerDelegate for BranchListDelegate {
                                         let focus_handle = focus_handle.clone();
                                         let filter_label = match self.branch_filter {
                                             BranchFilter::All => "Filter Remote",
-                                            BranchFilter::Remote => "Show All",
+                                            BranchFilter::Remote => "全部显示",
                                         };
                                         Button::new("filter-remotes", filter_label)
                                             .toggle_state(matches!(
@@ -1340,7 +1340,7 @@ impl PickerDelegate for BranchListDelegate {
                             this.child(button)
                         })
                         .child(
-                            Button::new("create-new-branch", "Create")
+                            Button::new("create-new-branch", "创建")
                                 .key_binding(
                                     KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
                                         .map(|kb| kb.size(rems_from_px(12.))),
@@ -1356,7 +1356,7 @@ impl PickerDelegate for BranchListDelegate {
                 footer_container()
                     .justify_end()
                     .child(
-                        Button::new("confirm-create-remote", "Confirm")
+                        Button::new("confirm-create-remote", "确认")
                             .key_binding(
                                 KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
                                     .map(|kb| kb.size(rems_from_px(12.))),

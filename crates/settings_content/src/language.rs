@@ -187,6 +187,7 @@ pub struct CustomEditPredictionProviderSettingsContent {
 #[serde(rename_all = "snake_case")]
 pub enum EditPredictionPromptFormat {
     #[default]
+    #[strum(serialize = "推断")]
     Infer,
     Zeta,
     Zeta2,
@@ -303,10 +304,13 @@ pub enum EditPredictionDataCollectionChoice {
     /// Use the preference previously set via the status-bar toggle, or false
     /// if no preference has been stored.
     #[default]
+    #[strum(serialize = "默认")]
     Default,
     /// Allow Zed to collect training data from open-source projects.
+    #[strum(serialize = "允许")]
     Yes,
     /// Never allow training data collection.
+    #[strum(serialize = "禁止")]
     No,
 }
 
@@ -330,10 +334,12 @@ pub enum EditPredictionsMode {
     /// If provider supports it, display inline when holding modifier key (e.g., alt).
     /// Otherwise, eager preview is used.
     #[serde(alias = "auto")]
+    #[strum(serialize = "低调")]
     Subtle,
     /// Display inline when there are no language server completions available.
     #[default]
     #[serde(alias = "eager_preview")]
+    #[strum(serialize = "主动")]
     Eager,
 }
 
@@ -355,11 +361,14 @@ pub enum EditPredictionsMode {
 pub enum AutoIndentMode {
     /// Adjusts indentation based on syntax context when typing.
     /// Uses tree-sitter to analyze code structure and indent accordingly.
+    #[strum(serialize = "语法感知")]
     SyntaxAware,
     /// Preserve the indentation of the current line when creating new lines,
     /// but don't adjust based on syntax context.
+    #[strum(serialize = "保留缩进")]
     PreserveIndent,
     /// No automatic indentation. New lines start at column 0.
+    #[strum(serialize = "无")]
     None,
 }
 
@@ -380,14 +389,18 @@ pub enum AutoIndentMode {
 #[serde(rename_all = "snake_case")]
 pub enum SoftWrap {
     /// Prefer a single line generally, unless an overly long line is encountered.
+    #[strum(serialize = "无")]
     None,
     /// Deprecated: use None instead. Left to avoid breaking existing users' configs.
     /// Prefer a single line generally, unless an overly long line is encountered.
+    #[strum(serialize = "首选单行")]
     PreferLine,
     /// Soft wrap lines that exceed the editor width.
+    #[strum(serialize = "编辑器宽度")]
     EditorWidth,
     /// Soft wrap line at the preferred line length or the editor width (whichever is smaller).
     #[serde(alias = "preferred_line_length")]
+    #[strum(serialize = "受限")]
     Bounded,
 }
 
@@ -826,14 +839,18 @@ pub struct CompletionSettingsContent {
 #[serde(rename_all = "snake_case")]
 pub enum LspInsertMode {
     /// Replaces text before the cursor, using the `insert` range described in the LSP specification.
+    #[strum(serialize = "插入")]
     Insert,
     /// Replaces text before and after the cursor, using the `replace` range described in the LSP specification.
+    #[strum(serialize = "替换")]
     Replace,
     /// Behaves like `"replace"` if the text that would be replaced is a subsequence of the completion text,
     /// and like `"insert"` otherwise.
+    #[strum(serialize = "替换子序列")]
     ReplaceSubsequence,
     /// Behaves like `"replace"` if the text after the cursor is a suffix of the completion, and like
     /// `"insert"` otherwise.
+    #[strum(serialize = "替换后缀")]
     ReplaceSuffix,
 }
 
@@ -854,12 +871,15 @@ pub enum LspInsertMode {
 #[serde(rename_all = "snake_case")]
 pub enum WordsCompletionMode {
     /// Always fetch document's words for completions along with LSP completions.
+    #[strum(serialize = "启用")]
     Enabled,
     /// Only if LSP response errors or times out,
     /// use document's words to show completions.
+    #[strum(serialize = "回退")]
     Fallback,
     /// Never fetch or complete document's words for completions.
     /// (Word-based completions can still be queried via a separate action)
+    #[strum(serialize = "禁用")]
     Disabled,
 }
 
@@ -903,8 +923,10 @@ pub struct PrettierSettingsContent {
 #[serde(rename_all = "lowercase")]
 pub enum FormatOnSave {
     /// Files should be formatted on save.
+    #[strum(serialize = "开启")]
     On,
     /// Files should not be formatted on save.
+    #[strum(serialize = "关闭")]
     Off,
 }
 
@@ -926,21 +948,21 @@ pub enum FormatOnSave {
 pub enum LineEndingSetting {
     /// Preserve the existing line endings of the file. New files use the
     /// platform default line ending.
-    #[strum(serialize = "Detect")]
+    #[strum(serialize = "检测")]
     Detect,
     /// Use LF for new files and files with no existing line-ending
     /// convention, while preserving existing LF or CRLF files.
-    #[strum(serialize = "Prefer LF")]
+    #[strum(serialize = "优先 LF")]
     PreferLf,
     /// Use CRLF for new files and files with no existing line-ending
     /// convention, while preserving existing LF or CRLF files.
-    #[strum(serialize = "Prefer CRLF")]
+    #[strum(serialize = "优先 CRLF")]
     PreferCrlf,
     /// Normalize line endings to LF (`\n`) during format and save.
-    #[strum(serialize = "Enforce LF")]
+    #[strum(serialize = "强制 LF")]
     EnforceLf,
     /// Normalize line endings to CRLF (`\r\n`) during format and save.
-    #[strum(serialize = "Enforce CRLF")]
+    #[strum(serialize = "强制 CRLF")]
     EnforceCrlf,
 }
 
@@ -1123,11 +1145,14 @@ pub struct LanguageToSettingsMap(pub HashMap<String, LanguageSettingsContent>);
 #[serde(rename_all = "snake_case")]
 pub enum IndentGuideColoring {
     /// Do not render any lines for indent guides.
+    #[strum(serialize = "禁用")]
     Disabled,
     /// Use the same color for all indentation levels.
     #[default]
+    #[strum(serialize = "固定")]
     Fixed,
     /// Use a different color for each indentation level.
+    #[strum(serialize = "感知缩进")]
     IndentAware,
 }
 
@@ -1150,8 +1175,10 @@ pub enum IndentGuideColoring {
 pub enum IndentGuideBackgroundColoring {
     /// Do not render any background for indent guides.
     #[default]
+    #[strum(serialize = "禁用")]
     Disabled,
     /// Use a different color for each indentation level.
+    #[strum(serialize = "感知缩进")]
     IndentAware,
 }
 

@@ -203,10 +203,13 @@ pub struct TerminalSettingsContent {
 pub enum Shell {
     /// Use the system's default terminal configuration in /etc/passwd
     #[default]
+    #[strum_discriminants(strum(serialize = "系统"))]
     System,
     /// Use a specific program with no arguments.
+    #[strum_discriminants(strum(serialize = "程序"))]
     Program(String),
     /// Use a specific program with arguments.
+    #[strum_discriminants(strum(serialize = "带参数"))]
     WithArguments {
         /// The program to run.
         program: String,
@@ -233,18 +236,23 @@ pub enum Shell {
 pub enum WorkingDirectory {
     /// Use the current file's directory, falling back to the project directory,
     /// then the first project in the workspace.
+    #[strum_discriminants(strum(serialize = "当前文件目录"))]
     CurrentFileDirectory,
     /// Use the current file's project directory. Fallback to the
     /// first project directory strategy if unsuccessful.
+    #[strum_discriminants(strum(serialize = "当前项目目录"))]
     CurrentProjectDirectory,
     /// Use the first project in this workspace's directory. Fallback to using
     /// this platform's home directory.
+    #[strum_discriminants(strum(serialize = "第一个项目目录"))]
     FirstProjectDirectory,
     /// Always use this platform's home directory (if it can be found).
+    #[strum_discriminants(strum(serialize = "始终使用主目录"))]
     AlwaysHome,
     /// Always use a specific directory. This value will be shell expanded.
     /// If this path is not a valid directory the terminal will default to
     /// this platform's home directory  (if it can be found).
+    #[strum_discriminants(strum(serialize = "始终使用指定目录"))]
     Always { directory: String },
 }
 
@@ -304,12 +312,16 @@ pub enum ShowScrollbar {
     /// Show the scrollbar if there's important information or
     /// follow the system's configured behavior.
     #[default]
+    #[strum(serialize = "自动")]
     Auto,
     /// Match the system's configured behavior.
+    #[strum(serialize = "系统")]
     System,
     /// Always show the scrollbar.
+    #[strum(serialize = "始终")]
     Always,
     /// Never show the scrollbar.
+    #[strum(serialize = "从不")]
     Never,
 }
 
@@ -332,12 +344,16 @@ pub enum ShowScrollbar {
 pub enum CursorShapeContent {
     /// Cursor is a block like `█`.
     #[default]
+    #[strum(serialize = "块")]
     Block,
     /// Cursor is an underscore like `_`.
+    #[strum(serialize = "下划线")]
     Underline,
     /// Cursor is a vertical bar like `⎸`.
+    #[strum(serialize = "竖线")]
     Bar,
     /// Cursor is a hollow box like `▯`.
+    #[strum(serialize = "空心框")]
     Hollow,
 }
 
@@ -357,11 +373,14 @@ pub enum CursorShapeContent {
 #[serde(rename_all = "snake_case")]
 pub enum TerminalBlink {
     /// Never blink the cursor, ignoring the terminal mode.
+    #[strum(serialize = "关闭")]
     Off,
     /// Default the cursor blink to off, but allow the terminal to
     /// set blinking.
+    #[strum(serialize = "由终端控制")]
     TerminalControlled,
     /// Always blink the cursor, ignoring the terminal mode.
+    #[strum(serialize = "开启")]
     On,
 }
 
@@ -380,7 +399,9 @@ pub enum TerminalBlink {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum AlternateScroll {
+    #[strum(serialize = "开启")]
     On,
+    #[strum(serialize = "关闭")]
     Off,
 }
 
@@ -416,8 +437,10 @@ pub struct TerminalToolbarContent {
 pub enum TerminalBell {
     /// Play an OS-specific alert sound.
     #[default]
+    #[strum(serialize = "系统")]
     System,
     /// Do not play any sound.
+    #[strum(serialize = "关闭")]
     Off,
 }
 
@@ -504,8 +527,11 @@ pub enum PathHyperlinkRegex {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum TerminalDockPosition {
+    #[strum(serialize = "左侧")]
     Left,
+    #[strum(serialize = "底部")]
     Bottom,
+    #[strum(serialize = "右侧")]
     Right,
 }
 

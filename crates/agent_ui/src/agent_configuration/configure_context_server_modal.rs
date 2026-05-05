@@ -676,16 +676,15 @@ impl EventEmitter<DismissEvent> for ConfigureContextServerModal {}
 impl ConfigureContextServerModal {
     fn render_modal_header(&self) -> ModalHeader {
         let text: SharedString = match &self.source {
-            ConfigurationSource::New { .. } => "Add MCP Server".into(),
-            ConfigurationSource::Existing { .. } => "Configure MCP Server".into(),
-            ConfigurationSource::Extension { id, .. } => format!("Configure {}", id.0).into(),
+            ConfigurationSource::New { .. } => "添加 MCP 服务器".into(),
+            ConfigurationSource::Existing { .. } => "配置 MCP 服务器".into(),
+            ConfigurationSource::Extension { id, .. } => format!("配置 {}", id.0).into(),
         };
         ModalHeader::new().headline(text)
     }
 
     fn render_modal_description(&self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
-        const MODAL_DESCRIPTION: &str =
-            "Check the server docs for required arguments and environment variables.";
+        const MODAL_DESCRIPTION: &str = "请查看服务器文档，确认必需的参数和环境变量。";
 
         if let ConfigurationSource::Extension {
             installation_instructions: Some(installation_instructions),
@@ -752,7 +751,7 @@ impl ConfigureContextServerModal {
                     })),
                 )
                 .child(
-                    tab("Remote", is_http).on_click(cx.listener(|this, _, window, cx| {
+                    tab("远程", is_http).on_click(cx.listener(|this, _, window, cx| {
                         if let ConfigurationSource::New { editor, is_http } = &mut this.source {
                             if !*is_http {
                                 *is_http = true;
@@ -826,7 +825,7 @@ impl ConfigureContextServerModal {
                 } = &self.source
                 {
                     Some(
-                        Button::new("open-repository", "Open Repository")
+                        Button::new("open-repository", "打开仓库")
                             .end_icon(
                                 Icon::new(IconName::ArrowUpRight)
                                     .size(IconSize::Small)
@@ -835,12 +834,7 @@ impl ConfigureContextServerModal {
                             .tooltip({
                                 let repository_url = repository_url.clone();
                                 move |_window, cx| {
-                                    Tooltip::with_meta(
-                                        "Open Repository",
-                                        None,
-                                        repository_url.clone(),
-                                        cx,
-                                    )
+                                    Tooltip::with_meta("打开仓库", None, repository_url.clone(), cx)
                                 }
                             })
                             .on_click({
@@ -859,9 +853,9 @@ impl ConfigureContextServerModal {
                         Button::new(
                             "cancel",
                             if self.source.has_configuration_options() {
-                                "Cancel"
+                                "取消"
                             } else {
-                                "Dismiss"
+                                "关闭"
                             },
                         )
                         .key_binding(
@@ -876,9 +870,9 @@ impl ConfigureContextServerModal {
                         Button::new(
                             "add-server",
                             if self.source.is_new() {
-                                "Add Server"
+                                "添加服务器"
                             } else {
-                                "Configure Server"
+                                "配置服务器"
                             },
                         )
                         .disabled(is_busy)
@@ -925,13 +919,13 @@ impl ConfigureContextServerModal {
                             .color(Color::Muted),
                     )
                     .child(
-                        Label::new("Authenticate to connect this server")
+                        Label::new("需要认证后才能连接此服务器")
                             .size(LabelSize::Small)
                             .color(Color::Muted),
                     ),
             )
             .child(
-                Button::new("authenticate-server", "Authenticate")
+                Button::new("authenticate-server", "认证")
                     .style(ButtonStyle::Outlined)
                     .label_size(LabelSize::Small)
                     .on_click({

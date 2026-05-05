@@ -331,7 +331,7 @@ impl MentionSet {
         cx: &mut Context<Self>,
     ) -> Task<Result<Mention>> {
         let Some(project) = self.project.upgrade() else {
-            return Task::ready(Err(anyhow!("project not found")));
+            return Task::ready(Err(anyhow!("项目未找到")));
         };
 
         let Some(project_path) = project
@@ -402,7 +402,7 @@ impl MentionSet {
         cx: &mut Context<Self>,
     ) -> Task<Result<Mention>> {
         let Some(project) = self.project.upgrade() else {
-            return Task::ready(Err(anyhow!("project not found")));
+            return Task::ready(Err(anyhow!("项目未找到")));
         };
         let Some(project_path) = project
             .read(cx)
@@ -536,7 +536,7 @@ impl MentionSet {
             )));
         };
         let Some(project) = self.project.upgrade() else {
-            return Task::ready(Err(anyhow!("project not found")));
+            return Task::ready(Err(anyhow!("项目未找到")));
         };
 
         let server = Rc::new(agent::NativeAgentServer::new(
@@ -569,7 +569,7 @@ impl MentionSet {
         cx: &mut Context<Self>,
     ) -> Task<Result<Mention>> {
         let Some(project) = self.project.upgrade() else {
-            return Task::ready(Err(anyhow!("project not found")));
+            return Task::ready(Err(anyhow!("项目未找到")));
         };
 
         let diagnostics_task = collect_diagnostics(
@@ -598,7 +598,7 @@ impl MentionSet {
         cx: &mut Context<Self>,
     ) -> Task<Result<Mention>> {
         let Some(project) = self.project.upgrade() else {
-            return Task::ready(Err(anyhow!("project not found")));
+            return Task::ready(Err(anyhow!("项目未找到")));
         };
 
         let Some(repo) = project.read(cx).active_repository(cx) else {
@@ -910,7 +910,7 @@ pub(crate) fn paste_images_as_context(
 
     Some(window.spawn(cx, async move |mut cx| {
         use itertools::Itertools;
-        let default_name: SharedString = "Image".into();
+        let default_name: SharedString = "图像".into();
         let (mut images, paths): (Vec<(gpui::Image, SharedString)>, Vec<_>) = clipboard
             .into_entries()
             .filter_map(|entry| match entry {
@@ -1094,7 +1094,7 @@ fn full_mention_for_directory(
     let directory_path = entry.path.clone();
     let worktree_id = project_path.worktree_id;
     let Some(worktree) = project.read(cx).worktree_for_id(worktree_id, cx) else {
-        return Task::ready(Err(anyhow!("worktree not found")));
+        return Task::ready(Err(anyhow!("工作树未找到")));
     };
     let project = project.clone();
     cx.spawn(async move |cx| {
@@ -1298,10 +1298,7 @@ async fn fetch_url_content(http_client: Arc<HttpClientWithUrl>, url: String) -> 
 
     if response.status().is_client_error() {
         let text = String::from_utf8_lossy(body.as_slice());
-        anyhow::bail!(
-            "status error {}, response: {text:?}",
-            response.status().as_u16()
-        );
+        anyhow::bail!("状态错误 {}, 响应: {text:?}", response.status().as_u16());
     }
 
     let Some(content_type) = response.headers().get("content-type") else {

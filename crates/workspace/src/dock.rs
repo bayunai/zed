@@ -310,6 +310,14 @@ impl DockPosition {
         }
     }
 
+    fn zh_label(&self) -> &'static str {
+        match self {
+            Self::Left => "左侧",
+            Self::Bottom => "底部",
+            Self::Right => "右侧",
+        }
+    }
+
     pub fn axis(&self) -> Axis {
         match self {
             Self::Left | Self::Right => Axis::Horizontal,
@@ -1220,7 +1228,7 @@ impl Render for PanelButtons {
                     let action = dock.toggle_action();
 
                     let tooltip: SharedString =
-                        format!("Close {} Dock", dock.position.label()).into();
+                        format!("关闭{}停靠栏", dock.position.zh_label()).into();
 
                     (action, tooltip)
                 } else {
@@ -1248,7 +1256,7 @@ impl Render for PanelButtons {
                                         let is_current = position == dock_position;
                                         let panel = panel.clone();
                                         menu = menu.toggleable_entry(
-                                            format!("Dock {}", position.label()),
+                                            format!("停靠到{}", position.zh_label()),
                                             is_current,
                                             IconPosition::Start,
                                             None,

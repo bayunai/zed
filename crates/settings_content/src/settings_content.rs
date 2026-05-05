@@ -424,7 +424,7 @@ impl strum::VariantNames for BaseKeymapContent {
         "Atom",
         "TextMate",
         "Emacs",
-        "Cursor",
+        "光标",
         "None",
     ];
 }
@@ -560,10 +560,13 @@ pub enum SteppingGranularity {
     /// The step should allow the program to run until the current statement has finished executing.
     /// The meaning of a statement is determined by the adapter and it may be considered equivalent to a line.
     /// For example 'for(int i = 0; i < 10; i++)' could be considered to have 3 statements 'int i = 0', 'i < 10', and 'i++'.
+    #[strum(serialize = "语句")]
     Statement,
     /// The step should allow the program to run until the current source line has executed.
+    #[strum(serialize = "行")]
     Line,
     /// The step should allow one instruction to execute (e.g. one x86 instruction).
+    #[strum(serialize = "指令")]
     Instruction,
 }
 
@@ -582,8 +585,11 @@ pub enum SteppingGranularity {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum DockPosition {
+    #[strum(serialize = "左侧")]
     Left,
+    #[strum(serialize = "底部")]
     Bottom,
+    #[strum(serialize = "右侧")]
     Right,
 }
 
@@ -846,7 +852,9 @@ pub struct VimSettingsContent {
 #[serde(rename_all = "snake_case")]
 pub enum ModeContent {
     #[default]
+    #[strum(serialize = "普通")]
     Normal,
+    #[strum(serialize = "插入")]
     Insert,
 }
 
@@ -867,10 +875,13 @@ pub enum ModeContent {
 #[serde(rename_all = "snake_case")]
 pub enum UseSystemClipboard {
     /// Don't use system clipboard.
+    #[strum(serialize = "从不")]
     Never,
     /// Use system clipboard.
+    #[strum(serialize = "始终")]
     Always,
     /// Use system clipboard for yank operations.
+    #[strum(serialize = "复制时")]
     OnYank,
 }
 
@@ -891,14 +902,19 @@ pub enum UseSystemClipboard {
 #[serde(rename_all = "snake_case")]
 pub enum VimInsertModeCursorShape {
     /// Inherit cursor shape from the editor's base cursor_shape setting.
+    #[strum(serialize = "继承")]
     Inherit,
     /// Vertical bar cursor.
+    #[strum(serialize = "竖线")]
     Bar,
     /// Block cursor that surrounds the character.
+    #[strum(serialize = "块")]
     Block,
     /// Underline cursor.
+    #[strum(serialize = "下划线")]
     Underline,
     /// Hollow box cursor.
+    #[strum(serialize = "空心框")]
     Hollow,
 }
 
@@ -1020,7 +1036,9 @@ pub struct OutlinePanelSettingsContent {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum DockSide {
+    #[strum(serialize = "左侧")]
     Left,
+    #[strum(serialize = "右侧")]
     Right,
 }
 
@@ -1039,7 +1057,9 @@ pub enum DockSide {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum ShowIndentGuides {
+    #[strum(serialize = "始终")]
     Always,
+    #[strum(serialize = "从不")]
     Never,
 }
 

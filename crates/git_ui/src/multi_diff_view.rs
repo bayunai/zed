@@ -90,7 +90,7 @@ fn register_entry(
             RelPath::new(rel, PathStyle::local())
                 .map(|r| r.into_owned().into())
                 .unwrap_or_else(|_| {
-                    RelPath::new(Path::new("untitled"), PathStyle::Posix)
+                    RelPath::new(Path::new("未命名"), PathStyle::Posix)
                         .unwrap()
                         .into_owned()
                         .into()
@@ -104,7 +104,7 @@ fn register_entry(
                 .and_then(|s| RelPath::new(Path::new(s), PathStyle::Posix).ok())
                 .map(|r| r.into_owned().into())
                 .unwrap_or_else(|| {
-                    RelPath::new(Path::new("untitled"), PathStyle::Posix)
+                    RelPath::new(Path::new("未命名"), PathStyle::Posix)
                         .unwrap()
                         .into_owned()
                         .into()

@@ -92,8 +92,8 @@ impl TimeBucket {
 
     fn label(&self) -> &'static str {
         match self {
-            TimeBucket::Today => "Today",
-            TimeBucket::Yesterday => "Yesterday",
+            TimeBucket::Today => "今天",
+            TimeBucket::Yesterday => "昨天",
             TimeBucket::ThisWeek => "This Week",
             TimeBucket::PastWeek => "Past Week",
             TimeBucket::Older => "Older",
@@ -696,7 +696,7 @@ impl ThreadsArchiveView {
                             .tooltip({
                                 move |_window, cx| {
                                     Tooltip::for_action_in(
-                                        "Delete Thread",
+                                        "删除线程",
                                         &RemoveSelectedThread,
                                         &focus_handle,
                                         cx,
@@ -957,7 +957,7 @@ impl ThreadsArchiveView {
                     .child(
                         IconButton::new("thread-import", IconName::Download)
                             .icon_size(IconSize::Small)
-                            .tooltip(Tooltip::text("Import Threads"))
+                            .tooltip(Tooltip::text("导入会话"))
                             .on_click(cx.listener(|_this, _, _, cx| {
                                 cx.emit(ThreadsArchiveViewEvent::Import);
                             })),
@@ -1430,7 +1430,7 @@ impl PickerDelegate for ProjectPickerDelegate {
         };
 
         if has_recent_to_show {
-            entries.push(ProjectPickerEntry::Header("Recent Projects".into()));
+            entries.push(ProjectPickerEntry::Header("最近的项目".into()));
 
             if is_empty_query {
                 for (id, (workspace_id, _, _, _)) in self.workspaces.iter().enumerate() {
@@ -1482,7 +1482,7 @@ impl PickerDelegate for ProjectPickerDelegate {
         let text = if self.workspaces.is_empty() {
             "No recent projects found"
         } else {
-            "No matches"
+            "无匹配项"
         };
         Some(text.into())
     }

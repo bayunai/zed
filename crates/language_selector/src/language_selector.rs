@@ -199,7 +199,7 @@ impl PickerDelegate for LanguageSelectorDelegate {
     type ListItem = ListItem;
 
     fn placeholder_text(&self, _window: &mut Window, _cx: &mut App) -> Arc<str> {
-        "Select a language…".into()
+        "搜索语言…".into()
     }
 
     fn match_count(&self) -> usize {
@@ -631,7 +631,7 @@ mod tests {
                 .get(selected_match.candidate_id)
                 .expect("selected match should map to a candidate");
 
-            assert_eq!(selected_candidate.string, "Plain Text");
+            assert_eq!(selected_candidate.string, "纯文本");
             assert!(
                 picker
                     .delegate

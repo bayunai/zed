@@ -938,7 +938,7 @@ impl PickerDelegate for WorktreePickerDelegate {
             Some(
                 footer
                     .child(
-                        Button::new("create-worktree", "Create")
+                        Button::new("create-worktree", "创建")
                             .key_binding(
                                 KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
                                     .map(|kb| kb.size(rems_from_px(12.))),
@@ -983,7 +983,7 @@ impl PickerDelegate for WorktreePickerDelegate {
                         )
                     })
                     .child(
-                        Button::new("open-worktree", "Open")
+                        Button::new("open-worktree", "打开")
                             .key_binding(
                                 KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
                                     .map(|kb| kb.size(rems_from_px(12.))),

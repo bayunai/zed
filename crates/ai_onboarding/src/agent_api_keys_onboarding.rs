@@ -138,7 +138,7 @@ impl RenderOnce for ApiKeysWithoutProviders {
                 "Add your own keys to use AI without signing in.",
             )))
             .child(
-                Button::new("configure-providers", "Configure Providers")
+                Button::new("configure-providers", "配置提供者")
                     .full_width()
                     .style(ButtonStyle::Outlined)
                     .on_click(move |_, window, cx| {

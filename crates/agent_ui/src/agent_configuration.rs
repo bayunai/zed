@@ -333,7 +333,7 @@ impl AgentConfiguration {
                         parent.child(
                             Button::new(
                                 SharedString::from(format!("new-thread-{provider_id}")),
-                                "Start New Thread",
+                                "开始新线程",
                             )
                             .full_width()
                             .style(ButtonStyle::Outlined)
@@ -432,7 +432,7 @@ impl AgentConfiguration {
 
         let popover_menu = PopoverMenu::new("add-provider-popover")
             .trigger(
-                Button::new("add-provider", "Add Provider")
+                Button::new("add-provider", "添加提供商")
                     .style(ButtonStyle::Outlined)
                     .start_icon(
                         Icon::new(IconName::Plus)
@@ -445,7 +445,7 @@ impl AgentConfiguration {
                 let workspace = self.workspace.clone();
                 move |window, cx| {
                     Some(ContextMenu::build(window, cx, |menu, _window, _cx| {
-                        menu.header("Compatible APIs").entry("OpenAI", None, {
+                        menu.header("兼容 API").entry("OpenAI", None, {
                             let workspace = workspace.clone();
                             move |window, cx| {
                                 workspace
@@ -473,8 +473,8 @@ impl AgentConfiguration {
             .min_w_0()
             .w_full()
             .child(self.render_section_title(
-                "LLM Providers",
-                "Add at least one provider to use AI-powered features with Zed's native agent.",
+                "LLM 提供商",
+                "至少添加一个提供商，才能使用 Zed 原生代理的 AI 功能。",
                 popover_menu.into_any_element(),
             ))
             .child(
@@ -507,11 +507,11 @@ impl AgentConfiguration {
                 .blend(cx.theme().colors().text_accent.opacity(0.2));
 
             let (plan_name, label_color, bg_color) = match plan {
-                Plan::ZedFree => ("Free", Color::Default, free_chip_bg),
-                Plan::ZedProTrial => ("Pro Trial", Color::Accent, pro_chip_bg),
-                Plan::ZedPro => ("Pro", Color::Accent, pro_chip_bg),
-                Plan::ZedBusiness => ("Business", Color::Accent, pro_chip_bg),
-                Plan::ZedStudent => ("Student", Color::Accent, pro_chip_bg),
+                Plan::ZedFree => ("免费版", Color::Default, free_chip_bg),
+                Plan::ZedProTrial => ("专业版试用", Color::Accent, pro_chip_bg),
+                Plan::ZedPro => ("专业版", Color::Accent, pro_chip_bg),
+                Plan::ZedBusiness => ("商业版", Color::Accent, pro_chip_bg),
+                Plan::ZedStudent => ("学生版", Color::Accent, pro_chip_bg),
             };
 
             Chip::new(plan_name.to_string())
@@ -528,7 +528,7 @@ impl AgentConfiguration {
 
         let add_server_popover = PopoverMenu::new("add-server-popover")
             .trigger(
-                Button::new("add-server", "Add Server")
+                Button::new("add-server", "添加服务器")
                     .style(ButtonStyle::Outlined)
                     .start_icon(
                         Icon::new(IconName::Plus)
@@ -540,12 +540,12 @@ impl AgentConfiguration {
             .menu({
                 move |window, cx| {
                     Some(ContextMenu::build(window, cx, |menu, _window, _cx| {
-                        menu.entry("Add Custom Server", None, {
+                        menu.entry("添加自定义服务器", None, {
                             |window, cx| {
                                 window.dispatch_action(crate::AddContextServer.boxed_clone(), cx)
                             }
                         })
-                        .entry("Install from Extensions", None, {
+                        .entry("从扩展安装", None, {
                             |window, cx| {
                                 window.dispatch_action(
                                     zed_actions::Extensions {
@@ -573,8 +573,8 @@ impl AgentConfiguration {
             .border_b_1()
             .border_color(cx.theme().colors().border)
             .child(self.render_section_title(
-                "Model Context Protocol (MCP) Servers",
-                "All MCP servers connected directly or via a Zed extension.",
+                "模型上下文协议 (MCP) 服务器",
+                "所有直接连接或通过 Zed 扩展连接的 MCP 服务器。",
                 add_server_popover.into_any_element(),
             ))
             .child(
@@ -595,7 +595,7 @@ impl AgentConfiguration {
                                     .border_color(cx.theme().colors().border.opacity(0.6))
                                     .rounded_sm()
                                     .child(
-                                        Label::new("No MCP servers added yet.")
+                                        Label::new("尚未添加 MCP 服务器。")
                                             .color(Color::Muted)
                                             .size(LabelSize::Small),
                                     ),
@@ -703,7 +703,7 @@ impl AgentConfiguration {
                 IconButton::new("context-server-config-menu", IconName::Settings)
                     .icon_color(Color::Muted)
                     .icon_size(IconSize::Small),
-                Tooltip::text("Configure MCP Server"),
+                Tooltip::text("配置 MCP 服务器"),
             )
             .anchor(Anchor::TopRight)
             .menu({
@@ -771,7 +771,7 @@ impl AgentConfiguration {
                             })
                         })
                         .separator()
-                        .entry("Uninstall", None, {
+                        .entry("卸载", None, {
                             let fs = fs.clone();
                             let context_server_id = context_server_id.clone();
                             let workspace = workspace.clone();
@@ -849,7 +849,7 @@ impl AgentConfiguration {
                     )
                     .when(should_show_logout_button, |this| {
                         this.child(
-                            Button::new("error-logout-server", "Log Out")
+                            Button::new("error-logout-server", "退出登录")
                                 .style(ButtonStyle::Outlined)
                                 .label_size(LabelSize::Small)
                                 .on_click({
@@ -880,13 +880,13 @@ impl AgentConfiguration {
                                     .color(Color::Muted),
                             )
                             .child(
-                                Label::new("Authenticate to connect this server")
+                                Label::new("需要认证后才能连接此服务器")
                                     .color(Color::Muted)
                                     .size(LabelSize::Small),
                             ),
                     )
                     .child(
-                        Button::new("error-logout-server", "Authenticate")
+                        Button::new("error-logout-server", "认证")
                             .style(ButtonStyle::Outlined)
                             .label_size(LabelSize::Small)
                             .on_click({
@@ -910,7 +910,7 @@ impl AgentConfiguration {
                     .gap_2()
                     .child(div().size_3().flex_shrink_0())
                     .child(
-                        Label::new("Authenticating…")
+                        Label::new("正在认证...")
                             .color(Color::Muted)
                             .size(LabelSize::Small),
                     )
@@ -1006,7 +1006,7 @@ impl AgentConfiguration {
 
         let add_agent_popover = PopoverMenu::new("add-agent-server-popover")
             .trigger(
-                Button::new("add-agent", "Add Agent")
+                Button::new("add-agent", "添加代理")
                     .style(ButtonStyle::Outlined)
                     .start_icon(
                         Icon::new(IconName::Plus)
@@ -1018,12 +1018,12 @@ impl AgentConfiguration {
             .menu({
                 move |window, cx| {
                     Some(ContextMenu::build(window, cx, |menu, _window, _cx| {
-                        menu.entry("Install from Registry", None, {
+                        menu.entry("从注册表安装", None, {
                             |window, cx| {
                                 window.dispatch_action(Box::new(zed_actions::AcpRegistry), cx)
                             }
                         })
-                        .entry("Add Custom Agent", None, {
+                        .entry("添加自定义代理", None, {
                             move |window, cx| {
                                 if let Some(workspace) = Workspace::for_window(window, cx) {
                                     let workspace = workspace.downgrade();
@@ -1039,9 +1039,9 @@ impl AgentConfiguration {
                             }
                         })
                         .separator()
-                        .header("Learn More")
+                        .header("了解更多")
                         .item(
-                            ContextMenuEntry::new("ACP Docs")
+                            ContextMenuEntry::new("ACP 文档")
                                 .icon(IconName::ArrowUpRight)
                                 .icon_color(Color::Muted)
                                 .icon_position(IconPosition::End)
@@ -1072,8 +1072,8 @@ impl AgentConfiguration {
             .child(
                 v_flex()
                     .child(self.render_section_title(
-                        "External Agents",
-                        "All agents connected through the Agent Client Protocol.",
+                        "外部代理",
+                        "所有通过 Agent Client Protocol 连接的代理。",
                         add_agent_popover.into_any_element(),
                     ))
                     .child(
@@ -1173,7 +1173,7 @@ impl AgentConfiguration {
                 )
                 .icon_color(Color::Muted)
                 .icon_size(IconSize::Small)
-                .tooltip(Tooltip::text("Uninstall Agent Extension"))
+                .tooltip(Tooltip::text("卸载代理扩展"))
                 .on_click(cx.listener(move |this, _, _window, cx| {
                     let agent_name = agent_server_name.clone();
 
@@ -1322,10 +1322,7 @@ fn show_unable_to_uninstall_extension_with_context_server(
     let context_server_id = id.clone();
 
     let status_toast = StatusToast::new(
-        format!(
-            "The {} extension provides more than just the MCP server. Proceed to uninstall anyway?",
-            id.0
-        ),
+        format!("{} 扩展不只提供 MCP 服务器。仍要继续卸载吗？", id.0),
         cx,
         move |this, _cx| {
             let workspace_handle = workspace_handle.clone();
@@ -1336,7 +1333,7 @@ fn show_unable_to_uninstall_extension_with_context_server(
                     .color(Color::Warning),
             )
             .dismiss_button(true)
-            .action("Uninstall", move |_, _cx| {
+            .action("卸载", move |_, _cx| {
                 if let Some((extension_id, _)) =
                     resolve_extension_for_context_server(&context_server_id, _cx)
                 {

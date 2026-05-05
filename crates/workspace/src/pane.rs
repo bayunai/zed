@@ -3297,7 +3297,7 @@ impl Pane {
                                 .separator()
                                 .when_some(entry_abs_path, |menu, abs_path| {
                                     menu.entry(
-                                        "Copy Path",
+                                        "复制路径",
                                         Some(Box::new(zed_actions::workspace::CopyPath)),
                                         window.handler_for(&pane, move |_, _, cx| {
                                             cx.write_to_clipboard(ClipboardItem::new_string(
@@ -3308,7 +3308,7 @@ impl Pane {
                                 })
                                 .when_some(relative_path, |menu, relative_path| {
                                     menu.entry(
-                                        "Copy Relative Path",
+                                        "复制相对路径",
                                         Some(Box::new(zed_actions::workspace::CopyRelativePath)),
                                         window.handler_for(&pane, move |this, _, cx| {
                                             let Some(project) = this.project.upgrade() else {
@@ -3344,7 +3344,7 @@ impl Pane {
                                 .map(pin_tab_entries)
                                 .when(visible_in_project_panel, |menu| {
                                     menu.entry(
-                                        "Reveal In Project Panel",
+                                        "在项目面板中显示",
                                         Some(Box::new(RevealInProjectPanel::default())),
                                         window.handler_for(&pane, move |pane, _, cx| {
                                             pane.project
@@ -3359,7 +3359,7 @@ impl Pane {
                                 })
                                 .when_some(parent_abs_path, |menu, parent_abs_path| {
                                     menu.entry(
-                                        "Open in Terminal",
+                                        "在终端中打开",
                                         Some(Box::new(OpenInTerminal)),
                                         window.handler_for(&pane, move |_, window, cx| {
                                             window.dispatch_action(
@@ -4219,15 +4219,15 @@ fn default_render_tab_bar_buttons(
                 .with_handle(pane.new_item_context_menu_handle.clone())
                 .menu(move |window, cx| {
                     Some(ContextMenu::build(window, cx, |menu, _, _| {
-                        menu.action("New File", NewFile.boxed_clone())
-                            .action("Open File", ToggleFileFinder::default().boxed_clone())
+                        menu.action("新建文件", NewFile.boxed_clone())
+                            .action("打开文件", ToggleFileFinder::default().boxed_clone())
                             .separator()
-                            .action("Search Project", DeploySearch::default().boxed_clone())
-                            .action("Search Symbols", ToggleProjectSymbols.boxed_clone())
+                            .action("搜索项目", DeploySearch::default().boxed_clone())
+                            .action("搜索符号", ToggleProjectSymbols.boxed_clone())
                             .separator()
-                            .action("New Terminal", NewTerminal::default().boxed_clone())
+                            .action("新建终端", NewTerminal::default().boxed_clone())
                             .action(
-                                "New Center Terminal",
+                                "新建中央终端",
                                 NewCenterTerminal::default().boxed_clone(),
                             )
                     }))

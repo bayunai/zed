@@ -515,7 +515,7 @@ impl Render for DivInspector {
             .when_some(self.inspector_state.as_ref(), |this, inspector_state| {
                 this.child(
                     v_flex()
-                        .child(Label::new("Layout").size(LabelSize::Large))
+                        .child(Label::new("布局").size(LabelSize::Large))
                         .child(render_layout_state(inspector_state, cx)),
                 )
             })

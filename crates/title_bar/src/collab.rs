@@ -94,9 +94,9 @@ pub fn toggle_mute(cx: &mut App) {
     if let Some(room) = call.room().cloned() {
         room.update(cx, |room, cx| {
             let operation = if room.is_muted() {
-                "Microphone Enabled"
+                "已启用话筒"
             } else {
-                "Microphone Disabled"
+                "已禁用话筒"
             };
             telemetry::event!(
                 operation,
@@ -392,7 +392,7 @@ impl TitleBar {
                 .child(
                     IconButton::new("leave-call", IconName::Exit)
                         .style(ButtonStyle::Subtle)
-                        .tooltip(Tooltip::text("Leave Call"))
+                        .tooltip(Tooltip::text("离开通话"))
                         .icon_size(IconSize::Small)
                         .on_click(move |_, _window, cx| {
                             ActiveCall::global(cx)
@@ -561,9 +561,9 @@ impl TitleBar {
                 .toggle_state(is_screen_sharing)
                 .selected_style(ButtonStyle::Tinted(TintColor::Accent))
                 .tooltip(Tooltip::text(if is_screen_sharing {
-                    "Stop Sharing Screen"
+                    "停止共享屏幕"
                 } else {
-                    "Share Screen"
+                    "共享屏幕"
                 }))
                 .on_click(move |_, window, cx| {
                     let should_share = ActiveCall::global(cx)
@@ -586,7 +586,7 @@ impl TitleBar {
                                 }
                             });
                             task.detach_and_prompt_err(
-                                "Sharing Screen Failed",
+                                "屏幕共享失败",
                                 window,
                                 cx,
                                 |e, _, _| Some(format!("{e:?}")),

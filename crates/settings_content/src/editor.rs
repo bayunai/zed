@@ -278,8 +278,11 @@ pub struct EditorSettingsContent {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum RelativeLineNumbers {
+    #[strum(serialize = "禁用")]
     Disabled,
+    #[strum(serialize = "启用")]
     Enabled,
+    #[strum(serialize = "换行")]
     Wrapped,
 }
 
@@ -300,7 +303,9 @@ pub enum RelativeLineNumbers {
 #[serde(rename_all = "snake_case")]
 pub enum CompletionDetailAlignment {
     #[default]
+    #[strum(serialize = "左侧")]
     Left,
+    #[strum(serialize = "右侧")]
     Right,
 }
 
@@ -491,10 +496,13 @@ pub struct GutterContent {
 pub enum CodeLens {
     /// Do not query and display code lenses.
     #[default]
+    #[strum(serialize = "关闭")]
     Off,
     /// Display code lenses from language servers above code elements.
+    #[strum(serialize = "开启")]
     On,
     /// Display code lenses in the code action menu.
+    #[strum(serialize = "菜单")]
     Menu,
 }
 
@@ -530,13 +538,17 @@ impl CodeLens {
 #[serde(rename_all = "snake_case")]
 pub enum DocumentColorsRenderMode {
     /// Do not query and render document colors.
+    #[strum(serialize = "无")]
     None,
     /// Render document colors as inlay hints near the color text.
     #[default]
+    #[strum(serialize = "内联提示")]
     Inlay,
     /// Draw a border around the color text.
+    #[strum(serialize = "边框")]
     Border,
     /// Draw a background behind the color text.
+    #[strum(serialize = "背景")]
     Background,
 }
 
@@ -556,12 +568,16 @@ pub enum DocumentColorsRenderMode {
 #[serde(rename_all = "snake_case")]
 pub enum CurrentLineHighlight {
     // Don't highlight the current line.
+    #[strum(serialize = "无")]
     None,
     // Highlight the gutter area.
+    #[strum(serialize = "边栏")]
     Gutter,
     // Highlight the editor area.
+    #[strum(serialize = "行")]
     Line,
     // Highlight the full line.
+    #[strum(serialize = "全部")]
     All,
 }
 
@@ -691,14 +707,19 @@ pub enum MinimapThumbBorder {
 #[serde(rename_all = "lowercase")]
 pub enum ScrollbarDiagnostics {
     /// Show all diagnostic levels: hint, information, warnings, error.
+    #[strum(serialize = "全部")]
     All,
     /// Show only the following diagnostic levels: information, warning, error.
+    #[strum(serialize = "信息")]
     Information,
     /// Show only the following diagnostic levels: warning, error.
+    #[strum(serialize = "警告")]
     Warning,
     /// Show only the following diagnostic level: error.
+    #[strum(serialize = "错误")]
     Error,
     /// Do not show diagnostics.
+    #[strum(serialize = "无")]
     None,
 }
 
@@ -720,8 +741,10 @@ pub enum ScrollbarDiagnostics {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum MultiCursorModifier {
+    #[strum(serialize = "Alt")]
     Alt,
     #[serde(alias = "cmd", alias = "ctrl")]
+    #[strum(serialize = "Cmd 或 Ctrl")]
     CmdOrCtrl,
 }
 
@@ -744,12 +767,15 @@ pub enum MultiCursorModifier {
 #[serde(rename_all = "snake_case")]
 pub enum ScrollBeyondLastLine {
     /// The editor will not scroll beyond the last line.
+    #[strum(serialize = "关闭")]
     Off,
 
     /// The editor will scroll beyond the last line by one page.
+    #[strum(serialize = "一页")]
     OnePage,
 
     /// The editor will scroll beyond the last line by the same number of lines as vertical_scroll_margin.
+    #[strum(serialize = "垂直滚动边距")]
     VerticalScrollMargin,
 }
 
@@ -772,12 +798,16 @@ pub enum ScrollBeyondLastLine {
 pub enum CursorShape {
     /// A vertical bar
     #[default]
+    #[strum(serialize = "竖线")]
     Bar,
     /// A block that surrounds the following character
+    #[strum(serialize = "块")]
     Block,
     /// An underline that runs along the following character
+    #[strum(serialize = "下划线")]
     Underline,
     /// A box drawn around the following character
+    #[strum(serialize = "空心框")]
     Hollow,
 }
 
@@ -826,13 +856,17 @@ pub enum GoToDefinitionFallback {
 pub enum GoToDefinitionScrollStrategy {
     /// Vertically center the target in the viewport.
     #[default]
+    #[strum(serialize = "居中")]
     Center,
     /// Scroll the minimum amount needed to make the target visible.
+    #[strum(serialize = "最小滚动")]
     Minimum,
     /// Scroll so the target appears near the top of the viewport.
+    #[strum(serialize = "顶部")]
     Top,
     /// Preserve the cursor's vertical position within the viewport, falling
     /// back to centering when the cursor is offscreen.
+    #[strum(serialize = "保持位置")]
     Preserve,
 }
 
@@ -856,11 +890,14 @@ pub enum GoToDefinitionScrollStrategy {
 #[serde(rename_all = "snake_case")]
 pub enum HideMouseMode {
     /// Never hide the mouse cursor
+    #[strum(serialize = "从不")]
     Never,
     /// Hide only when typing
+    #[strum(serialize = "输入时")]
     OnTyping,
     /// Hide on both typing and cursor movement
     #[default]
+    #[strum(serialize = "输入和移动时")]
     OnTypingAndMovement,
 }
 

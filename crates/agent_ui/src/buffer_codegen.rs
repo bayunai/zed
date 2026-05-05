@@ -478,10 +478,10 @@ impl CodegenAlternative {
             if start_buffer.remote_id() == end_buffer.remote_id() {
                 (start_buffer.clone(), start_buffer_offset..end_buffer_offset)
             } else {
-                anyhow::bail!("invalid transformation range");
+                anyhow::bail!("无效转换范围");
             }
         } else {
-            anyhow::bail!("invalid transformation range");
+            anyhow::bail!("无效转换范围");
         };
 
         let system_prompt = self
@@ -585,10 +585,10 @@ impl CodegenAlternative {
             if start_buffer.remote_id() == end_buffer.remote_id() {
                 (start_buffer.clone(), start_buffer_offset..end_buffer_offset)
             } else {
-                anyhow::bail!("invalid transformation range");
+                anyhow::bail!("无效转换范围");
             }
         } else {
-            anyhow::bail!("invalid transformation range");
+            anyhow::bail!("无效转换范围");
         };
 
         let prompt = self
@@ -1882,7 +1882,7 @@ mod tests {
                     .await;
                 assert_eq!(
                     actual_text, expected_text,
-                    "failed to strip invalid spans, chunk size: {}",
+                    "无法去除无效跨度，块大小：{}",
                     chunk_size
                 );
             }

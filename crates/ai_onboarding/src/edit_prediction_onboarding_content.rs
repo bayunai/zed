@@ -53,7 +53,7 @@ impl Render for EditPredictionOnboarding {
                 Button::new(
                     "configure-copilot",
                     if self.copilot_is_configured {
-                        "Use Copilot"
+                        "使用 Copilot"
                     } else {
                         "Configure Copilot"
                     },

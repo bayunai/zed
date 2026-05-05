@@ -727,7 +727,7 @@ impl CommitView {
             PromptLevel::Info,
             &format!("{} stash@{{{}}}?", str_action, stash),
             None,
-            &[str_action, "Cancel"],
+            &[str_action, "取消"],
             cx,
         );
 
@@ -1139,7 +1139,7 @@ impl Render for CommitViewToolbar {
                     .icon_size(IconSize::Small)
                     .tooltip(move |_, cx| {
                         Tooltip::for_action(
-                            "Buffer Search",
+                            "缓冲区搜索",
                             &zed_actions::buffer_search::Deploy::find(),
                             cx,
                         )

@@ -22,7 +22,7 @@ pub fn codeblock_fence_for_path(
 
         write!(text, "{path}").unwrap();
     } else {
-        write!(text, "untitled").unwrap();
+        write!(text, "未命名").unwrap();
     }
 
     if let Some(row_range) = row_range {
@@ -82,7 +82,7 @@ pub fn collect_diagnostics(
 
         let mut text = String::new();
         if let Some(error_source) = error_source.as_ref() {
-            writeln!(text, "diagnostics: {}", error_source).unwrap();
+            writeln!(text, "诊断：{}", error_source).unwrap();
         } else {
             writeln!(text, "diagnostics").unwrap();
         }
@@ -145,14 +145,14 @@ pub fn collect_diagnostics(
             label.push(':');
 
             if project_summary.error_count > 0 {
-                write!(label, " {} errors", project_summary.error_count).unwrap();
+                write!(label, " {} 错误", project_summary.error_count).unwrap();
                 if project_summary.warning_count > 0 {
                     label.push(',');
                 }
             }
 
             if project_summary.warning_count > 0 {
-                write!(label, " {} warnings", project_summary.warning_count).unwrap();
+                write!(label, " {} 警告", project_summary.warning_count).unwrap();
             }
         }
 

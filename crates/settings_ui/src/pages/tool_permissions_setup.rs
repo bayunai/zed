@@ -16,68 +16,68 @@ use crate::{SettingsWindow, components::SettingsInputField};
 
 const HARDCODED_RULES_DESCRIPTION: &str =
     "`rm -rf` commands are always blocked when run on `$HOME`, `~`, `.`, `..`, or `/`";
-const SETTINGS_DISCLAIMER: &str = "Note: custom tool permissions only apply to the Zed native agent and don’t extend to external agents connected through the Agent Client Protocol (ACP).";
+const SETTINGS_DISCLAIMER: &str = "注意：自定义工具权限仅适用于 Zed 原生代理，不会扩展到通过 Agent Client Protocol (ACP) 连接的外部代理。";
 
 /// Tools that support permission rules
 const TOOLS: &[ToolInfo] = &[
     ToolInfo {
         id: "terminal",
-        name: "Terminal",
-        description: "Commands executed in the terminal",
+        name: "终端",
+        description: "在终端中执行的命令",
         regex_explanation: "Patterns are matched against each command in the input. Commands chained with &&, ||, ;, or pipes are split and checked individually.",
     },
     ToolInfo {
         id: "edit_file",
-        name: "Edit File",
-        description: "File editing operations",
+        name: "编辑文件",
+        description: "文件编辑操作",
         regex_explanation: "Patterns are matched against the file path being edited.",
     },
     ToolInfo {
         id: "delete_path",
-        name: "Delete Path",
-        description: "File and directory deletion",
+        name: "删除路径",
+        description: "文件和目录删除",
         regex_explanation: "Patterns are matched against the path being deleted.",
     },
     ToolInfo {
         id: "copy_path",
-        name: "Copy Path",
-        description: "File and directory copying",
+        name: "复制路径",
+        description: "文件和目录复制",
         regex_explanation: "Patterns are matched independently against the source path and the destination path. Enter either path below to test.",
     },
     ToolInfo {
         id: "move_path",
-        name: "Move Path",
-        description: "File and directory moves/renames",
+        name: "移动路径",
+        description: "文件和目录移动/重命名",
         regex_explanation: "Patterns are matched independently against the source path and the destination path. Enter either path below to test.",
     },
     ToolInfo {
         id: "create_directory",
-        name: "Create Directory",
-        description: "Directory creation",
+        name: "创建目录",
+        description: "目录创建",
         regex_explanation: "Patterns are matched against the directory path being created.",
     },
     ToolInfo {
         id: "save_file",
-        name: "Save File",
-        description: "File saving operations",
+        name: "保存文件",
+        description: "文件保存操作",
         regex_explanation: "Patterns are matched against the file path being saved.",
     },
     ToolInfo {
         id: "fetch",
-        name: "Fetch",
-        description: "HTTP requests to URLs",
+        name: "获取",
+        description: "发往 URL 的 HTTP 请求",
         regex_explanation: "Patterns are matched against the URL being fetched.",
     },
     ToolInfo {
         id: "search_web",
-        name: "Web Search",
-        description: "Web search queries",
+        name: "网页搜索",
+        description: "网页搜索查询",
         regex_explanation: "Patterns are matched against the search query.",
     },
     ToolInfo {
         id: "restore_file_from_disk",
-        name: "Restore File from Disk",
-        description: "Discards unsaved changes by reloading from disk",
+        name: "从磁盘恢复文件",
+        description: "通过从磁盘重新加载来丢弃未保存的更改",
         regex_explanation: "Patterns are matched against the file path being restored.",
     },
 ];
@@ -274,7 +274,7 @@ fn render_tool_list_item(
         )
         .child({
             let tool_name = tool.name;
-            Button::new(format!("configure-{}", tool.id), "Configure")
+            Button::new(format!("configure-{}", tool.id), "配置")
                 .tab_index(tool_index as isize)
                 .style(ButtonStyle::OutlinedGhost)
                 .size(ButtonSize::Medium)
@@ -286,7 +286,7 @@ fn render_tool_list_item(
                 .on_click(cx.listener(move |this, _, window, cx| {
                     this.push_dynamic_sub_page(
                         tool_name,
-                        "Tool Permissions",
+                        "工具权限",
                         None,
                         render_fn,
                         window,
@@ -374,7 +374,7 @@ pub(crate) fn render_tool_config_page(
                         .severity(Severity::Warning)
                         .child(Label::new(error).size(LabelSize::Small))
                         .action_slot(
-                            Button::new("dismiss-regex-error", "Dismiss")
+                            Button::new("dismiss-regex-error", "关闭")
                                 .style(ButtonStyle::Tinted(ui::TintColor::Warning))
                                 .on_click(cx.listener(|this, _, _, cx| {
                                     this.regex_validation_error = None;
@@ -394,8 +394,8 @@ pub(crate) fn render_tool_config_page(
                 .child(Divider::horizontal().color(ui::DividerColor::BorderFaded))
                 .child(render_rule_section(
                     tool.id,
-                    "Always Deny",
-                    "If any of these regexes match, the tool action will be denied.",
+                    "始终拒绝",
+                    "如果任一正则匹配，工具操作将被拒绝。",
                     ToolPermissionMode::Deny,
                     &rules.always_deny,
                     cx,
@@ -403,8 +403,8 @@ pub(crate) fn render_tool_config_page(
                 .child(Divider::horizontal().color(ui::DividerColor::BorderFaded))
                 .child(render_rule_section(
                     tool.id,
-                    "Always Allow",
-                    "If any of these regexes match, the action will be approved—unless an Always Confirm or Always Deny matches.",
+                    "始终允许",
+                    "如果任一正则匹配，操作将被允许，除非同时匹配“始终确认”或“始终拒绝”。",
                     ToolPermissionMode::Allow,
                     &rules.always_allow,
                     cx,
@@ -412,8 +412,8 @@ pub(crate) fn render_tool_config_page(
                 .child(Divider::horizontal().color(ui::DividerColor::BorderFaded))
                 .child(render_rule_section(
                     tool.id,
-                    "Always Confirm",
-                    "If any of these regexes match, a confirmation will be shown unless an Always Deny regex matches.",
+                    "始终确认",
+                    "如果任一正则匹配，将显示确认提示，除非同时匹配“始终拒绝”。",
                     ToolPermissionMode::Confirm,
                     &rules.always_confirm,
                     cx,

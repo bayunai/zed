@@ -351,11 +351,11 @@ impl Render for Onboarding {
                                             .child(
                                                 v_flex()
                                                     .child(
-                                                        Headline::new("Welcome to Zed")
+                                                        Headline::new("欢迎来到 Zed")
                                                             .size(HeadlineSize::Small),
                                                     )
                                                     .child(
-                                                        Label::new("The editor for what's next")
+                                                        Label::new("下一代编辑器")
                                                             .color(Color::Muted)
                                                             .size(LabelSize::Small)
                                                             .italic(),

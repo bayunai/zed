@@ -377,7 +377,7 @@ impl PickerDelegate for CommandPaletteDelegate {
     type ListItem = ListItem;
 
     fn placeholder_text(&self, _window: &mut Window, _cx: &mut App) -> Arc<str> {
-        "Execute a command...".into()
+        "执行命令...".into()
     }
 
     fn select_history(
@@ -680,7 +680,7 @@ impl PickerDelegate for CommandPaletteDelegate {
                 .border_color(cx.theme().colors().border_variant)
                 .child(keybinding_buttons)
                 .child(
-                    Button::new("run-action", "Run")
+                    Button::new("run-action", "运行")
                         .key_binding(
                             KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
                                 .map(|kb| kb.size(rems_from_px(12.))),

@@ -390,10 +390,10 @@ impl Render for ThreadImportModal {
                 Modal::new("import-threads", None)
                     .header(
                         ModalHeader::new()
-                            .headline("Import External Agent Threads")
+                            .headline("导入外部代理会话")
                             .description(
-                                "Import threads from agents like Claude Agent, Codex, and more, whether started in Zed or another client. \
-                                Choose which agents to include, and their threads will appear in your thread history."
+                                "导入 Claude Agent、Codex 等代理中的会话，无论这些会话是在 Zed 还是其他客户端中启动。\
+                                选择要包含的代理后，它们的会话会出现在你的会话历史中。"
                             )
                             .show_dismiss_button(true),
 
@@ -408,7 +408,7 @@ impl Render for ThreadImportModal {
                                 .when(has_agents, |this| this.children(agent_rows))
                                 .when(!has_agents, |this| {
                                     this.child(
-                                        Label::new("No ACP agents available.")
+                                        Label::new("没有可用的 ACP 代理。")
                                             .color(Color::Muted)
                                             .size(LabelSize::Small),
                                     )
@@ -426,7 +426,7 @@ impl Render for ThreadImportModal {
                                 )
                             })
                             .end_slot(
-                                Button::new("import-threads", "Import Threads")
+                                Button::new("import-threads", "导入会话")
                                     .loading(self.is_importing)
                                     .disabled(disabled_import_thread)
                                     .key_binding(

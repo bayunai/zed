@@ -10543,7 +10543,7 @@ impl Editor {
         let file_name = snapshot
             .file()
             .map(|file| SharedString::new(file.file_name(cx)))
-            .unwrap_or(SharedString::new_static("untitled"));
+            .unwrap_or(SharedString::new_static("未命名"));
 
         h_flex()
             .id("ep-jump-outside-popover")
@@ -10890,7 +10890,7 @@ impl Editor {
                 let file_name = snapshot
                     .file()
                     .map(|file| file.file_name(cx))
-                    .unwrap_or("untitled");
+                    .unwrap_or("未命名");
                 Some(
                     h_flex()
                         .px_2()
@@ -26706,7 +26706,7 @@ impl Editor {
                         if multibuffer.is_singleton() {
                             multibuffer.title(cx).to_string()
                         } else {
-                            "untitled".to_string()
+                            "未命名".to_string()
                         }
                     })
             });

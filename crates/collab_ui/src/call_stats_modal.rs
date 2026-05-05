@@ -186,7 +186,7 @@ impl Render for CallStatsModal {
                         .child(
                             h_flex()
                                 .gap_2()
-                                .child(Label::new("Network").weight(FontWeight::SEMIBOLD)),
+                                .child(Label::new("网络").weight(FontWeight::SEMIBOLD)),
                         )
                         .child(self.render_metric_row(
                             "Latency",

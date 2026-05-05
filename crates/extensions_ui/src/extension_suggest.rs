@@ -172,7 +172,7 @@ pub(crate) fn suggest(buffer: Entity<Buffer>, window: &mut Window, cx: &mut Cont
             cx.new(move |cx| {
                 MessageNotification::new(
                     format!(
-                        "Do you want to install the recommended '{}' extension for '{}' files?",
+                        "您是否要安装推荐的 '{}' 扩展以处理 '{}' 文件？",
                         extension_id, file_name_or_extension
                     ),
                     cx,

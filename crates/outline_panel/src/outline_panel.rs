@@ -4912,7 +4912,7 @@ impl Panel for OutlinePanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _: &App) -> Option<&'static str> {
-        Some("Outline Panel")
+        Some("大纲面板")
     }
 
     fn toggle_action(&self) -> Box<dyn Action> {

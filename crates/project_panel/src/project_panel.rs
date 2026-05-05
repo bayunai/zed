@@ -1075,11 +1075,11 @@ impl ProjectPanel {
                 menu.context(self.focus_handle.clone()).map(|menu| {
                     if is_read_only {
                         menu.when(is_dir, |menu| {
-                            menu.action("Search Inside", Box::new(NewSearchInDirectory))
+                            menu.action("在内部搜索", Box::new(NewSearchInDirectory))
                         })
                     } else {
-                        menu.action("New File", Box::new(NewFile))
-                            .action("New Folder", Box::new(NewDirectory))
+                        menu.action("新建文件", Box::new(NewFile))
+                            .action("新建文件夹", Box::new(NewDirectory))
                             .separator()
                             .when(is_local, |menu| {
                                 menu.action(
@@ -1088,80 +1088,80 @@ impl ProjectPanel {
                                 )
                             })
                             .when(is_local, |menu| {
-                                menu.action("Open in Default App", Box::new(OpenWithSystem))
+                                menu.action("用默认应用打开", Box::new(OpenWithSystem))
                             })
-                            .action("Open in Terminal", Box::new(OpenInTerminal))
+                            .action("在终端中打开", Box::new(OpenInTerminal))
                             .when(is_dir, |menu| {
                                 menu.separator()
-                                    .action("Find in Folder…", Box::new(NewSearchInDirectory))
+                                    .action("在文件夹中查找…", Box::new(NewSearchInDirectory))
                             })
                             .when(is_unfoldable, |menu| {
-                                menu.action("Unfold Directory", Box::new(UnfoldDirectory))
+                                menu.action("展开目录", Box::new(UnfoldDirectory))
                             })
                             .when(is_foldable, |menu| {
-                                menu.action("Fold Directory", Box::new(FoldDirectory))
+                                menu.action("折叠目录", Box::new(FoldDirectory))
                             })
                             .when(should_show_compare, |menu| {
                                 menu.separator()
-                                    .action("Compare Marked Files", Box::new(CompareMarkedFiles))
+                                    .action("比较已标记文件", Box::new(CompareMarkedFiles))
                             })
                             .separator()
-                            .action("Cut", Box::new(Cut))
-                            .action("Copy", Box::new(Copy))
-                            .action("Duplicate", Box::new(Duplicate))
+                            .action("剪切", Box::new(Cut))
+                            .action("复制", Box::new(Copy))
+                            .action("复制副本", Box::new(Duplicate))
                             // TODO: Paste should always be visible, cbut disabled when clipboard is empty
-                            .action_disabled_when(!has_pasteable_content, "Paste", Box::new(Paste))
+                            .action_disabled_when(!has_pasteable_content, "粘贴", Box::new(Paste))
                             .when(cx.has_flag::<ProjectPanelUndoRedoFeatureFlag>(), |menu| {
                                 menu.action_disabled_when(
                                     !self.undo_manager.can_undo(),
-                                    "Undo",
+                                    "撤销",
                                     Box::new(Undo),
                                 )
                                 .action_disabled_when(
                                     !self.undo_manager.can_redo(),
-                                    "Redo",
+                                    "重做",
                                     Box::new(Redo),
                                 )
                             })
                             .when(is_remote, |menu| {
                                 menu.separator()
-                                    .action("Download...", Box::new(DownloadFromRemote))
+                                    .action("下载...", Box::new(DownloadFromRemote))
                             })
                             .separator()
-                            .action("Copy Path", Box::new(zed_actions::workspace::CopyPath))
+                            .action("复制路径", Box::new(zed_actions::workspace::CopyPath))
                             .action(
-                                "Copy Relative Path",
+                                "复制相对路径",
                                 Box::new(zed_actions::workspace::CopyRelativePath),
                             )
                             .when(has_git_repo, |menu| {
                                 menu.separator()
                                     .when(!is_dir && self.has_git_changes(entry_id), |menu| {
                                         menu.action(
-                                            "Restore File",
+                                            "还原文件",
                                             Box::new(git::RestoreFile { skip_prompt: false }),
                                         )
                                     })
-                                    .action("Add to .gitignore", Box::new(git::AddToGitignore))
+                                    .action("添加到 .gitignore", Box::new(git::AddToGitignore))
                                     .when(has_history, |menu| {
-                                        menu.action("View History", Box::new(git::FileHistory))
+                                        menu.action("查看历史", Box::new(git::FileHistory))
                                     })
                             })
                             .when(!should_hide_rename, |menu| {
-                                menu.separator().action("Rename", Box::new(Rename))
+                                menu.separator().action("重命名", Box::new(Rename))
                             })
                             .when(!is_root && !is_remote, |menu| {
-                                menu.action("Trash", Box::new(Trash { skip_prompt: false }))
+                                menu.action("移到废纸篓", Box::new(Trash { skip_prompt: false }))
                             })
                             .when(!is_root, |menu| {
-                                menu.action("Delete", Box::new(Delete { skip_prompt: false }))
+                                menu.action("删除", Box::new(Delete { skip_prompt: false }))
                             })
                             .when(!is_collab && is_root, |menu| {
                                 menu.separator()
                                     .action(
-                                        "Add Folders to Project…",
+                                        "添加文件夹到项目…",
                                         Box::new(workspace::AddFolderToProject),
                                     )
-                                    .action("Remove from Project", Box::new(RemoveFromProject))
+                                    .action("从项目中移除", Box::new(RemoveFromProject))
                             })
                             .when(is_dir && !is_root, |menu| {
                                 menu.separator().action(
@@ -7114,7 +7114,7 @@ impl Render for ProjectPanel {
                 .gap_1()
                 .track_focus(&self.focus_handle(cx))
                 .child(
-                    Button::new("open_project", "Open Project")
+                    Button::new("open_project", "打开项目")
                         .full_width()
                         .key_binding(KeyBinding::for_action_in(
                             &workspace::Open::default(),
@@ -7137,11 +7137,11 @@ impl Render for ProjectPanel {
                         .w_1_2()
                         .gap_2()
                         .child(Divider::horizontal())
-                        .child(Label::new("or").size(LabelSize::XSmall).color(Color::Muted))
+                        .child(Label::new("或").size(LabelSize::XSmall).color(Color::Muted))
                         .child(Divider::horizontal()),
                 )
                 .child(
-                    Button::new("clone_repo", "Clone Repository")
+                    Button::new("clone_repo", "克隆仓库")
                         .full_width()
                         .on_click(cx.listener(|this, _, window, cx| {
                             this.workspace
@@ -7252,7 +7252,7 @@ impl Panel for ProjectPanel {
     }
 
     fn icon_tooltip(&self, _window: &Window, _cx: &App) -> Option<&'static str> {
-        Some("Project Panel")
+        Some("项目面板")
     }
 
     fn toggle_action(&self) -> Box<dyn Action> {
