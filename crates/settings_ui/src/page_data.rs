@@ -1145,9 +1145,9 @@ fn appearance_page() -> SettingsPage {
                 description: "何时隐藏鼠标光标。",
                 field: Box::new(SettingField {
                     json_path: Some("hide_mouse"),
-                    pick: |settings_content| settings_content.editor.hide_mouse.as_ref(),
+                    pick: |settings_content| settings_content.hide_mouse.as_ref(),
                     write: |settings_content, value, _| {
-                        settings_content.editor.hide_mouse = value;
+                        settings_content.hide_mouse = value;
                     },
                 }),
                 metadata: None,
@@ -3487,7 +3487,7 @@ fn search_and_files_page() -> SettingsPage {
 }
 
 fn window_and_layout_page() -> SettingsPage {
-    fn status_bar_section() -> [SettingsPageItem; 10] {
+    fn status_bar_section() -> [SettingsPageItem; 11] {
         [
             SettingsPageItem::SectionHeader("状态栏"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -3569,6 +3569,28 @@ fn window_and_layout_page() -> SettingsPage {
                             .status_bar
                             .get_or_insert_default()
                             .cursor_position_button = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "换行符按钮",
+                description: "在状态栏中显示当前换行符按钮。",
+                field: Box::new(SettingField {
+                    json_path: Some("status_bar.line_endings_button"),
+                    pick: |settings_content| {
+                        settings_content
+                            .status_bar
+                            .as_ref()?
+                            .line_endings_button
+                            .as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .status_bar
+                            .get_or_insert_default()
+                            .line_endings_button = value;
                     },
                 }),
                 metadata: None,
@@ -7422,35 +7444,14 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "工具权限".into(),
                 r#type: Default::default(),
                 json_path: Some("agent.tool_permissions"),
-                description: Some("Set up regex patterns to auto-allow, auto-deny, or always request confirmation, for specific tool inputs.".into()),
+                description: Some(
+                    "为特定工具输入设置正则模式，以自动允许、自动拒绝或始终请求确认。".into(),
+                ),
                 in_json: true,
                 files: USER,
                 render: render_tool_permissions_setup_page,
             }),
         ];
-
-        items.push(SettingsPageItem::SettingItem(SettingItem {
-            title: "新会话位置",
-            description: "新会话是在当前本地项目中启动，还是在新的 Git 工作树中启动。",
-            field: Box::new(SettingField {
-                json_path: Some("agent.new_thread_location"),
-                pick: |settings_content| {
-                    settings_content
-                        .agent
-                        .as_ref()?
-                        .new_thread_location
-                        .as_ref()
-                },
-                write: |settings_content, value, _| {
-                    settings_content
-                        .agent
-                        .get_or_insert_default()
-                        .new_thread_location = value;
-                },
-            }),
-            metadata: None,
-            files: USER,
-        }));
 
         items.extend([
             SettingsPageItem::SettingItem(SettingItem {

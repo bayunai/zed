@@ -82,6 +82,38 @@ pub enum ParseStatus {
     Failed { error: String },
 }
 
+/// Determines when the mouse cursor should be hidden in response to keyboard
+/// input.
+///
+/// Default: on_typing_and_action
+#[derive(
+    Copy,
+    Clone,
+    Debug,
+    Default,
+    Serialize,
+    Deserialize,
+    PartialEq,
+    Eq,
+    JsonSchema,
+    MergeFrom,
+    strum::VariantArray,
+    strum::VariantNames,
+)]
+#[serde(rename_all = "snake_case")]
+pub enum HideMouseMode {
+    /// Never hide the mouse cursor
+    #[strum(serialize = "从不")]
+    Never,
+    /// Hide only when typing
+    #[strum(serialize = "输入时")]
+    OnTyping,
+    /// Hide on typing and on key bindings that resolve to an action
+    #[default]
+    #[strum(serialize = "输入和操作时")]
+    OnTypingAndAction,
+}
+
 #[with_fallible_options]
 #[derive(Debug, PartialEq, Default, Clone, Serialize, Deserialize, JsonSchema, MergeFrom)]
 pub struct SettingsContent {
@@ -155,6 +187,13 @@ pub struct SettingsContent {
     ///
     /// Default: false
     pub helix_mode: Option<bool>,
+
+    /// Determines when the mouse cursor should be hidden in response to
+    /// keyboard input. Applies globally across all input surfaces (editors,
+    /// terminals, palettes, etc.).
+    ///
+    /// Default: on_typing_and_action
+    pub hide_mouse: Option<HideMouseMode>,
 
     pub journal: Option<JournalSettingsContent>,
 
@@ -617,7 +656,7 @@ pub struct GitPanelSettingsContent {
     pub button: Option<bool>,
     /// Where to dock the panel.
     ///
-    /// Default: left
+    /// Default: right
     pub dock: Option<DockPosition>,
     /// Default width of the panel in pixels.
     ///
@@ -726,7 +765,7 @@ pub struct PanelSettingsContent {
     pub button: Option<bool>,
     /// Where to dock the panel.
     ///
-    /// Default: left
+    /// Default: right
     pub dock: Option<DockPosition>,
     /// Default width of the panel in pixels.
     ///
@@ -978,7 +1017,7 @@ pub struct OutlinePanelSettingsContent {
     pub default_width: Option<f32>,
     /// The position of outline panel
     ///
-    /// Default: left
+    /// Default: right
     pub dock: Option<DockSide>,
     /// Whether to show file icons in the outline panel.
     ///

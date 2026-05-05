@@ -22,10 +22,6 @@ pub struct EditorSettingsContent {
     ///
     /// Default: bar
     pub cursor_shape: Option<CursorShape>,
-    /// Determines when the mouse cursor should be hidden in an editor or input box.
-    ///
-    /// Default: on_typing_and_movement
-    pub hide_mouse: Option<HideMouseMode>,
     /// Determines how snippets are sorted relative to other completion items.
     ///
     /// Default: inline
@@ -868,37 +864,6 @@ pub enum GoToDefinitionScrollStrategy {
     /// back to centering when the cursor is offscreen.
     #[strum(serialize = "保持位置")]
     Preserve,
-}
-
-/// Determines when the mouse cursor should be hidden in an editor or input box.
-///
-/// Default: on_typing_and_movement
-#[derive(
-    Copy,
-    Clone,
-    Debug,
-    Default,
-    Serialize,
-    Deserialize,
-    PartialEq,
-    Eq,
-    JsonSchema,
-    MergeFrom,
-    strum::VariantArray,
-    strum::VariantNames,
-)]
-#[serde(rename_all = "snake_case")]
-pub enum HideMouseMode {
-    /// Never hide the mouse cursor
-    #[strum(serialize = "从不")]
-    Never,
-    /// Hide only when typing
-    #[strum(serialize = "输入时")]
-    OnTyping,
-    /// Hide on both typing and cursor movement
-    #[default]
-    #[strum(serialize = "输入和移动时")]
-    OnTypingAndMovement,
 }
 
 /// Determines how snippets are sorted relative to other completion items.
