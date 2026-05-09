@@ -63,12 +63,6 @@ const TOOLS: &[ToolInfo] = &[
         regex_explanation: "Patterns are matched against the directory path being created.",
     },
     ToolInfo {
-        id: "save_file",
-        name: "保存文件",
-        description: "文件保存操作",
-        regex_explanation: "Patterns are matched against the file path being saved.",
-    },
-    ToolInfo {
         id: "fetch",
         name: "获取",
         description: "发往 URL 的 HTTP 请求",
@@ -79,12 +73,6 @@ const TOOLS: &[ToolInfo] = &[
         name: "网页搜索",
         description: "网页搜索查询",
         regex_explanation: "Patterns are matched against the search query.",
-    },
-    ToolInfo {
-        id: "restore_file_from_disk",
-        name: "从磁盘恢复文件",
-        description: "通过从磁盘重新加载来丢弃未保存的更改",
-        regex_explanation: "Patterns are matched against the file path being restored.",
     },
 ];
 
@@ -314,10 +302,8 @@ fn get_tool_render_fn(
         "copy_path" => render_copy_path_tool_config,
         "move_path" => render_move_path_tool_config,
         "create_directory" => render_create_directory_tool_config,
-        "save_file" => render_save_file_tool_config,
         "fetch" => render_fetch_tool_config,
         "search_web" => render_web_search_tool_config,
-        "restore_file_from_disk" => render_restore_file_from_disk_tool_config,
         _ => render_terminal_tool_config, // fallback
     }
 }
@@ -1395,13 +1381,8 @@ tool_config_page_fn!(render_delete_path_tool_config, "delete_path");
 tool_config_page_fn!(render_copy_path_tool_config, "copy_path");
 tool_config_page_fn!(render_move_path_tool_config, "move_path");
 tool_config_page_fn!(render_create_directory_tool_config, "create_directory");
-tool_config_page_fn!(render_save_file_tool_config, "save_file");
 tool_config_page_fn!(render_fetch_tool_config, "fetch");
 tool_config_page_fn!(render_web_search_tool_config, "search_web");
-tool_config_page_fn!(
-    render_restore_file_from_disk_tool_config,
-    "restore_file_from_disk"
-);
 
 #[cfg(test)]
 mod tests {
