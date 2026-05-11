@@ -42,6 +42,7 @@ function ubuntu_codename {
 # Ubuntu, Debian, Mint, Kali, Pop!_OS, Raspbian, etc.
 apt=$(command -v apt-get || true)
 if [[ -n $apt ]]; then
+  install_modern_cmake=0
   deps=(
     gcc
     g++
@@ -100,10 +101,14 @@ if [[ -n $apt ]]; then
       sed -n '/-----BEGIN PGP PUBLIC KEY BLOCK-----/,/-----END PGP PUBLIC KEY BLOCK-----/p' | \
       $maysudo gpg --dearmor -o /etc/apt/trusted.gpg.d/ubuntu-toolchain-r-test.gpg
     deps+=( clang-18 libstdc++-11-dev )
+    install_modern_cmake=1
   fi
 
   $maysudo "$apt" update
   $maysudo "$apt" install -y "${deps[@]}"
+  if [[ "$install_modern_cmake" == "1" ]]; then
+    "$(dirname "${BASH_SOURCE[0]}")/install-cmake" 3.30.4
+  fi
 
   finalize
   exit 0
