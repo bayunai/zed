@@ -63,7 +63,6 @@ pub struct PromptEditor<T> {
     pub editor: Entity<Editor>,
     mode: PromptEditorMode,
     mention_set: Entity<MentionSet>,
-    prompt_store: Option<Entity<PromptStore>>,
     workspace: WeakEntity<Workspace>,
     model_selector: Entity<AgentModelSelector>,
     edited_since_done: bool,
@@ -334,7 +333,6 @@ impl<T: 'static> PromptEditor<T> {
                 PromptEditorCompletionProviderDelegate,
                 cx.weak_entity(),
                 self.mention_set.clone(),
-                self.prompt_store.clone(),
                 self.workspace.clone(),
             ))));
         });
@@ -1209,7 +1207,7 @@ impl PromptCompletionProviderDelegate for PromptEditorCompletionProviderDelegate
             PromptContextType::Symbol,
             PromptContextType::Thread,
             PromptContextType::Fetch,
-            PromptContextType::Rules,
+            PromptContextType::Skill,
         ]
     }
 
@@ -1281,7 +1279,6 @@ impl PromptEditor<BufferCodegen> {
         let mut this: PromptEditor<BufferCodegen> = PromptEditor {
             editor: prompt_editor.clone(),
             mention_set,
-            prompt_store,
             workspace,
             model_selector: cx.new(|cx| {
                 AgentModelSelector::new(
@@ -1433,7 +1430,6 @@ impl PromptEditor<TerminalCodegen> {
         let mut this = Self {
             editor: prompt_editor.clone(),
             mention_set,
-            prompt_store,
             workspace,
             model_selector: cx.new(|cx| {
                 AgentModelSelector::new(
