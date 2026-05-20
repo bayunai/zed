@@ -13,7 +13,7 @@ use crate::{
     ActionLink, DynamicItem, PROJECT, SettingField, SettingItem, SettingsFieldMetadata,
     SettingsPage, SettingsPageItem, SubPageLink, USER, active_language, all_language_names,
     pages::{
-        open_audio_test_window, render_edit_prediction_setup_page,
+        open_audio_test_window, render_edit_prediction_setup_page, render_skills_setup_page,
         render_tool_permissions_setup_page,
     },
 };
@@ -7485,6 +7485,15 @@ fn ai_page(cx: &App) -> SettingsPage {
     fn agent_configuration_section(_cx: &App) -> Box<[SettingsPageItem]> {
         let mut items = vec![
             SettingsPageItem::SectionHeader("代理配置"),
+            SettingsPageItem::SubPageLink(SubPageLink {
+                title: "技能".into(),
+                r#type: Default::default(),
+                json_path: None,
+                description: Some("查看和管理全局或项目工作树中安装的代理技能。".into()),
+                in_json: false,
+                files: USER | PROJECT,
+                render: render_skills_setup_page,
+            }),
             SettingsPageItem::SubPageLink(SubPageLink {
                 title: "工具权限".into(),
                 r#type: Default::default(),
