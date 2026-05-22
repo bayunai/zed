@@ -42,9 +42,7 @@ use workspace::{
 };
 use zed_actions::{OpenBrowser, OpenSettingsAt};
 
-use crate::{
-    CaptureExample, RatePredictions, rate_prediction_modal::PredictEditsRatePredictionsFeatureFlag,
-};
+use crate::{RatePredictions, rate_prediction_modal::PredictEditsRatePredictionsFeatureFlag};
 
 actions!(
     edit_prediction,
@@ -233,12 +231,7 @@ impl Render for EditPredictionButton {
                                         ))
                                 }),
                             move |_window, cx| {
-                                Tooltip::with_meta(
-                                    "编辑预测",
-                                    Some(&ToggleMenu),
-                                    tooltip_meta,
-                                    cx,
-                                )
+                                Tooltip::with_meta("编辑预测", Some(&ToggleMenu), tooltip_meta, cx)
                             },
                         )
                         .with_handle(self.popover_menu_handle.clone()),
@@ -312,12 +305,7 @@ impl Render for EditPredictionButton {
                                     }
                                 };
 
-                                Tooltip::with_meta(
-                                    "编辑预测",
-                                    Some(&ToggleMenu),
-                                    tooltip_meta,
-                                    cx,
-                                )
+                                Tooltip::with_meta("编辑预测", Some(&ToggleMenu), tooltip_meta, cx)
                             },
                         )
                         .with_handle(self.popover_menu_handle.clone()),
@@ -448,12 +436,7 @@ impl Render for EditPredictionButton {
                                 "Enable to Use"
                             };
 
-                            Tooltip::with_meta(
-                                "编辑预测",
-                                Some(&ToggleMenu),
-                                description,
-                                cx,
-                            )
+                            Tooltip::with_meta("编辑预测", Some(&ToggleMenu), description, cx)
                         })
                     });
 
@@ -714,14 +697,16 @@ impl EditPredictionButton {
 
             match language_state.clone() {
                 Some((language, false)) => {
-                    menu = menu.item(
-                        entry
-                            .disabled(true)
-                            .documentation_aside(DocumentationSide::Left, move |_cx| {
-                                Label::new(format!("无法切换此缓冲区的编辑预测，因为它们已为 {} 禁用", language.name()))
-                                    .into_any_element()
-                            })
-                    );
+                    menu = menu.item(entry.disabled(true).documentation_aside(
+                        DocumentationSide::Left,
+                        move |_cx| {
+                            Label::new(format!(
+                                "无法切换此缓冲区的编辑预测，因为它们已为 {} 禁用",
+                                language.name()
+                            ))
+                            .into_any_element()
+                        },
+                    ));
                 }
                 Some(_) | None => menu = menu.item(entry),
             }
@@ -765,44 +750,45 @@ impl EditPredictionButton {
         let eager_mode = matches!(current_mode, EditPredictionsMode::Eager);
 
         menu = menu
-                .separator()
-                .header("显示模式")
-                .item(
-                    ContextMenuEntry::new("主动")
-                        .toggleable(IconPosition::Start, eager_mode)
-                        .documentation_aside(DocumentationSide::Left, move |_| {
-                            Label::new("当没有语言服务器补全可用时，内联显示预测。").into_any_element()
-                        })
-                        .handler({
-                            let fs = fs.clone();
-                            move |_, cx| {
-                                telemetry::event!(
-                                    "Edit Prediction Setting Changed",
-                                    setting = "mode",
-                                    value = "eager",
-                                );
-                                toggle_edit_prediction_mode(fs.clone(), EditPredictionsMode::Eager, cx)
-                            }
-                        }),
-                )
-                .item(
-                    ContextMenuEntry::new("低调")
-                        .toggleable(IconPosition::Start, subtle_mode)
-                        .documentation_aside(DocumentationSide::Left, move |_| {
-                            Label::new("仅在按住修饰键（默认情况下为 alt）时内联显示预测。").into_any_element()
-                        })
-                        .handler({
-                            let fs = fs.clone();
-                            move |_, cx| {
-                                telemetry::event!(
-                                    "Edit Prediction Setting Changed",
-                                    setting = "mode",
-                                    value = "subtle",
-                                );
-                                toggle_edit_prediction_mode(fs.clone(), EditPredictionsMode::Subtle, cx)
-                            }
-                        }),
-                );
+            .separator()
+            .header("显示模式")
+            .item(
+                ContextMenuEntry::new("主动")
+                    .toggleable(IconPosition::Start, eager_mode)
+                    .documentation_aside(DocumentationSide::Left, move |_| {
+                        Label::new("当没有语言服务器补全可用时，内联显示预测。").into_any_element()
+                    })
+                    .handler({
+                        let fs = fs.clone();
+                        move |_, cx| {
+                            telemetry::event!(
+                                "Edit Prediction Setting Changed",
+                                setting = "mode",
+                                value = "eager",
+                            );
+                            toggle_edit_prediction_mode(fs.clone(), EditPredictionsMode::Eager, cx)
+                        }
+                    }),
+            )
+            .item(
+                ContextMenuEntry::new("低调")
+                    .toggleable(IconPosition::Start, subtle_mode)
+                    .documentation_aside(DocumentationSide::Left, move |_| {
+                        Label::new("仅在按住修饰键（默认情况下为 alt）时内联显示预测。")
+                            .into_any_element()
+                    })
+                    .handler({
+                        let fs = fs.clone();
+                        move |_, cx| {
+                            telemetry::event!(
+                                "Edit Prediction Setting Changed",
+                                setting = "mode",
+                                value = "subtle",
+                            );
+                            toggle_edit_prediction_mode(fs.clone(), EditPredictionsMode::Subtle, cx)
+                        }
+                    }),
+            );
 
         menu = menu.separator().header("隐私");
 
@@ -828,41 +814,40 @@ impl EditPredictionButton {
                             .icon_color(icon_color)
                             .disabled(!provider.can_toggle_data_collection(cx))
                             .documentation_aside(DocumentationSide::Left, move |cx| {
-                                let (msg, label_color, icon_name, icon_color) = match (is_open_source, is_collecting) {
-                                    (true, true) => (
-                                        "项目已识别为开源，并且你正在共享数据。",
-                                        Color::Default,
-                                        IconName::Check,
-                                        Color::Success,
-                                    ),
-                                    (true, false) => (
-                                        "项目已识别为开源，但你没有共享数据。",
-                                        Color::Muted,
-                                        IconName::Close,
-                                        Color::Muted,
-                                    ),
-                                    (false, true) => (
-                                        "项目未识别为开源。未收集数据。",
-                                        Color::Muted,
-                                        IconName::Close,
-                                        Color::Muted,
-                                    ),
-                                    (false, false) => (
-                                        "项目未识别为开源，并且该设置已关闭。",
-                                        Color::Muted,
-                                        IconName::Close,
-                                        Color::Muted,
-                                    ),
-                                };
+                                let (msg, label_color, icon_name, icon_color) =
+                                    match (is_open_source, is_collecting) {
+                                        (true, true) => (
+                                            "项目已识别为开源，并且你正在共享数据。",
+                                            Color::Default,
+                                            IconName::Check,
+                                            Color::Success,
+                                        ),
+                                        (true, false) => (
+                                            "项目已识别为开源，但你没有共享数据。",
+                                            Color::Muted,
+                                            IconName::Close,
+                                            Color::Muted,
+                                        ),
+                                        (false, true) => (
+                                            "项目未识别为开源。未收集数据。",
+                                            Color::Muted,
+                                            IconName::Close,
+                                            Color::Muted,
+                                        ),
+                                        (false, false) => (
+                                            "项目未识别为开源，并且该设置已关闭。",
+                                            Color::Muted,
+                                            IconName::Close,
+                                            Color::Muted,
+                                        ),
+                                    };
                                 v_flex()
                                     .gap_2()
-                                    .child(
-                                        Label::new(indoc!{
-                                            "通过共享开源仓库中的数据，帮助我们改进开放数据集模型。\
-                                            Zed 必须在你的仓库中检测到许可证文件，此设置才会生效。\
-                                            包含敏感数据和密钥的文件默认会被排除。"
-                                        })
-                                    )
+                                    .child(Label::new(indoc! {
+                                        "通过共享开源仓库中的数据，帮助我们改进开放数据集模型。\
+                                        Zed 必须在你的仓库中检测到许可证文件，此设置才会生效。\
+                                        包含敏感数据和密钥的文件默认会被排除。"
+                                    }))
                                     .child(
                                         h_flex()
                                             .items_start()
@@ -872,8 +857,20 @@ impl EditPredictionButton {
                                             .gap_1p5()
                                             .border_t_1()
                                             .border_color(cx.theme().colors().border_variant)
-                                            .child(h_flex().flex_shrink_0().h(line_height).child(Icon::new(icon_name).size(IconSize::XSmall).color(icon_color)))
-                                            .child(div().child(msg).w_full().text_sm().text_color(label_color.color(cx)))
+                                            .child(
+                                                h_flex().flex_shrink_0().h(line_height).child(
+                                                    Icon::new(icon_name)
+                                                        .size(IconSize::XSmall)
+                                                        .color(icon_color),
+                                                ),
+                                            )
+                                            .child(
+                                                div()
+                                                    .child(msg)
+                                                    .w_full()
+                                                    .text_sm()
+                                                    .text_color(label_color.color(cx)),
+                                            ),
                                     )
                                     .into_any_element()
                             })
@@ -891,7 +888,7 @@ impl EditPredictionButton {
                                         source = "Edit Prediction Status Menu"
                                     );
                                 }
-                            })
+                            }),
                     );
 
                     if is_collecting && !is_open_source {
@@ -907,43 +904,40 @@ impl EditPredictionButton {
             }
         }
 
-        menu = menu.item(
-            ContextMenuEntry::new("配置排除文件")
-                .icon(IconName::LockOutlined)
-                .icon_color(Color::Muted)
-                .documentation_aside(DocumentationSide::Left, |_| {
-                    Label::new(indoc!{"
-                        打开设置，添加 Zed 永远不会预测编辑的敏感路径。"}).into_any_element()
-                })
-                .handler(move |window, cx| {
-                    telemetry::event!(
-                        "Edit Prediction Menu Action",
-                        action = "configure_excluded_files",
-                    );
-                    if let Some(workspace) = Workspace::for_window(window, cx) {
-                        let workspace = workspace.downgrade();
-                        window
-                            .spawn(cx, async |cx| {
-                                open_disabled_globs_setting_in_editor(
-                                    workspace,
-                                    cx,
-                                ).await
-                            })
-                            .detach_and_log_err(cx);
-                    }
-                }),
-        ).item(
-            ContextMenuEntry::new("查看文档")
-                .icon(IconName::FileGeneric)
-                .icon_color(Color::Muted)
-                .handler(move |_, cx| {
-                    telemetry::event!(
-                        "Edit Prediction Menu Action",
-                        action = "view_docs",
-                    );
-                    cx.open_url(PRIVACY_DOCS);
-                })
-        );
+        menu = menu
+            .item(
+                ContextMenuEntry::new("配置排除文件")
+                    .icon(IconName::LockOutlined)
+                    .icon_color(Color::Muted)
+                    .documentation_aside(DocumentationSide::Left, |_| {
+                        Label::new(indoc! {"
+                        打开设置，添加 Zed 永远不会预测编辑的敏感路径。"})
+                        .into_any_element()
+                    })
+                    .handler(move |window, cx| {
+                        telemetry::event!(
+                            "Edit Prediction Menu Action",
+                            action = "configure_excluded_files",
+                        );
+                        if let Some(workspace) = Workspace::for_window(window, cx) {
+                            let workspace = workspace.downgrade();
+                            window
+                                .spawn(cx, async |cx| {
+                                    open_disabled_globs_setting_in_editor(workspace, cx).await
+                                })
+                                .detach_and_log_err(cx);
+                        }
+                    }),
+            )
+            .item(
+                ContextMenuEntry::new("查看文档")
+                    .icon(IconName::FileGeneric)
+                    .icon_color(Color::Muted)
+                    .handler(move |_, cx| {
+                        telemetry::event!("Edit Prediction Menu Action", action = "view_docs",);
+                        cx.open_url(PRIVACY_DOCS);
+                    }),
+            );
 
         if !self.editor_enabled.unwrap_or(true) {
             let icons = self
@@ -982,10 +976,7 @@ impl EditPredictionButton {
                 .context(editor_focus_handle)
                 .when(
                     cx.has_flag::<PredictEditsRatePredictionsFeatureFlag>(),
-                    |this| {
-                        this.action("捕获预测示例", CaptureExample.boxed_clone())
-                            .action("评价预测", RatePredictions.boxed_clone())
-                    },
+                    |this| this.action("评价预测", RatePredictions.boxed_clone()),
                 );
         }
 

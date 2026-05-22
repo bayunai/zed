@@ -503,23 +503,23 @@ impl TerminalView {
         let context_menu = ContextMenu::build(window, cx, |menu, _, _| {
             menu.context(self.focus_handle.clone())
                 .action("新建终端", Box::new(NewTerminal::default()))
-                .action(
-                    "新建中央终端",
-                    Box::new(NewCenterTerminal::default()),
-                )
+                .action("新建中央终端", Box::new(NewCenterTerminal::default()))
                 .separator()
                 .action("复制", Box::new(Copy))
                 .action("粘贴", Box::new(Paste))
                 .action("粘贴文本", Box::new(PasteText))
                 .action("全选", Box::new(SelectAll))
                 .action("清空", Box::new(Clear))
-                .when(assistant_enabled, |menu| {
-                    menu.separator()
-                        .action("内联辅助", Box::new(InlineAssist::default()))
-                        .when(has_selection, |menu| {
-                            menu.action("添加到代理会话", Box::new(AddSelectionToThread))
-                        })
-                })
+                .when(
+                    assistant_enabled && !matches!(self.mode, TerminalMode::Embedded { .. }),
+                    |menu| {
+                        menu.separator()
+                            .action("内联辅助", Box::new(InlineAssist::default()))
+                            .when(has_selection, |menu| {
+                                menu.action("添加到代理会话", Box::new(AddSelectionToThread))
+                            })
+                    },
+                )
                 .separator()
                 .action(
                     "关闭终端标签页",
