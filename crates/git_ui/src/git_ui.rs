@@ -661,7 +661,7 @@ impl Render for RefPickerModal {
                     .w_full()
                     .gap_1p5()
                     .child(Icon::new(IconName::Hash).size(IconSize::XSmall))
-                    .child(Headline::new("View Commit").size(HeadlineSize::XSmall)),
+                    .child(Headline::new("查看提交").size(HeadlineSize::XSmall)),
             )
             .child(div().px_3().w_full().child(self.editor.clone()))
             .when_some(commit_preview, |el, preview| {
@@ -906,14 +906,14 @@ mod remote_button {
                         .when_some(keybinding_target.clone(), |el, keybinding_target| {
                             el.context(keybinding_target)
                         })
-                        .action("Fetch", git::Fetch.boxed_clone())
-                        .action("Fetch From", git::FetchFrom.boxed_clone())
-                        .action("Pull", git::Pull.boxed_clone())
-                        .action("Pull (Rebase)", git::PullRebase.boxed_clone())
+                        .action("抓取", git::Fetch.boxed_clone())
+                        .action("从远程抓取", git::FetchFrom.boxed_clone())
+                        .action("拉取", git::Pull.boxed_clone())
+                        .action("拉取（变基）", git::PullRebase.boxed_clone())
                         .separator()
-                        .action("Push", git::Push.boxed_clone())
-                        .action("Push To", git::PushTo.boxed_clone())
-                        .action("Force Push", git::ForcePush.boxed_clone())
+                        .action("推送", git::Push.boxed_clone())
+                        .action("推送到远程", git::PushTo.boxed_clone())
+                        .action("强制推送", git::ForcePush.boxed_clone())
                 }))
             })
             .anchor(Anchor::TopRight)
@@ -1062,10 +1062,7 @@ impl Component for GitStatusIcon {
                     single_example("已修改", GitStatusIcon::new(modified).into_any_element()),
                     single_example("添加", GitStatusIcon::new(added).into_any_element()),
                     single_example("已删除", GitStatusIcon::new(deleted).into_any_element()),
-                    single_example(
-                        "冲突",
-                        GitStatusIcon::new(conflict).into_any_element(),
-                    ),
+                    single_example("冲突", GitStatusIcon::new(conflict).into_any_element()),
                 ])])
                 .into_any_element(),
         )

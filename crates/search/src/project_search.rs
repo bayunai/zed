@@ -1007,7 +1007,7 @@ impl ProjectSearchView {
         );
         let replacement_editor = cx.new(|cx| {
             let mut editor = Editor::auto_height(1, 4, window, cx);
-            editor.set_placeholder_text("Replace in project…", window, cx);
+            editor.set_placeholder_text("在项目中替换…", window, cx);
             if let Some(text) = replacement_text {
                 editor.set_text(text, window, cx);
             }
@@ -1037,7 +1037,7 @@ impl ProjectSearchView {
 
         let included_files_editor = cx.new(|cx| {
             let mut editor = Editor::single_line(window, cx);
-            editor.set_placeholder_text("Include: crates/**/*.toml", window, cx);
+            editor.set_placeholder_text("包含: crates/**/*.toml", window, cx);
 
             editor
         });
@@ -1050,7 +1050,7 @@ impl ProjectSearchView {
 
         let excluded_files_editor = cx.new(|cx| {
             let mut editor = Editor::single_line(window, cx);
-            editor.set_placeholder_text("Exclude: vendor/*, *.lock", window, cx);
+            editor.set_placeholder_text("排除: vendor/*, *.lock", window, cx);
 
             editor
         });
@@ -2285,7 +2285,7 @@ impl Render for ProjectSearchBar {
                     .active_match_index
                     .is_none()
                     .then_some(ActionButtonState::Disabled),
-                "Select Previous Match",
+                "选择上一个匹配项",
                 &SelectPreviousMatch,
                 query_focus.clone(),
             ))
@@ -2296,7 +2296,7 @@ impl Render for ProjectSearchBar {
                     .active_match_index
                     .is_none()
                     .then_some(ActionButtonState::Disabled),
-                "Select Next Match",
+                "选择下一个匹配项",
                 &SelectNextMatch,
                 query_focus.clone(),
             ))
@@ -2326,9 +2326,7 @@ impl Render for ProjectSearchBar {
                             }),
                     )
                     .when(limit_reached, |this| {
-                        this.tooltip(Tooltip::text(
-                            "Search Limits Reached\nTry narrowing your search",
-                        ))
+                        this.tooltip(Tooltip::text("已达到搜索限制\n请尝试缩小搜索范围"))
                     }),
             );
 
@@ -2338,9 +2336,7 @@ impl Render for ProjectSearchBar {
             .child(
                 IconButton::new("project-search-filter-button", IconName::Filter)
                     .shape(IconButtonShape::Square)
-                    .tooltip(|_window, cx| {
-                        Tooltip::for_action("Toggle Filters", &ToggleFilters, cx)
-                    })
+                    .tooltip(|_window, cx| Tooltip::for_action("切换过滤器", &ToggleFilters, cx))
                     .on_click(cx.listener(|this, _, window, cx| {
                         this.toggle_filters(window, cx);
                     }))
@@ -2353,12 +2349,7 @@ impl Render for ProjectSearchBar {
                     .tooltip({
                         let focus_handle = focus_handle.clone();
                         move |_window, cx| {
-                            Tooltip::for_action_in(
-                                "Toggle Filters",
-                                &ToggleFilters,
-                                &focus_handle,
-                                cx,
-                            )
+                            Tooltip::for_action_in("切换过滤器", &ToggleFilters, &focus_handle, cx)
                         }
                     }),
             )
@@ -2369,7 +2360,7 @@ impl Render for ProjectSearchBar {
                     .as_ref()
                     .map(|search| search.read(cx).replace_enabled)
                     .and_then(|enabled| enabled.then_some(ActionButtonState::Toggled)),
-                "Toggle Replace",
+                "切换替换",
                 &ToggleReplace,
                 focus_handle.clone(),
             ))
@@ -2378,9 +2369,9 @@ impl Render for ProjectSearchBar {
         let is_collapsed = search.results_editor.read(cx).has_any_buffer_folded(cx);
 
         let (icon, tooltip_label) = if is_collapsed {
-            (IconName::ChevronUpDown, "Expand All Search Results")
+            (IconName::ChevronUpDown, "展开所有搜索结果")
         } else {
-            (IconName::ChevronDownUp, "Collapse All Search Results")
+            (IconName::ChevronDownUp, "折叠所有搜索结果")
         };
 
         let expand_button = IconButton::new("project-search-collapse-expand", icon)
@@ -2426,7 +2417,7 @@ impl Render for ProjectSearchBar {
                     "project-search-replace-button",
                     IconName::ReplaceNext,
                     is_search_underway.then_some(ActionButtonState::Disabled),
-                    "Replace Next Match",
+                    "替换下一个匹配项",
                     &ReplaceNext,
                     focus_handle.clone(),
                 ))
@@ -2434,7 +2425,7 @@ impl Render for ProjectSearchBar {
                     "project-search-replace-button",
                     IconName::ReplaceAll,
                     Default::default(),
-                    "Replace All Matches",
+                    "替换所有匹配项",
                     &ReplaceAll,
                     focus_handle,
                 ));
@@ -2471,7 +2462,7 @@ impl Render for ProjectSearchBar {
                     IconButton::new("project-search-opened-only", IconName::FolderSearch)
                         .shape(IconButtonShape::Square)
                         .toggle_state(self.is_opened_only_enabled(cx))
-                        .tooltip(Tooltip::text("Only Search Open Files"))
+                        .tooltip(Tooltip::text("仅搜索已打开的文件"))
                         .on_click(cx.listener(|this, _, window, cx| {
                             this.toggle_opened_only(window, cx);
                         })),

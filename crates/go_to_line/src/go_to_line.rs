@@ -133,12 +133,7 @@ impl GoToLine {
         });
         let line_editor_change = cx.subscribe_in(&line_editor, window, Self::on_line_editor_event);
 
-        let current_text = format!(
-            "Current Line: {} of {} (column {})",
-            line,
-            last_line + 1,
-            column
-        );
+        let current_text = format!("当前行：{} / {}（列 {}）", line, last_line + 1, column);
 
         Self {
             line_editor,

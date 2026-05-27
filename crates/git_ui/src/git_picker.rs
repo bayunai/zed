@@ -27,7 +27,7 @@ impl Display for GitPickerTab {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let label = match self {
             GitPickerTab::Branches => "分支",
-            GitPickerTab::Stash => "Stash",
+            GitPickerTab::Stash => "贮藏",
         };
         write!(f, "{}", label)
     }
@@ -206,7 +206,7 @@ impl GitPicker {
                     )
                     .tooltip(move |_, cx| {
                         Tooltip::for_action_in(
-                            "Toggle Branch Picker",
+                            "切换分支选择器",
                             &ActivateBranchesTab,
                             &branches_focus_handle,
                             cx,
@@ -223,7 +223,7 @@ impl GitPicker {
                     )
                     .tooltip(move |_, cx| {
                         Tooltip::for_action_in(
-                            "Toggle Stash Picker",
+                            "切换贮藏选择器",
                             &ActivateStashTab,
                             &stash_focus_handle,
                             cx,

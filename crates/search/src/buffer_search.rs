@@ -299,12 +299,12 @@ impl Render for BufferSearchBar {
 
         self.query_editor.update(cx, |query_editor, cx| {
             if query_editor.placeholder_text(cx).is_none() {
-                query_editor.set_placeholder_text("Search…", window, cx);
+                query_editor.set_placeholder_text("搜索…", window, cx);
             }
         });
 
         self.replacement_editor.update(cx, |editor, cx| {
-            editor.set_placeholder_text("Replace with…", window, cx);
+            editor.set_placeholder_text("替换为…", window, cx);
         });
 
         let mut color_override = None;
@@ -392,7 +392,7 @@ impl Render for BufferSearchBar {
                     "buffer-search-bar-toggle",
                     IconName::Replace,
                     self.replace_enabled.then_some(ActionButtonState::Toggled),
-                    "Toggle Replace",
+                    "切换替换",
                     &ToggleReplace,
                     focus_handle.clone(),
                 ))
@@ -416,7 +416,7 @@ impl Render for BufferSearchBar {
                         let focus_handle = focus_handle.clone();
                         move |_window, cx| {
                             Tooltip::for_action_in(
-                                "Toggle Search Selection",
+                                "切换在选区中搜索",
                                 &ToggleSelection,
                                 &focus_handle,
                                 cx,
@@ -438,7 +438,7 @@ impl Render for BufferSearchBar {
                         self.active_match_index
                             .is_none()
                             .then_some(ActionButtonState::Disabled),
-                        "Select Previous Match",
+                        "选择上一个匹配项",
                         &SelectPreviousMatch,
                         query_focus.clone(),
                     ))
@@ -448,7 +448,7 @@ impl Render for BufferSearchBar {
                         self.active_match_index
                             .is_none()
                             .then_some(ActionButtonState::Disabled),
-                        "Select Next Match",
+                        "选择下一个匹配项",
                         &SelectNextMatch,
                         query_focus.clone(),
                     ))
@@ -469,7 +469,7 @@ impl Render for BufferSearchBar {
                         "buffer-search-nav-button",
                         IconName::SelectAll,
                         Default::default(),
-                        "Select All Matches",
+                        "选择所有匹配项",
                         &SelectAllMatches,
                         query_focus.clone(),
                     ))
@@ -481,7 +481,7 @@ impl Render for BufferSearchBar {
                     "buffer-search",
                     IconName::Close,
                     Default::default(),
-                    "Close Search Bar",
+                    "关闭搜索栏",
                     &Dismiss,
                     focus_handle.clone(),
                 ))
@@ -515,7 +515,7 @@ impl Render for BufferSearchBar {
                     "buffer-search-replace-button",
                     IconName::ReplaceNext,
                     Default::default(),
-                    "Replace Next Match",
+                    "替换下一个匹配项",
                     &ReplaceNext,
                     focus_handle.clone(),
                 ))
@@ -523,7 +523,7 @@ impl Render for BufferSearchBar {
                     "buffer-search-replace-button",
                     IconName::ReplaceAll,
                     Default::default(),
-                    "Replace All Matches",
+                    "替换所有匹配项",
                     &ReplaceAll,
                     focus_handle,
                 ));
@@ -568,7 +568,7 @@ impl Render for BufferSearchBar {
                                 "buffer-search",
                                 IconName::Close,
                                 Default::default(),
-                                "Close Search Bar",
+                                "关闭搜索栏",
                                 &Dismiss,
                                 focus_handle.clone(),
                             )),

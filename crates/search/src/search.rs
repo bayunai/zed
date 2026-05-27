@@ -97,12 +97,12 @@ impl SearchOption {
 
     pub fn label(&self) -> &'static str {
         match self {
-            SearchOption::WholeWord => "Match Whole Words",
-            SearchOption::CaseSensitive => "Match Case Sensitivity",
-            SearchOption::IncludeIgnored => "Also search files ignored by configuration",
-            SearchOption::Regex => "Use Regular Expressions",
-            SearchOption::OneMatchPerLine => "One Match Per Line",
-            SearchOption::Backwards => "Search Backwards",
+            SearchOption::WholeWord => "匹配整个单词",
+            SearchOption::CaseSensitive => "区分大小写",
+            SearchOption::IncludeIgnored => "同时搜索被配置忽略的文件",
+            SearchOption::Regex => "使用正则表达式",
+            SearchOption::OneMatchPerLine => "每行一个匹配项",
+            SearchOption::Backwards => "向后搜索",
         }
     }
 
