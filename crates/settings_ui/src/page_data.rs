@@ -62,7 +62,7 @@ macro_rules! concat_sections {
 }
 
 pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
-    let mut pages = vec![
+    vec![
         general_page(cx),
         appearance_page(),
         keymap_page(),
@@ -77,56 +77,58 @@ pub(crate) fn settings_data(cx: &App) -> Vec<SettingsPage> {
         collaboration_page(),
         ai_page(cx),
         network_page(),
-    ];
-
-    use feature_flags::FeatureFlagAppExt as _;
-    if cx.is_staff() || cfg!(debug_assertions) {
-        pages.push(developer_page());
-    }
-
-    pages
+        developer_page(cx),
+    ]
 }
 
-fn developer_page() -> SettingsPage {
+fn developer_page(cx: &App) -> SettingsPage {
+    use feature_flags::FeatureFlagAppExt as _;
+
+    let mut items: Vec<SettingsPageItem> = Vec::new();
+
+    // Feature flag overrides are a staff-only affordance, so only surface the section when the overrides are enabled.
+    if cx.feature_flag_overrides_enabled() {
+        items.push(SettingsPageItem::SectionHeader("功能开关"));
+        items.push(SettingsPageItem::SubPageLink(SubPageLink {
+            title: "功能开关".into(),
+            r#type: Default::default(),
+            description: None,
+            json_path: Some("feature_flags"),
+            in_json: true,
+            files: USER,
+            render: crate::pages::render_feature_flags_page,
+        }));
+    }
+
+    items.push(SettingsPageItem::SectionHeader("性能采集"));
+    items.push(SettingsPageItem::SettingItem(SettingItem {
+        title: "性能分析器",
+        description: "收集前台和后台执行器任务的计时数据，可通过 `zed: open performance profiler` 查看。可能会增加内存占用。",
+        field: Box::new(SettingField {
+            json_path: Some("instrumentation.performance_profiler.enabled"),
+            pick: |settings_content| {
+                settings_content
+                    .instrumentation
+                    .as_ref()
+                    .and_then(|i| i.performance_profiler.as_ref())
+                    .and_then(|p| p.enabled.as_ref())
+            },
+            write: |settings_content, value, _| {
+                settings_content
+                    .instrumentation
+                    .get_or_insert_default()
+                    .performance_profiler
+                    .get_or_insert_default()
+                    .enabled = value;
+            },
+        }),
+        metadata: None,
+        files: USER,
+    }));
+
     SettingsPage {
         title: "开发者",
-        items: Box::new([
-            SettingsPageItem::SectionHeader("功能开关"),
-            SettingsPageItem::SubPageLink(SubPageLink {
-                title: "功能开关".into(),
-                r#type: Default::default(),
-                description: None,
-                json_path: Some("feature_flags"),
-                in_json: true,
-                files: USER,
-                render: crate::pages::render_feature_flags_page,
-            }),
-            SettingsPageItem::SectionHeader("性能采集"),
-            SettingsPageItem::SettingItem(SettingItem {
-                title: "性能分析器",
-                description: "Collect timing data for foreground and background executor tasks so they can be inspected via `zed: open performance profiler`. May lead to increased memory usage.",
-                field: Box::new(SettingField {
-                    json_path: Some("instrumentation.performance_profiler.enabled"),
-                    pick: |settings_content| {
-                        settings_content
-                            .instrumentation
-                            .as_ref()
-                            .and_then(|i| i.performance_profiler.as_ref())
-                            .and_then(|p| p.enabled.as_ref())
-                    },
-                    write: |settings_content, value, _| {
-                        settings_content
-                            .instrumentation
-                            .get_or_insert_default()
-                            .performance_profiler
-                            .get_or_insert_default()
-                            .enabled = value;
-                    },
-                }),
-                metadata: None,
-                files: USER,
-            }),
-        ]),
+        items: items.into_boxed_slice(),
     }
 }
 
@@ -3422,7 +3424,7 @@ fn search_and_files_page() -> SettingsPage {
         ]
     }
 
-    fn file_scan_section() -> [SettingsPageItem; 5] {
+    fn file_scan_section() -> [SettingsPageItem; 6] {
         [
             SettingsPageItem::SectionHeader("文件扫描"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -3466,6 +3468,21 @@ fn search_and_files_page() -> SettingsPage {
                     }
                     .unimplemented(),
                 ),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "扫描符号链接",
+                description: "何时扫描链接目录的内容。",
+                field: Box::new(SettingField {
+                    json_path: Some("scan_symlinks"),
+                    pick: |settings_content| {
+                        settings_content.project.worktree.scan_symlinks.as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content.project.worktree.scan_symlinks = value;
+                    },
+                }),
                 metadata: None,
                 files: USER,
             }),

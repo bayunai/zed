@@ -45,6 +45,7 @@ pub mod picker_prompt;
 pub mod project_diff;
 pub(crate) mod remote_output;
 pub mod repository_selector;
+pub mod solo_diff_view;
 pub mod stash_picker;
 pub mod text_diff_view;
 pub mod worktree_names;
@@ -1038,7 +1039,12 @@ impl Component for GitStatusIcon {
         ComponentScope::VersionControl
     }
 
-    fn preview(_window: &mut Window, _cx: &mut App) -> Option<AnyElement> {
+    fn description() -> &'static str {
+        "An icon that visually represents the git status of a file, \
+        using a distinct glyph and color for modified, added, deleted, and conflicted states."
+    }
+
+    fn preview(_window: &mut Window, _cx: &mut App) -> AnyElement {
         fn tracked_file_status(code: StatusCode) -> FileStatus {
             FileStatus::Tracked(git::status::TrackedStatus {
                 index_status: code,
@@ -1055,17 +1061,15 @@ impl Component for GitStatusIcon {
         }
         .into();
 
-        Some(
-            v_flex()
-                .gap_6()
-                .children(vec![example_group(vec![
-                    single_example("已修改", GitStatusIcon::new(modified).into_any_element()),
-                    single_example("添加", GitStatusIcon::new(added).into_any_element()),
-                    single_example("已删除", GitStatusIcon::new(deleted).into_any_element()),
-                    single_example("冲突", GitStatusIcon::new(conflict).into_any_element()),
-                ])])
-                .into_any_element(),
-        )
+        v_flex()
+            .gap_6()
+            .children(vec![example_group(vec![
+                single_example("已修改", GitStatusIcon::new(modified).into_any_element()),
+                single_example("添加", GitStatusIcon::new(added).into_any_element()),
+                single_example("已删除", GitStatusIcon::new(deleted).into_any_element()),
+                single_example("冲突", GitStatusIcon::new(conflict).into_any_element()),
+            ])])
+            .into_any_element()
     }
 }
 
