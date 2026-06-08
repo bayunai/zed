@@ -362,6 +362,7 @@ fn ollama_settings() -> Box<[SettingsPageItem]> {
             title: "API 地址",
             description: "Ollama 服务器的基础地址。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -395,6 +396,7 @@ fn ollama_settings() -> Box<[SettingsPageItem]> {
             title: "模型",
             description: "用于编辑预测的 Ollama 模型。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -428,6 +430,7 @@ fn ollama_settings() -> Box<[SettingsPageItem]> {
             title: "提示词格式",
             description: "请求预测时使用的提示词格式。设为“推断”时会根据模型名称推断格式。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -458,6 +461,7 @@ fn ollama_settings() -> Box<[SettingsPageItem]> {
             title: "最大输出令牌数",
             description: "可生成的最大令牌数。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -493,6 +497,7 @@ fn open_ai_compatible_settings() -> Box<[SettingsPageItem]> {
             title: "API 地址",
             description: "OpenAI 兼容服务器补全 API 的地址。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -526,6 +531,7 @@ fn open_ai_compatible_settings() -> Box<[SettingsPageItem]> {
             title: "模型",
             description: "传递给 OpenAI 兼容服务器的模型字符串。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -559,6 +565,7 @@ fn open_ai_compatible_settings() -> Box<[SettingsPageItem]> {
             title: "提示词格式",
             description: "请求预测时使用的提示词格式。设为“推断”时会根据模型名称推断格式。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -589,6 +596,7 @@ fn open_ai_compatible_settings() -> Box<[SettingsPageItem]> {
             title: "最大输出令牌数",
             description: "可生成的最大令牌数。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -624,6 +632,7 @@ fn codestral_settings() -> Box<[SettingsPageItem]> {
             title: "API 地址",
             description: "用于 Codestral 的 API 地址。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -657,6 +666,7 @@ fn codestral_settings() -> Box<[SettingsPageItem]> {
             title: "最大令牌数",
             description: "可生成的最大令牌数。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project
@@ -687,6 +697,7 @@ fn codestral_settings() -> Box<[SettingsPageItem]> {
             title: "模型",
             description: "要使用的 Codestral 模型 ID。",
             field: Box::new(SettingField {
+                organization_override: None,
                 pick: |settings| {
                     settings
                         .project

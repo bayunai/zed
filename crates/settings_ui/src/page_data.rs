@@ -1,8 +1,8 @@
 use gpui::{Action as _, App};
 use itertools::Itertools as _;
 use settings::{
-    AudioInputDeviceName, AudioOutputDeviceName, LanguageSettingsContent, SemanticTokens,
-    SettingsContent,
+    AudioInputDeviceName, AudioOutputDeviceName, EditPredictionDataCollectionChoice,
+    LanguageSettingsContent, SemanticTokens, SettingsContent,
 };
 use std::sync::{Arc, OnceLock};
 use strum::{EnumMessage, IntoDiscriminant as _, VariantArray};
@@ -105,6 +105,7 @@ fn developer_page(cx: &App) -> SettingsPage {
         title: "性能分析器",
         description: "收集前台和后台执行器任务的计时数据，可通过 `zed: open performance profiler` 查看。可能会增加内存占用。",
         field: Box::new(SettingField {
+            organization_override: None,
             json_path: Some("instrumentation.performance_profiler.enabled"),
             pick: |settings_content| {
                 settings_content
@@ -140,6 +141,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "没有标签页时关闭",
                 description: "使用“关闭当前项目”操作且没有标签页时要执行的操作。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("when_closing_with_no_tabs"),
                     pick: |settings_content| {
                         settings_content
@@ -158,6 +160,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "最后一个窗口关闭时",
                 description: "关闭最后一个窗口时要执行的操作。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("on_last_window_closed"),
                     pick: |settings_content| {
                         settings_content.workspace.on_last_window_closed.as_ref()
@@ -173,6 +176,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "使用系统路径提示",
                 description: "对“打开”和“另存为”使用原生系统对话框。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("use_system_path_prompts"),
                     pick: |settings_content| {
                         settings_content.workspace.use_system_path_prompts.as_ref()
@@ -188,6 +192,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "使用系统确认提示",
                 description: "使用原生系统对话框进行确认。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("use_system_prompts"),
                     pick: |settings_content| settings_content.workspace.use_system_prompts.as_ref(),
                     write: |settings_content, value, _| {
@@ -201,6 +206,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "隐藏私有值",
                 description: "隐藏私有文件中变量的值。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("redact_private_values"),
                     pick: |settings_content| settings_content.editor.redact_private_values.as_ref(),
                     write: |settings_content, value, _| {
@@ -215,6 +221,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 description: "用于匹配文件路径以判断文件是否为私有文件的 glob 规则。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("worktree.private_files"),
                         pick: |settings_content| {
                             settings_content.project.worktree.private_files.as_ref()
@@ -232,6 +239,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "CLI 默认打开行为",
                 description: "未指定参数时，`zed <path>` 如何打开目录。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("cli_default_open_behavior"),
                     pick: |settings_content| {
                         settings_content
@@ -258,6 +266,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "默认信任所有项目",
                 description: "打开 Zed 时自动信任所有项目以避免受限模式，无需为每个新项目授予权限即可使用全部功能。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("session.trust_all_projects"),
                     pick: |settings_content| {
                         settings_content
@@ -285,6 +294,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "恢复未保存的缓冲区",
                 description: "重启时是否恢复未保存的缓冲区。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("session.restore_unsaved_buffers"),
                     pick: |settings_content| {
                         settings_content
@@ -306,6 +316,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "启动时恢复",
                 description: "打开 Zed 时从上一次会话中恢复什么内容。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("restore_on_startup"),
                     pick: |settings_content| settings_content.workspace.restore_on_startup.as_ref(),
                     write: |settings_content, value, _| {
@@ -327,6 +338,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 description: "哪些设置只应在 Zed Preview 构建中启用。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("preview_channel_settings"),
                         pick: |settings_content| Some(settings_content),
                         write: |_settings_content, _value, _| {},
@@ -341,6 +353,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 description: "可在现有用户设置之上临时应用任意数量的设置配置。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("settings_profiles"),
                         pick: |settings_content| Some(settings_content),
                         write: |_settings_content, _value, _| {},
@@ -359,6 +372,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "诊断遥测",
                 description: "发送崩溃报告等调试信息。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("telemetry.diagnostics"),
                     pick: |settings_content| {
                         settings_content
@@ -380,6 +394,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "指标遥测",
                 description: "发送匿名使用数据，例如你在 Zed 中使用的语言。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("telemetry.metrics"),
                     pick: |settings_content| {
                         settings_content
@@ -404,6 +419,7 @@ fn general_page(cx: &App) -> SettingsPage {
                 title: "自动更新",
                 description: "是否自动检查更新。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("auto_update"),
                     pick: |settings_content| settings_content.auto_update.as_ref(),
                     write: |settings_content, value, _| {
@@ -441,6 +457,7 @@ fn appearance_page() -> SettingsPage {
                     title: "主题模式",
                     description: "选择固定主题，或根据外观和明暗模式动态选择主题。",
                     field: Box::new(SettingField {
+                        organization_override: None,
                         json_path: Some("theme$"),
                         pick: |settings_content| {
                             Some(&dynamic_variants::<settings::ThemeSelection>()[
@@ -504,6 +521,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "主题名称",
                                 description: "你选择的主题名称。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("theme"),
                                     pick: |settings_content| {
                                         match settings_content.theme.theme.as_ref() {
@@ -532,6 +550,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "模式",
                                 description: "选择使用指定的浅色/深色主题，或跟随系统外观设置。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("theme.mode"),
                                     pick: |settings_content| {
                                         match settings_content.theme.theme.as_ref() {
@@ -558,6 +577,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "浅色主题",
                                 description: "当模式设为浅色，或模式设为系统且系统处于浅色模式时使用的主题。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("theme.light"),
                                     pick: |settings_content| {
                                         match settings_content.theme.theme.as_ref() {
@@ -584,6 +604,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "深色主题",
                                 description: "当模式设为深色，或模式设为系统且系统处于深色模式时使用的主题。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("theme.dark"),
                                     pick: |settings_content| {
                                         match settings_content.theme.theme.as_ref() {
@@ -615,6 +636,7 @@ fn appearance_page() -> SettingsPage {
                     title: "图标主题",
                     description: "Zed 用于关联文件和目录的一组自定义图标。",
                     field: Box::new(SettingField {
+                        organization_override: None,
                         json_path: Some("icon_theme$"),
                         pick: |settings_content| {
                             Some(&dynamic_variants::<settings::IconThemeSelection>()[
@@ -680,6 +702,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "图标主题名称",
                                 description: "你选择的图标主题名称。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("icon_theme$string"),
                                     pick: |settings_content| {
                                         match settings_content.theme.icon_theme.as_ref() {
@@ -708,6 +731,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "模式",
                                 description: "选择使用指定的浅色/深色图标主题，或跟随系统外观设置。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("icon_theme"),
                                     pick: |settings_content| {
                                         match settings_content.theme.icon_theme.as_ref() {
@@ -734,6 +758,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "浅色图标主题",
                                 description: "当模式设为浅色，或模式设为系统且系统处于浅色模式时使用的图标主题。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("icon_theme.light"),
                                     pick: |settings_content| {
                                         match settings_content.theme.icon_theme.as_ref() {
@@ -760,6 +785,7 @@ fn appearance_page() -> SettingsPage {
                                 title: "深色图标主题",
                                 description: "当模式设为深色，或模式设为系统且系统处于深色模式时使用的图标主题。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("icon_theme.dark"),
                                     pick: |settings_content| {
                                         match settings_content.theme.icon_theme.as_ref() {
@@ -795,6 +821,7 @@ fn appearance_page() -> SettingsPage {
                 title: "字体族",
                 description: "编辑器文本使用的字体族。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("buffer_font_family"),
                     pick: |settings_content| settings_content.theme.buffer_font_family.as_ref(),
                     write: |settings_content, value, _| {
@@ -808,6 +835,7 @@ fn appearance_page() -> SettingsPage {
                 title: "字体大小",
                 description: "编辑器文本使用的字体大小。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("buffer_font_size"),
                     pick: |settings_content| settings_content.theme.buffer_font_size.as_ref(),
                     write: |settings_content, value, _| {
@@ -821,6 +849,7 @@ fn appearance_page() -> SettingsPage {
                 title: "字体粗细",
                 description: "编辑器文本的字体粗细（100-900）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("buffer_font_weight"),
                     pick: |settings_content| settings_content.theme.buffer_font_weight.as_ref(),
                     write: |settings_content, value, _| {
@@ -836,6 +865,7 @@ fn appearance_page() -> SettingsPage {
                     title: "行高",
                     description: "编辑器文本的行高。",
                     field: Box::new(SettingField {
+                        organization_override: None,
                         json_path: Some("buffer_line_height$"),
                         pick: |settings_content| {
                             Some(
@@ -893,6 +923,7 @@ fn appearance_page() -> SettingsPage {
                             title: "自定义行高",
                             description: "自定义行高值（必须至少为 1.0）。",
                             field: Box::new(SettingField {
+                                organization_override: None,
                                 json_path: Some("buffer_line_height"),
                                 pick: |settings_content| match settings_content
                                     .theme
@@ -925,6 +956,7 @@ fn appearance_page() -> SettingsPage {
                 description: "渲染文本缓冲区时启用的 OpenType 特性。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("buffer_font_features"),
                         pick: |settings_content| {
                             settings_content.theme.buffer_font_features.as_ref()
@@ -943,6 +975,7 @@ fn appearance_page() -> SettingsPage {
                 description: "渲染文本缓冲区时使用的备用字体。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("buffer_font_fallbacks"),
                         pick: |settings_content| {
                             settings_content.theme.buffer_font_fallbacks.as_ref()
@@ -965,6 +998,7 @@ fn appearance_page() -> SettingsPage {
                 title: "字体族",
                 description: "界面元素使用的字体族。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("ui_font_family"),
                     pick: |settings_content| settings_content.theme.ui_font_family.as_ref(),
                     write: |settings_content, value, _| {
@@ -978,6 +1012,7 @@ fn appearance_page() -> SettingsPage {
                 title: "字体大小",
                 description: "界面元素使用的字体大小。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("ui_font_size"),
                     pick: |settings_content| settings_content.theme.ui_font_size.as_ref(),
                     write: |settings_content, value, _| {
@@ -991,6 +1026,7 @@ fn appearance_page() -> SettingsPage {
                 title: "字体粗细",
                 description: "界面元素的字体粗细（100-900）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("ui_font_weight"),
                     pick: |settings_content| settings_content.theme.ui_font_weight.as_ref(),
                     write: |settings_content, value, _| {
@@ -1006,6 +1042,7 @@ fn appearance_page() -> SettingsPage {
                 description: "渲染界面元素时启用的 OpenType 特性。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("ui_font_features"),
                         pick: |settings_content| settings_content.theme.ui_font_features.as_ref(),
                         write: |settings_content, value, _| {
@@ -1022,6 +1059,7 @@ fn appearance_page() -> SettingsPage {
                 description: "渲染界面时使用的备用字体。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("ui_font_fallbacks"),
                         pick: |settings_content| settings_content.theme.ui_font_fallbacks.as_ref(),
                         write: |settings_content, value, _| {
@@ -1042,6 +1080,7 @@ fn appearance_page() -> SettingsPage {
                 title: "UI 字体大小",
                 description: "代理面板中代理回复文本的字体大小。未设置时使用常规界面字体大小。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent_ui_font_size"),
                     pick: |settings_content| {
                         settings_content
@@ -1061,6 +1100,7 @@ fn appearance_page() -> SettingsPage {
                 title: "缓冲区字体大小",
                 description: "代理面板中用户消息文本的字体大小。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent_buffer_font_size"),
                     pick: |settings_content| {
                         settings_content
@@ -1086,6 +1126,7 @@ fn appearance_page() -> SettingsPage {
                 title: "文本渲染模式",
                 description: "要使用的文本渲染模式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("text_rendering_mode"),
                     pick: |settings_content| {
                         settings_content.workspace.text_rendering_mode.as_ref()
@@ -1107,6 +1148,7 @@ fn appearance_page() -> SettingsPage {
                 title: "多光标修饰键",
                 description: "添加多个光标时使用的修饰键。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("multi_cursor_modifier"),
                     pick: |settings_content| settings_content.editor.multi_cursor_modifier.as_ref(),
                     write: |settings_content, value, _| {
@@ -1120,6 +1162,7 @@ fn appearance_page() -> SettingsPage {
                 title: "光标闪烁",
                 description: "编辑器中的光标是否闪烁。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("cursor_blink"),
                     pick: |settings_content| settings_content.editor.cursor_blink.as_ref(),
                     write: |settings_content, value, _| {
@@ -1133,6 +1176,7 @@ fn appearance_page() -> SettingsPage {
                 title: "光标形状",
                 description: "编辑器中的光标形状。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("cursor_shape"),
                     pick: |settings_content| settings_content.editor.cursor_shape.as_ref(),
                     write: |settings_content, value, _| {
@@ -1146,6 +1190,7 @@ fn appearance_page() -> SettingsPage {
                 title: "隐藏鼠标",
                 description: "何时隐藏鼠标光标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("hide_mouse"),
                     pick: |settings_content| settings_content.hide_mouse.as_ref(),
                     write: |settings_content, value, _| {
@@ -1165,6 +1210,7 @@ fn appearance_page() -> SettingsPage {
                 title: "淡化非必要代码",
                 description: "未使用代码的淡化程度（0.0 - 0.9）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("unnecessary_code_fade"),
                     pick: |settings_content| settings_content.theme.unnecessary_code_fade.as_ref(),
                     write: |settings_content, value, _| {
@@ -1178,6 +1224,7 @@ fn appearance_page() -> SettingsPage {
                 title: "当前行高亮",
                 description: "如何高亮当前行。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("current_line_highlight"),
                     pick: |settings_content| {
                         settings_content.editor.current_line_highlight.as_ref()
@@ -1193,6 +1240,7 @@ fn appearance_page() -> SettingsPage {
                 title: "选择高亮",
                 description: "高亮所选文本的所有出现位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("selection_highlight"),
                     pick: |settings_content| settings_content.editor.selection_highlight.as_ref(),
                     write: |settings_content, value, _| {
@@ -1206,6 +1254,7 @@ fn appearance_page() -> SettingsPage {
                 title: "圆角选区",
                 description: "文本选区是否使用圆角。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("rounded_selection"),
                     pick: |settings_content| settings_content.editor.rounded_selection.as_ref(),
                     write: |settings_content, value, _| {
@@ -1219,6 +1268,7 @@ fn appearance_page() -> SettingsPage {
                 title: "高亮最小对比度",
                 description: "在高亮背景上渲染文本时要保持的最小 APCA 感知对比度。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimum_contrast_for_highlights"),
                     pick: |settings_content| {
                         settings_content
@@ -1243,6 +1293,7 @@ fn appearance_page() -> SettingsPage {
                 title: "显示换行参考线",
                 description: "显示换行参考线（垂直标尺）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("show_wrap_guides"),
                     pick: |settings_content| {
                         settings_content
@@ -1269,6 +1320,7 @@ fn appearance_page() -> SettingsPage {
                 description: "显示换行参考线的字符列位置。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("wrap_guides"),
                         pick: |settings_content| {
                             settings_content
@@ -1340,6 +1392,7 @@ fn keymap_page() -> SettingsPage {
                 title: "基础快捷键映射",
                 description: "The name of a base set of key bindings to use.",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("base_keymap"),
                     pick: |settings_content| settings_content.base_keymap.as_ref(),
                     write: |settings_content, value, _| {
@@ -1362,6 +1415,7 @@ fn keymap_page() -> SettingsPage {
                 title: "Vim 模式",
                 description: "Enable Vim mode and key bindings.",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim_mode"),
                     pick: |settings_content| settings_content.vim_mode.as_ref(),
                     write: write_vim_mode,
@@ -1373,6 +1427,7 @@ fn keymap_page() -> SettingsPage {
                 title: "Helix 模式",
                 description: "Enable Helix mode and key bindings.",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("helix_mode"),
                     pick: |settings_content| settings_content.helix_mode.as_ref(),
                     write: write_helix_mode,
@@ -1405,6 +1460,7 @@ fn editor_page() -> SettingsPage {
                     title: "自动保存模式",
                     description: "何时自动保存缓冲区更改。",
                     field: Box::new(SettingField {
+                        organization_override: None,
                         json_path: Some("autosave$"),
                         pick: |settings_content| {
                             Some(
@@ -1461,6 +1517,7 @@ fn editor_page() -> SettingsPage {
                             title: "延迟（毫秒）",
                             description: "在无操作一段时间后保存（毫秒）。",
                             field: Box::new(SettingField {
+                                organization_override: None,
                                 json_path: Some("autosave.after_delay.milliseconds"),
                                 pick: |settings_content| match settings_content
                                     .workspace
@@ -1502,6 +1559,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示 Which-key 菜单",
                 description: "当多键快捷键等待后续按键时，显示包含匹配绑定的 Which-key 菜单。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("which_key.enabled"),
                     pick: |settings_content| {
                         settings_content
@@ -1520,6 +1578,7 @@ fn editor_page() -> SettingsPage {
                 title: "菜单延迟",
                 description: "Which-key 菜单显示前的延迟，单位为毫秒。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("which_key.delay_ms"),
                     pick: |settings_content| {
                         settings_content
@@ -1544,6 +1603,7 @@ fn editor_page() -> SettingsPage {
                 title: "多缓冲区双击",
                 description: "在多缓冲区的摘录中双击时要执行的操作。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("double_click_in_multibuffer"),
                     pick: |settings_content| {
                         settings_content.editor.double_click_in_multibuffer.as_ref()
@@ -1559,6 +1619,7 @@ fn editor_page() -> SettingsPage {
                 title: "展开摘录行数",
                 description: "默认展开多缓冲区摘录的行数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("expand_excerpt_lines"),
                     pick: |settings_content| settings_content.editor.expand_excerpt_lines.as_ref(),
                     write: |settings_content, value, _| {
@@ -1572,6 +1633,7 @@ fn editor_page() -> SettingsPage {
                 title: "摘录上下文行数",
                 description: "默认在多缓冲区摘录中提供的上下文行数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("excerpt_context_lines"),
                     pick: |settings_content| settings_content.editor.excerpt_context_lines.as_ref(),
                     write: |settings_content, value, _| {
@@ -1585,6 +1647,7 @@ fn editor_page() -> SettingsPage {
                 title: "按深度展开大纲",
                 description: "当前文件中大纲项默认展开的深度。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.expand_outlines_with_depth"),
                     pick: |settings_content| {
                         settings_content
@@ -1608,6 +1671,7 @@ fn editor_page() -> SettingsPage {
                 title: "差异视图样式",
                 description: "在编辑器中如何显示差异。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diff_view_style"),
                     pick: |settings_content| settings_content.editor.diff_view_style.as_ref(),
                     write: |settings_content, value, _| {
@@ -1621,6 +1685,7 @@ fn editor_page() -> SettingsPage {
                 title: "分屏差异最小宽度",
                 description: "使用分屏差异视图所需的最小宽度（列）。当编辑器更窄时，差异视图会自动切换为统一模式。设为 0 可禁用。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimum_split_diff_width"),
                     pick: |settings_content| {
                         settings_content.editor.minimum_split_diff_width.as_ref()
@@ -1642,6 +1707,7 @@ fn editor_page() -> SettingsPage {
                 title: "滚动超过最后一行",
                 description: "编辑器是否可以滚动超过最后一行。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scroll_beyond_last_line"),
                     pick: |settings_content| {
                         settings_content.editor.scroll_beyond_last_line.as_ref()
@@ -1657,6 +1723,7 @@ fn editor_page() -> SettingsPage {
                 title: "垂直滚动边距",
                 description: "自动滚动时在光标上方/下方保留的行数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vertical_scroll_margin"),
                     pick: |settings_content| {
                         settings_content.editor.vertical_scroll_margin.as_ref()
@@ -1672,6 +1739,7 @@ fn editor_page() -> SettingsPage {
                 title: "水平滚动边距",
                 description: "使用鼠标滚动时左右两侧保留的字符数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("horizontal_scroll_margin"),
                     pick: |settings_content| {
                         settings_content.editor.horizontal_scroll_margin.as_ref()
@@ -1687,6 +1755,7 @@ fn editor_page() -> SettingsPage {
                 title: "滚动灵敏度",
                 description: "水平和垂直滚动的灵敏度倍率。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scroll_sensitivity"),
                     pick: |settings_content| settings_content.editor.scroll_sensitivity.as_ref(),
                     write: |settings_content, value, _| {
@@ -1700,6 +1769,7 @@ fn editor_page() -> SettingsPage {
                 title: "鼠标滚轮缩放",
                 description: "按住主修饰键并滚动鼠标滚轮时，是否缩放编辑器字体大小。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("mouse_wheel_zoom"),
                     pick: |settings_content| settings_content.editor.mouse_wheel_zoom.as_ref(),
                     write: |settings_content, value, _| {
@@ -1713,6 +1783,7 @@ fn editor_page() -> SettingsPage {
                 title: "快速滚动灵敏度",
                 description: "水平和垂直快速滚动的灵敏度倍率。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("fast_scroll_sensitivity"),
                     pick: |settings_content| {
                         settings_content.editor.fast_scroll_sensitivity.as_ref()
@@ -1728,6 +1799,7 @@ fn editor_page() -> SettingsPage {
                 title: "点击时自动滚动",
                 description: "点击可见文本区域边缘附近时是否滚动。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("autoscroll_on_clicks"),
                     pick: |settings_content| settings_content.editor.autoscroll_on_clicks.as_ref(),
                     write: |settings_content, value, _| {
@@ -1741,6 +1813,7 @@ fn editor_page() -> SettingsPage {
                 title: "粘性滚动",
                 description: "是否将作用域固定在编辑器顶部。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("sticky_scroll.enabled"),
                     pick: |settings_content| {
                         settings_content
@@ -1770,6 +1843,7 @@ fn editor_page() -> SettingsPage {
                 title: "自动签名帮助",
                 description: "自动显示签名帮助弹窗。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("auto_signature_help"),
                     pick: |settings_content| settings_content.editor.auto_signature_help.as_ref(),
                     write: |settings_content, value, _| {
@@ -1783,6 +1857,7 @@ fn editor_page() -> SettingsPage {
                 title: "编辑后显示签名帮助",
                 description: "插入补全项或括号对后显示签名帮助弹窗。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("show_signature_help_after_edits"),
                     pick: |settings_content| {
                         settings_content
@@ -1801,6 +1876,7 @@ fn editor_page() -> SettingsPage {
                 title: "代码片段排序顺序",
                 description: "决定代码片段相对于其他补全项的排序方式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("snippet_sort_order"),
                     pick: |settings_content| settings_content.editor.snippet_sort_order.as_ref(),
                     write: |settings_content, value, _| {
@@ -1820,6 +1896,7 @@ fn editor_page() -> SettingsPage {
                 title: "启用",
                 description: "鼠标悬停在编辑器符号上时显示信息悬停框。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("hover_popover_enabled"),
                     pick: |settings_content| settings_content.editor.hover_popover_enabled.as_ref(),
                     write: |settings_content, value, _| {
@@ -1834,6 +1911,7 @@ fn editor_page() -> SettingsPage {
                 title: "延迟",
                 description: "显示信息悬停框前等待的时间，单位为毫秒。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("hover_popover_delay"),
                     pick: |settings_content| settings_content.editor.hover_popover_delay.as_ref(),
                     write: |settings_content, value, _| {
@@ -1847,6 +1925,7 @@ fn editor_page() -> SettingsPage {
                 title: "粘滞",
                 description: "当鼠标移向悬停弹窗时，弹窗是否保持显示，以便与其内容交互。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("hover_popover_sticky"),
                     pick: |settings_content| settings_content.editor.hover_popover_sticky.as_ref(),
                     write: |settings_content, value, _| {
@@ -1861,6 +1940,7 @@ fn editor_page() -> SettingsPage {
                 title: "隐藏延迟",
                 description: "鼠标移开后隐藏悬停弹窗前等待的时间，单位为毫秒。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("hover_popover_hiding_delay"),
                     pick: |settings_content| {
                         settings_content.editor.hover_popover_hiding_delay.as_ref()
@@ -1882,6 +1962,7 @@ fn editor_page() -> SettingsPage {
                 title: "启用",
                 description: "启用拖放选择。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("drag_and_drop_selection.enabled"),
                     pick: |settings_content| {
                         settings_content
@@ -1905,6 +1986,7 @@ fn editor_page() -> SettingsPage {
                 title: "延迟",
                 description: "开始拖放选择前的延迟，单位为毫秒。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("drag_and_drop_selection.delay"),
                     pick: |settings_content| {
                         settings_content
@@ -1934,6 +2016,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示行号",
                 description: "在边栏中显示行号。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("gutter.line_numbers"),
                     pick: |settings_content| {
                         settings_content
@@ -1957,6 +2040,7 @@ fn editor_page() -> SettingsPage {
                 title: "相对行号",
                 description: "控制编辑器边栏中的行号显示。\"disabled\" 显示绝对行号，\"enabled\" 为每个绝对行显示相对行号，\"wrapped\" 为每一行（包括换行后的视觉行）显示相对行号。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("relative_line_numbers"),
                     pick: |settings_content| settings_content.editor.relative_line_numbers.as_ref(),
                     write: |settings_content, value, _| {
@@ -1970,6 +2054,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示可运行项",
                 description: "在边栏中显示可运行按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("gutter.runnables"),
                     pick: |settings_content| {
                         settings_content
@@ -1993,6 +2078,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示断点",
                 description: "在边栏中显示断点。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("gutter.breakpoints"),
                     pick: |settings_content| {
                         settings_content
@@ -2016,6 +2102,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示书签",
                 description: "在边栏中显示书签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("gutter.bookmarks"),
                     pick: |settings_content| {
                         settings_content
@@ -2039,6 +2126,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示折叠控件",
                 description: "在边栏中显示代码折叠控件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("gutter.folds"),
                     pick: |settings_content| {
                         settings_content
@@ -2058,6 +2146,7 @@ fn editor_page() -> SettingsPage {
                 title: "最小行号位数",
                 description: "在边栏中为行号预留的最少字符数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("gutter.min_line_number_digits"),
                     pick: |settings_content| {
                         settings_content
@@ -2081,6 +2170,7 @@ fn editor_page() -> SettingsPage {
                 title: "内联代码操作",
                 description: "在缓冲区行首显示代码操作按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("inline_code_actions"),
                     pick: |settings_content| settings_content.editor.inline_code_actions.as_ref(),
                     write: |settings_content, value, _| {
@@ -2100,6 +2190,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示",
                 description: "何时在编辑器中显示滚动条。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar"),
                     pick: |settings_content| {
                         settings_content.editor.scrollbar.as_ref()?.show.as_ref()
@@ -2119,6 +2210,7 @@ fn editor_page() -> SettingsPage {
                 title: "光标",
                 description: "在滚动条中显示光标位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.cursors"),
                     pick: |settings_content| {
                         settings_content.editor.scrollbar.as_ref()?.cursors.as_ref()
@@ -2138,6 +2230,7 @@ fn editor_page() -> SettingsPage {
                 title: "Git 差异",
                 description: "在滚动条中显示 Git 差异指示器。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.git_diff"),
                     pick: |settings_content| {
                         settings_content
@@ -2162,6 +2255,7 @@ fn editor_page() -> SettingsPage {
                 title: "搜索结果",
                 description: "在滚动条中显示缓冲区搜索结果指示器。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.search_results"),
                     pick: |settings_content| {
                         settings_content
@@ -2186,6 +2280,7 @@ fn editor_page() -> SettingsPage {
                 title: "选中文本",
                 description: "在滚动条中显示所选文本的出现位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.selected_text"),
                     pick: |settings_content| {
                         settings_content
@@ -2210,6 +2305,7 @@ fn editor_page() -> SettingsPage {
                 title: "选中符号",
                 description: "在滚动条中显示所选符号的出现位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.selected_symbol"),
                     pick: |settings_content| {
                         settings_content
@@ -2234,6 +2330,7 @@ fn editor_page() -> SettingsPage {
                 title: "诊断",
                 description: "在滚动条中显示哪些诊断指示器。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.diagnostics"),
                     pick: |settings_content| {
                         settings_content
@@ -2258,6 +2355,7 @@ fn editor_page() -> SettingsPage {
                 title: "水平滚动条",
                 description: "为 false 时强制禁用水平滚动条。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.axes.horizontal"),
                     pick: |settings_content| {
                         settings_content
@@ -2286,6 +2384,7 @@ fn editor_page() -> SettingsPage {
                 title: "垂直滚动条",
                 description: "为 false 时强制禁用垂直滚动条。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("scrollbar.axes.vertical"),
                     pick: |settings_content| {
                         settings_content
@@ -2320,6 +2419,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示",
                 description: "何时在编辑器中显示缩略图。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimap.show"),
                     pick: |settings_content| {
                         settings_content.editor.minimap.as_ref()?.show.as_ref()
@@ -2335,6 +2435,7 @@ fn editor_page() -> SettingsPage {
                 title: "显示位置",
                 description: "缩略图在编辑器中的显示位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimap.display_in"),
                     pick: |settings_content| {
                         settings_content
@@ -2359,6 +2460,7 @@ fn editor_page() -> SettingsPage {
                 title: "滑块",
                 description: "何时显示缩略图滑块。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimap.thumb"),
                     pick: |settings_content| {
                         settings_content.editor.minimap.as_ref()?.thumb.as_ref()
@@ -2378,6 +2480,7 @@ fn editor_page() -> SettingsPage {
                 title: "滑块边框",
                 description: "缩略图滚动条滑块的边框样式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimap.thumb_border"),
                     pick: |settings_content| {
                         settings_content
@@ -2402,6 +2505,7 @@ fn editor_page() -> SettingsPage {
                 title: "当前行高亮",
                 description: "如何在缩略图中高亮当前行。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimap.current_line_highlight"),
                     pick: |settings_content| {
                         settings_content
@@ -2426,6 +2530,7 @@ fn editor_page() -> SettingsPage {
                 title: "最大宽度列数",
                 description: "缩略图中显示的最大列数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("minimap.max_width_columns"),
                     pick: |settings_content| {
                         settings_content
@@ -2456,6 +2561,7 @@ fn editor_page() -> SettingsPage {
                 title: "面包屑",
                 description: "显示面包屑。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("toolbar.breadcrumbs"),
                     pick: |settings_content| {
                         settings_content
@@ -2480,6 +2586,7 @@ fn editor_page() -> SettingsPage {
                 title: "快速操作",
                 description: "显示快速操作按钮（例如搜索、选择、编辑器控件等）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("toolbar.quick_actions"),
                     pick: |settings_content| {
                         settings_content
@@ -2504,6 +2611,7 @@ fn editor_page() -> SettingsPage {
                 title: "选择菜单",
                 description: "在编辑器工具栏中显示选择菜单。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("toolbar.selections_menu"),
                     pick: |settings_content| {
                         settings_content
@@ -2528,6 +2636,7 @@ fn editor_page() -> SettingsPage {
                 title: "代理审阅",
                 description: "在编辑器工具栏中显示代理审阅按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("toolbar.agent_review"),
                     pick: |settings_content| {
                         settings_content
@@ -2552,6 +2661,7 @@ fn editor_page() -> SettingsPage {
                 title: "代码操作",
                 description: "在编辑器工具栏中显示代码操作按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("toolbar.code_actions"),
                     pick: |settings_content| {
                         settings_content
@@ -2582,6 +2692,7 @@ fn editor_page() -> SettingsPage {
                 title: "默认模式",
                 description: "Vim 启动时的默认模式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.default_mode"),
                     pick: |settings_content| settings_content.vim.as_ref()?.default_mode.as_ref(),
                     write: |settings_content, value, _| {
@@ -2595,6 +2706,7 @@ fn editor_page() -> SettingsPage {
                 title: "切换相对行号",
                 description: "在 Vim 模式中切换相对行号。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.toggle_relative_line_numbers"),
                     pick: |settings_content| {
                         settings_content
@@ -2617,6 +2729,7 @@ fn editor_page() -> SettingsPage {
                 title: "使用系统剪贴板",
                 description: "控制在 Vim 模式中何时使用系统剪贴板。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.use_system_clipboard"),
                     pick: |settings_content| {
                         settings_content.vim.as_ref()?.use_system_clipboard.as_ref()
@@ -2635,6 +2748,7 @@ fn editor_page() -> SettingsPage {
                 title: "使用智能大小写查找",
                 description: "在 Vim 模式中启用智能大小写搜索。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.use_smartcase_find"),
                     pick: |settings_content| {
                         settings_content.vim.as_ref()?.use_smartcase_find.as_ref()
@@ -2653,6 +2767,7 @@ fn editor_page() -> SettingsPage {
                 title: "全局替换默认值",
                 description: "启用后，:substitute 命令默认替换一行中的所有匹配项。此时 \"g\" 标志会切换该行为。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.gdefault"),
                     pick: |settings_content| settings_content.vim.as_ref()?.gdefault.as_ref(),
                     write: |settings_content, value, _| {
@@ -2666,6 +2781,7 @@ fn editor_page() -> SettingsPage {
                 title: "复制高亮持续时间",
                 description: "在 Vim 模式中高亮已复制文本的持续时间，单位为毫秒。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.highlight_on_yank_duration"),
                     pick: |settings_content| {
                         settings_content
@@ -2688,6 +2804,7 @@ fn editor_page() -> SettingsPage {
                 title: "正则搜索",
                 description: "Vim 搜索默认使用正则表达式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.use_regex_search"),
                     pick: |settings_content| {
                         settings_content.vim.as_ref()?.use_regex_search.as_ref()
@@ -2706,6 +2823,7 @@ fn editor_page() -> SettingsPage {
                 title: "普通模式显示编辑预测",
                 description: "是否在普通模式下显示编辑预测。默认情况下，编辑预测只会在插入和替换模式下显示。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.show_edit_predictions_in_normal_mode"),
                     pick: |settings_content| {
                         settings_content
@@ -2728,6 +2846,7 @@ fn editor_page() -> SettingsPage {
                 title: "光标形状 - 普通模式",
                 description: "普通模式下的光标形状。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.cursor_shape.normal"),
                     pick: |settings_content| {
                         settings_content
@@ -2754,6 +2873,7 @@ fn editor_page() -> SettingsPage {
                 title: "光标形状 - 插入模式",
                 description: "插入模式下的光标形状。“继承”使用编辑器的光标形状。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.cursor_shape.insert"),
                     pick: |settings_content| {
                         settings_content
@@ -2780,6 +2900,7 @@ fn editor_page() -> SettingsPage {
                 title: "光标形状 - 替换模式",
                 description: "替换模式下的光标形状。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.cursor_shape.replace"),
                     pick: |settings_content| {
                         settings_content
@@ -2806,6 +2927,7 @@ fn editor_page() -> SettingsPage {
                 title: "光标形状 - 可视模式",
                 description: "可视模式下的光标形状。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("vim.cursor_shape.visual"),
                     pick: |settings_content| {
                         settings_content
@@ -2833,6 +2955,7 @@ fn editor_page() -> SettingsPage {
                 description: "Vim 模式的自定义双字符映射。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("vim.custom_digraphs"),
                         pick: |settings_content| {
                             settings_content.vim.as_ref()?.custom_digraphs.as_ref()
@@ -2880,6 +3003,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 description: "将语言映射到应被视为该语言的文件和文件扩展名。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("file_type_associations"),
                         pick: |settings_content| {
                             settings_content.project.all_languages.file_types.as_ref()
@@ -2903,6 +3027,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "最高严重级别",
                 description: "用于过滤编辑器中显示诊断信息的级别。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics_max_severity"),
                     pick: |settings_content| {
                         settings_content.editor.diagnostics_max_severity.as_ref()
@@ -2918,6 +3043,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "包括警告",
                 description: "默认是否显示警告。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.include_warnings"),
                     pick: |settings_content| {
                         settings_content
@@ -2946,6 +3072,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "启用",
                 description: "是否以内联方式显示诊断。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.inline.enabled"),
                     pick: |settings_content| {
                         settings_content
@@ -2972,6 +3099,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "更新防抖",
                 description: "最后一次诊断更新后显示内联诊断的延迟，单位为毫秒。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.inline.update_debounce_ms"),
                     pick: |settings_content| {
                         settings_content
@@ -2998,6 +3126,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "间距",
                 description: "源码行末尾与内联诊断开头之间的间距。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.inline.padding"),
                     pick: |settings_content| {
                         settings_content
@@ -3024,6 +3153,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "最小列",
                 description: "显示内联诊断的最小列号。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.inline.min_column"),
                     pick: |settings_content| {
                         settings_content
@@ -3056,6 +3186,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "启用",
                 description: "是否拉取由语言服务器提供的诊断。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.lsp_pull_diagnostics.enabled"),
                     pick: |settings_content| {
                         settings_content
@@ -3083,6 +3214,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "防抖",
                 description: "从语言服务器拉取诊断前等待的最短时间。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.lsp_pull_diagnostics.debounce_ms"),
                     pick: |settings_content| {
                         settings_content
@@ -3115,6 +3247,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                 title: "防抖",
                 description: "从语言查询高亮前的防抖延迟。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("lsp_highlight_debounce"),
                     pick: |settings_content| {
                         settings_content.editor.lsp_highlight_debounce.as_ref()
@@ -3185,6 +3318,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "全字匹配",
                 description: "默认按全字匹配搜索。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("search.whole_word"),
                     pick: |settings_content| {
                         settings_content.editor.search.as_ref()?.whole_word.as_ref()
@@ -3204,6 +3338,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "区分大小写",
                 description: "默认区分大小写搜索。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("search.case_sensitive"),
                     pick: |settings_content| {
                         settings_content
@@ -3228,6 +3363,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "使用智能大小写搜索",
                 description: "是否根据搜索查询自动启用区分大小写搜索。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("use_smartcase_search"),
                     pick: |settings_content| settings_content.editor.use_smartcase_search.as_ref(),
                     write: |settings_content, value, _| {
@@ -3241,6 +3377,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "包含已忽略项",
                 description: "默认在搜索结果中包含已忽略文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("search.include_ignored"),
                     pick: |settings_content| {
                         settings_content
@@ -3265,6 +3402,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "正则",
                 description: "默认使用正则搜索。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("search.regex"),
                     pick: |settings_content| {
                         settings_content.editor.search.as_ref()?.regex.as_ref()
@@ -3280,6 +3418,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "循环搜索",
                 description: "编辑器搜索结果是否循环。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("search_wrap"),
                     pick: |settings_content| settings_content.editor.search_wrap.as_ref(),
                     write: |settings_content, value, _| {
@@ -3293,6 +3432,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "匹配项居中",
                 description: "是否将当前匹配项居中显示在编辑器中。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("editor.search.center_on_match"),
                     pick: |settings_content| {
                         settings_content
@@ -3316,6 +3456,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "从光标填充搜索查询",
                 description: "何时根据光标下的文本填充新搜索查询。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("seed_search_query_from_cursor"),
                     pick: |settings_content| {
                         settings_content
@@ -3341,6 +3482,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "搜索中包含已忽略项",
                 description: "搜索时使用被 Git 忽略的文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("file_finder.include_ignored"),
                     pick: |settings_content| {
                         settings_content
@@ -3363,6 +3505,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "文件图标",
                 description: "在文件查找器中显示文件图标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("file_finder.file_icons"),
                     pick: |settings_content| {
                         settings_content.file_finder.as_ref()?.file_icons.as_ref()
@@ -3381,6 +3524,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "弹窗最大宽度",
                 description: "决定文件查找器相对于可用窗口宽度可以占用多少空间。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("file_finder.modal_max_width"),
                     pick: |settings_content| {
                         settings_content
@@ -3403,6 +3547,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "搜索中跳过当前活动文件焦点",
                 description: "文件查找器是否在搜索结果中跳过当前活动文件的焦点。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("file_finder.skip_focus_for_active_in_search"),
                     pick: |settings_content| {
                         settings_content
@@ -3432,6 +3577,7 @@ fn search_and_files_page() -> SettingsPage {
                 description: "会被 Zed 完全排除的文件或文件 glob。它们会在文件扫描和文件搜索中被跳过，也不会显示在项目文件树中。优先级高于“文件扫描包含项”。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("file_scan_exclusions"),
                         pick: |settings_content| {
                             settings_content
@@ -3454,6 +3600,7 @@ fn search_and_files_page() -> SettingsPage {
                 description: "即使被 Git 忽略也会被 Zed 包含的文件或文件 glob。这适用于未被 Git 跟踪但对项目仍然重要的文件。注意，过宽泛的 glob 可能会拖慢 Zed 的文件扫描。“文件扫描排除项”优先级高于这些包含项。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("file_scan_inclusions"),
                         pick: |settings_content| {
                             settings_content
@@ -3476,6 +3623,7 @@ fn search_and_files_page() -> SettingsPage {
                 description: "何时扫描链接目录的内容。",
                 field: Box::new(SettingField {
                     json_path: Some("scan_symlinks"),
+                    organization_override: None,
                     pick: |settings_content| {
                         settings_content.project.worktree.scan_symlinks.as_ref()
                     },
@@ -3490,6 +3638,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "恢复文件状态",
                 description: "重新打开时恢复之前的文件状态。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("restore_on_file_reopen"),
                     pick: |settings_content| {
                         settings_content.workspace.restore_on_file_reopen.as_ref()
@@ -3505,6 +3654,7 @@ fn search_and_files_page() -> SettingsPage {
                 title: "文件删除时关闭",
                 description: "自动关闭已被删除的文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("close_on_file_delete"),
                     pick: |settings_content| {
                         settings_content.workspace.close_on_file_delete.as_ref()
@@ -3533,6 +3683,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "项目面板按钮",
                 description: "在状态栏中显示项目面板按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.button"),
                     pick: |settings_content| {
                         settings_content.project_panel.as_ref()?.button.as_ref()
@@ -3551,6 +3702,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "当前语言按钮",
                 description: "在状态栏中显示当前语言按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("status_bar.active_language_button"),
                     pick: |settings_content| {
                         settings_content
@@ -3573,6 +3725,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "当前编码按钮",
                 description: "控制何时在状态栏中显示当前编码。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("status_bar.active_encoding_button"),
                     pick: |settings_content| {
                         settings_content
@@ -3595,6 +3748,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "光标位置按钮",
                 description: "在状态栏中显示光标位置按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("status_bar.cursor_position_button"),
                     pick: |settings_content| {
                         settings_content
@@ -3617,6 +3771,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "换行符按钮",
                 description: "在状态栏中显示当前换行符按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("status_bar.line_endings_button"),
                     pick: |settings_content| {
                         settings_content
@@ -3639,6 +3794,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "终端按钮",
                 description: "在状态栏中显示终端按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.button"),
                     pick: |settings_content| settings_content.terminal.as_ref()?.button.as_ref(),
                     write: |settings_content, value, _| {
@@ -3652,6 +3808,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "诊断按钮",
                 description: "在状态栏中显示项目诊断按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("diagnostics.button"),
                     pick: |settings_content| settings_content.diagnostics.as_ref()?.button.as_ref(),
                     write: |settings_content, value, _| {
@@ -3665,6 +3822,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "项目搜索按钮",
                 description: "在状态栏中显示项目搜索按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("search.button"),
                     pick: |settings_content| {
                         settings_content.editor.search.as_ref()?.button.as_ref()
@@ -3684,6 +3842,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "调试器按钮",
                 description: "在状态栏中显示调试器按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("debugger.button"),
                     pick: |settings_content| settings_content.debugger.as_ref()?.button.as_ref(),
                     write: |settings_content, value, _| {
@@ -3697,6 +3856,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "当前文件名",
                 description: "在状态栏中显示当前文件名。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("status_bar.show_active_file"),
                     pick: |settings_content| {
                         settings_content
@@ -3725,6 +3885,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示分支状态图标",
                 description: "在标题栏分支图标上显示 Git 状态指示器。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_branch_status_icon"),
                     pick: |settings_content| {
                         settings_content
@@ -3747,6 +3908,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示分支名称",
                 description: "在标题栏中显示分支名称按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_branch_name"),
                     pick: |settings_content| {
                         settings_content
@@ -3769,6 +3931,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示项目项目",
                 description: "在标题栏中显示项目主机和名称。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_project_items"),
                     pick: |settings_content| {
                         settings_content
@@ -3791,6 +3954,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示引导横幅",
                 description: "在标题栏中显示新功能公告横幅。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_onboarding_banner"),
                     pick: |settings_content| {
                         settings_content
@@ -3813,6 +3977,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示登录",
                 description: "在标题栏中显示登录按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_sign_in"),
                     pick: |settings_content| {
                         settings_content.title_bar.as_ref()?.show_sign_in.as_ref()
@@ -3831,6 +3996,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示用户菜单",
                 description: "在标题栏中显示用户菜单按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_user_menu"),
                     pick: |settings_content| {
                         settings_content.title_bar.as_ref()?.show_user_menu.as_ref()
@@ -3849,6 +4015,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示用户头像",
                 description: "在标题栏中显示用户头像。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_user_picture"),
                     pick: |settings_content| {
                         settings_content
@@ -3871,6 +4038,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示菜单",
                 description: "在标题栏中显示菜单。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("title_bar.show_menus"),
                     pick: |settings_content| {
                         settings_content.title_bar.as_ref()?.show_menus.as_ref()
@@ -3892,6 +4060,7 @@ fn window_and_layout_page() -> SettingsPage {
                     description:
                         "(Linux only) choose how window control buttons are laid out in the titlebar.",
                     field: Box::new(SettingField {
+                        organization_override: None,
                         json_path: Some("title_bar.button_layout$"),
                         pick: |settings_content| {
                             Some(
@@ -3972,6 +4141,7 @@ fn window_and_layout_page() -> SettingsPage {
                                 description:
                                     "GNOME-style layout string such as \"close:minimize,maximize\".",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("title_bar.button_layout"),
                                     pick: |settings_content| match settings_content
                                         .title_bar
@@ -4011,6 +4181,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示标签栏",
                 description: "在编辑器中显示标签栏。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tab_bar.show"),
                     pick: |settings_content| settings_content.tab_bar.as_ref()?.show.as_ref(),
                     write: |settings_content, value, _| {
@@ -4024,6 +4195,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "在标签中显示 Git 状态",
                 description: "在标签项上显示 Git 文件状态。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tabs.git_status"),
                     pick: |settings_content| settings_content.tabs.as_ref()?.git_status.as_ref(),
                     write: |settings_content, value, _| {
@@ -4037,6 +4209,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "在标签中显示文件图标",
                 description: "显示标签的文件图标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tabs.file_icons"),
                     pick: |settings_content| settings_content.tabs.as_ref()?.file_icons.as_ref(),
                     write: |settings_content, value, _| {
@@ -4050,6 +4223,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "标签关闭按钮位置",
                 description: "标签中关闭按钮的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tabs.close_position"),
                     pick: |settings_content| {
                         settings_content.tabs.as_ref()?.close_position.as_ref()
@@ -4069,6 +4243,7 @@ fn window_and_layout_page() -> SettingsPage {
                 // is complex, so I'm going to come back to this later
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("max_tabs"),
                         pick: |settings_content| settings_content.workspace.max_tabs.as_ref(),
                         write: |settings_content, value, _| {
@@ -4083,6 +4258,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示导航历史按钮",
                 description: "在标签栏中显示导航历史按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tab_bar.show_nav_history_buttons"),
                     pick: |settings_content| {
                         settings_content
@@ -4105,6 +4281,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示标签栏按钮",
                 description: "显示标签栏按钮（新建、拆分窗格、缩放）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tab_bar.show_tab_bar_buttons"),
                     pick: |settings_content| {
                         settings_content
@@ -4127,6 +4304,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "固定标签布局",
                 description: "在未固定标签上方单独一行显示固定标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tab_bar.show_pinned_tabs_in_separate_row"),
                     pick: |settings_content| {
                         settings_content
@@ -4155,6 +4333,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "关闭后激活",
                 description: "关闭当前标签后要执行的操作。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tabs.activate_on_close"),
                     pick: |settings_content| {
                         settings_content.tabs.as_ref()?.activate_on_close.as_ref()
@@ -4173,6 +4352,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "标签显示诊断",
                 description: "在标签中标记哪些包含诊断错误或警告的文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tabs.show_diagnostics"),
                     pick: |settings_content| {
                         settings_content.tabs.as_ref()?.show_diagnostics.as_ref()
@@ -4191,6 +4371,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "显示关闭按钮",
                 description: "控制标签关闭按钮的显示行为。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("tabs.show_close_button"),
                     pick: |settings_content| {
                         settings_content.tabs.as_ref()?.show_close_button.as_ref()
@@ -4215,6 +4396,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "启用预览标签",
                 description: "将打开的编辑器显示为预览标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("preview_tabs.enabled"),
                     pick: |settings_content| {
                         settings_content.preview_tabs.as_ref()?.enabled.as_ref()
@@ -4233,6 +4415,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "从项目面板启用预览",
                 description: "从项目面板单击打开时，是否以预览模式打开标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("preview_tabs.enable_preview_from_project_panel"),
                     pick: |settings_content| {
                         settings_content
@@ -4255,6 +4438,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "从文件查找器启用预览",
                 description: "从文件查找器选择时，是否以预览模式打开标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("preview_tabs.enable_preview_from_file_finder"),
                     pick: |settings_content| {
                         settings_content
@@ -4277,6 +4461,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "从多缓冲区启用预览",
                 description: "从多缓冲区打开时，是否以预览模式打开标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("preview_tabs.enable_preview_from_multibuffer"),
                     pick: |settings_content| {
                         settings_content
@@ -4299,6 +4484,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "代码导航时以预览方式打开多缓冲区",
                 description: "使用代码导航打开多缓冲区时，是否以预览模式打开标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("preview_tabs.enable_preview_multibuffer_from_code_navigation"),
                     pick: |settings_content| {
                         settings_content
@@ -4321,6 +4507,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "代码导航时以预览方式打开文件",
                 description: "使用代码导航打开单个文件时，是否以预览模式打开标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("preview_tabs.enable_preview_file_from_code_navigation"),
                     pick: |settings_content| {
                         settings_content
@@ -4343,6 +4530,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "代码导航时保留预览",
                 description: "使用代码导航离开标签时，是否保持标签的预览模式。如果 `enable_preview_file_from_code_navigation` 或 `enable_preview_multibuffer_from_code_navigation` 也为 true，新标签可能会替换现有标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("preview_tabs.enable_keep_preview_on_code_navigation"),
                     pick: |settings_content| {
                         settings_content
@@ -4371,6 +4559,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "底部停靠布局",
                 description: "底部停靠区的布局模式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("bottom_dock_layout"),
                     pick: |settings_content| settings_content.workspace.bottom_dock_layout.as_ref(),
                     write: |settings_content, value, _| {
@@ -4385,6 +4574,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "居中布局左侧内边距",
                 description: "居中布局的左侧内边距。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("centered_layout.left_padding"),
                     pick: |settings_content| {
                         settings_content
@@ -4409,6 +4599,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "居中布局右侧内边距",
                 description: "居中布局的右侧内边距。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("centered_layout.right_padding"),
                     pick: |settings_content| {
                         settings_content
@@ -4432,6 +4623,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "焦点跟随鼠标",
                 description: "鼠标悬停在窗格上时是否将焦点切换到该窗格。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("focus_follows_mouse.enabled"),
                     pick: |settings_content| {
                         settings_content
@@ -4455,6 +4647,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "焦点跟随鼠标防抖毫秒数",
                 description: "切换焦点前等待的时间。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("focus_follows_mouse.debounce_ms"),
                     pick: |settings_content| {
                         settings_content
@@ -4485,6 +4678,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "使用系统窗口标签",
                 description: "（仅 macOS）是否允许窗口合并为系统标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("use_system_window_tabs"),
                     pick: |settings_content| {
                         settings_content.workspace.use_system_window_tabs.as_ref()
@@ -4500,6 +4694,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "窗口装饰",
                 description: "（仅 Linux）窗口装饰由 Zed 还是合成器绘制。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("window_decorations"),
                     pick: |settings_content| settings_content.workspace.window_decorations.as_ref(),
                     write: |settings_content, value, _| {
@@ -4519,6 +4714,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "非活动透明度",
                 description: "非活动面板的透明度（0.0 - 1.0）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("active_pane_modifiers.inactive_opacity"),
                     pick: |settings_content| {
                         settings_content
@@ -4543,6 +4739,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "边框大小",
                 description: "活动窗格周围边框的大小。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("active_pane_modifiers.border_size"),
                     pick: |settings_content| {
                         settings_content
@@ -4567,6 +4764,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "缩放内边距",
                 description: "为缩放后的窗格显示内边距。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("zoomed_padding"),
                     pick: |settings_content| settings_content.workspace.zoomed_padding.as_ref(),
                     write: |settings_content, value, _| {
@@ -4586,6 +4784,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "垂直拆分方向",
                 description: "垂直拆分时的方向。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("pane_split_direction_vertical"),
                     pick: |settings_content| {
                         settings_content
@@ -4604,6 +4803,7 @@ fn window_and_layout_page() -> SettingsPage {
                 title: "水平拆分方向",
                 description: "水平拆分时的方向。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("pane_split_direction_horizontal"),
                     pick: |settings_content| {
                         settings_content
@@ -4645,6 +4845,7 @@ fn panels_page() -> SettingsPage {
                 title: "项目面板停靠位置",
                 description: "项目面板停靠的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.dock"),
                     pick: |settings_content| settings_content.project_panel.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
@@ -4658,6 +4859,7 @@ fn panels_page() -> SettingsPage {
                 title: "项目面板默认宽度",
                 description: "项目面板的默认宽度，以像素为单位。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.default_width"),
                     pick: |settings_content| {
                         settings_content
@@ -4680,6 +4882,7 @@ fn panels_page() -> SettingsPage {
                 title: "隐藏 .gitignore",
                 description: "是否在项目面板中隐藏 gitignore 条目。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.hide_gitignore"),
                     pick: |settings_content| {
                         settings_content
@@ -4702,6 +4905,7 @@ fn panels_page() -> SettingsPage {
                 title: "条目间距",
                 description: "项目面板中工作树条目之间的间距。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.entry_spacing"),
                     pick: |settings_content| {
                         settings_content
@@ -4724,6 +4928,7 @@ fn panels_page() -> SettingsPage {
                 title: "文件图标",
                 description: "在项目面板中显示文件图标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.file_icons"),
                     pick: |settings_content| {
                         settings_content.project_panel.as_ref()?.file_icons.as_ref()
@@ -4742,6 +4947,7 @@ fn panels_page() -> SettingsPage {
                 title: "文件夹图标",
                 description: "是否在项目面板中为目录显示文件夹图标或折叠箭头。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.folder_icons"),
                     pick: |settings_content| {
                         settings_content
@@ -4764,6 +4970,7 @@ fn panels_page() -> SettingsPage {
                 title: "Git 状态",
                 description: "在项目面板中显示 Git 状态。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.git_status"),
                     pick: |settings_content| {
                         settings_content.project_panel.as_ref()?.git_status.as_ref()
@@ -4782,6 +4989,7 @@ fn panels_page() -> SettingsPage {
                 title: "缩进大小",
                 description: "嵌套条目的缩进量。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.indent_size"),
                     pick: |settings_content| {
                         settings_content
@@ -4804,6 +5012,7 @@ fn panels_page() -> SettingsPage {
                 title: "自动显示条目",
                 description: "当对应的项目条目变为活动状态时，是否自动在项目面板中显示该条目。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.auto_reveal_entries"),
                     pick: |settings_content| {
                         settings_content
@@ -4826,6 +5035,7 @@ fn panels_page() -> SettingsPage {
                 title: "启动时打开",
                 description: "启动时是否打开项目面板。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.starts_open"),
                     pick: |settings_content| {
                         settings_content
@@ -4848,6 +5058,7 @@ fn panels_page() -> SettingsPage {
                 title: "自动折叠目录",
                 description: "当目录内只有一个子目录时，是否自动折叠目录并显示紧凑文件夹。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.auto_fold_dirs"),
                     pick: |settings_content| {
                         settings_content
@@ -4870,6 +5081,7 @@ fn panels_page() -> SettingsPage {
                 title: "加粗文件夹标签",
                 description: "是否在项目面板中以粗体显示文件夹名称。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.bold_folder_labels"),
                     pick: |settings_content| {
                         settings_content
@@ -4892,6 +5104,7 @@ fn panels_page() -> SettingsPage {
                 title: "显示滚动条",
                 description: "在项目面板中显示滚动条。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.scrollbar.show"),
                     pick: |settings_content| {
                         show_scrollbar_or_editor(settings_content, |settings_content| {
@@ -4920,6 +5133,7 @@ fn panels_page() -> SettingsPage {
                 title: "水平滚动",
                 description: "是否允许项目面板水平滚动。禁用后，视图会锁定在最左侧，较长的文件名会被截断。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.scrollbar.horizontal_scroll"),
                     pick: |settings_content| {
                         settings_content
@@ -4946,6 +5160,7 @@ fn panels_page() -> SettingsPage {
                 title: "显示诊断",
                 description: "在项目面板中标记哪些包含诊断错误或警告的文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.show_diagnostics"),
                     pick: |settings_content| {
                         settings_content
@@ -4968,6 +5183,7 @@ fn panels_page() -> SettingsPage {
                 title: "诊断徽标",
                 description: "在项目面板的文件名旁显示错误和警告数量徽标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.diagnostic_badges"),
                     pick: |settings_content| {
                         settings_content
@@ -4990,6 +5206,7 @@ fn panels_page() -> SettingsPage {
                 title: "Git 状态指示器",
                 description: "在项目面板的文件名旁显示 Git 状态指示器。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.git_status_indicator"),
                     pick: |settings_content| {
                         settings_content
@@ -5012,6 +5229,7 @@ fn panels_page() -> SettingsPage {
                 title: "粘性滚动",
                 description: "是否将父目录固定在项目面板顶部。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.sticky_scroll"),
                     pick: |settings_content| {
                         settings_content
@@ -5035,6 +5253,7 @@ fn panels_page() -> SettingsPage {
                 title: "显示缩进参考线",
                 description: "在项目面板中显示缩进参考线。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.indent_guides.show"),
                     pick: |settings_content| {
                         settings_content
@@ -5060,6 +5279,7 @@ fn panels_page() -> SettingsPage {
                 title: "拖放",
                 description: "是否在项目面板中启用拖放操作。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.drag_and_drop"),
                     pick: |settings_content| {
                         settings_content
@@ -5082,6 +5302,7 @@ fn panels_page() -> SettingsPage {
                 title: "隐藏根目录",
                 description: "当窗口中只打开一个文件夹时，是否隐藏根目录条目。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.hide_root"),
                     pick: |settings_content| {
                         settings_content.project_panel.as_ref()?.hide_root.as_ref()
@@ -5100,6 +5321,7 @@ fn panels_page() -> SettingsPage {
                 title: "隐藏隐藏项",
                 description: "是否在项目面板中隐藏隐藏项。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.hide_hidden"),
                     pick: |settings_content| {
                         settings_content
@@ -5122,6 +5344,7 @@ fn panels_page() -> SettingsPage {
                 title: "排序模式",
                 description: "项目面板中条目的排序方式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.sort_mode"),
                     pick: |settings_content| {
                         settings_content.project_panel.as_ref()?.sort_mode.as_ref()
@@ -5140,6 +5363,7 @@ fn panels_page() -> SettingsPage {
                 title: "排序顺序",
                 description: "是否在项目面板中区分大小写排序文件和文件夹名称。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     pick: |settings_content| {
                         settings_content.project_panel.as_ref()?.sort_order.as_ref()
                     },
@@ -5158,6 +5382,7 @@ fn panels_page() -> SettingsPage {
                 title: "创建时自动打开文件",
                 description: "是否在编辑器中自动打开新创建的文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.auto_open.on_create"),
                     pick: |settings_content| {
                         settings_content
@@ -5184,6 +5409,7 @@ fn panels_page() -> SettingsPage {
                 title: "粘贴时自动打开文件",
                 description: "粘贴或复制文件后是否自动打开。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.auto_open.on_paste"),
                     pick: |settings_content| {
                         settings_content
@@ -5210,6 +5436,7 @@ fn panels_page() -> SettingsPage {
                 title: "拖入时自动打开文件",
                 description: "是否自动打开从外部来源拖入的文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("project_panel.auto_open.on_drop"),
                     pick: |settings_content| {
                         settings_content
@@ -5237,6 +5464,7 @@ fn panels_page() -> SettingsPage {
                 description: "用于匹配会被视为“隐藏”且可从项目面板中隐藏的文件的 glob 规则。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("worktree.hidden_files"),
                         pick: |settings_content| {
                             settings_content.project.worktree.hidden_files.as_ref()
@@ -5260,6 +5488,7 @@ fn panels_page() -> SettingsPage {
                 title: "终端停靠位置",
                 description: "终端面板停靠的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.dock"),
                     pick: |settings_content| settings_content.terminal.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
@@ -5273,6 +5502,7 @@ fn panels_page() -> SettingsPage {
                 title: "终端面板弹性尺寸",
                 description: "终端面板停靠在左侧或右侧时，是否使用弹性比例尺寸。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.flexible"),
                     pick: |settings_content| settings_content.terminal.as_ref()?.flexible.as_ref(),
                     write: |settings_content, value, _| {
@@ -5286,6 +5516,7 @@ fn panels_page() -> SettingsPage {
                 title: "显示数量徽标",
                 description: "在终端面板图标上显示已打开终端数量的徽标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.show_count_badge"),
                     pick: |settings_content| {
                         settings_content
@@ -5314,6 +5545,7 @@ fn panels_page() -> SettingsPage {
                 title: "大纲面板按钮",
                 description: "在状态栏中显示大纲面板按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.button"),
                     pick: |settings_content| {
                         settings_content.outline_panel.as_ref()?.button.as_ref()
@@ -5332,6 +5564,7 @@ fn panels_page() -> SettingsPage {
                 title: "大纲面板停靠位置",
                 description: "大纲面板停靠的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.dock"),
                     pick: |settings_content| settings_content.outline_panel.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
@@ -5345,6 +5578,7 @@ fn panels_page() -> SettingsPage {
                 title: "大纲面板默认宽度",
                 description: "大纲面板的默认宽度，以像素为单位。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.default_width"),
                     pick: |settings_content| {
                         settings_content
@@ -5367,6 +5601,7 @@ fn panels_page() -> SettingsPage {
                 title: "文件图标",
                 description: "在大纲面板中显示文件图标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.file_icons"),
                     pick: |settings_content| {
                         settings_content.outline_panel.as_ref()?.file_icons.as_ref()
@@ -5385,6 +5620,7 @@ fn panels_page() -> SettingsPage {
                 title: "文件夹图标",
                 description: "是否在大纲面板中为目录显示文件夹图标或折叠箭头。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.folder_icons"),
                     pick: |settings_content| {
                         settings_content
@@ -5407,6 +5643,7 @@ fn panels_page() -> SettingsPage {
                 title: "Git 状态",
                 description: "在大纲面板中显示 Git 状态。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.git_status"),
                     pick: |settings_content| {
                         settings_content.outline_panel.as_ref()?.git_status.as_ref()
@@ -5425,6 +5662,7 @@ fn panels_page() -> SettingsPage {
                 title: "缩进大小",
                 description: "嵌套条目的缩进量。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.indent_size"),
                     pick: |settings_content| {
                         settings_content
@@ -5447,6 +5685,7 @@ fn panels_page() -> SettingsPage {
                 title: "自动显示条目",
                 description: "当对应的大纲条目变为活动状态时，是否自动显示该条目。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.auto_reveal_entries"),
                     pick: |settings_content| {
                         settings_content
@@ -5469,6 +5708,7 @@ fn panels_page() -> SettingsPage {
                 title: "自动折叠目录",
                 description: "当目录只包含一个子目录时，是否自动折叠目录。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.auto_fold_dirs"),
                     pick: |settings_content| {
                         settings_content
@@ -5492,6 +5732,7 @@ fn panels_page() -> SettingsPage {
                 title: "显示缩进参考线",
                 description: "何时在大纲面板中显示缩进参考线。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("outline_panel.indent_guides.show"),
                     pick: |settings_content| {
                         settings_content
@@ -5523,6 +5764,7 @@ fn panels_page() -> SettingsPage {
                 title: "Git 面板按钮",
                 description: "在状态栏中显示 Git 面板按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.button"),
                     pick: |settings_content| settings_content.git_panel.as_ref()?.button.as_ref(),
                     write: |settings_content, value, _| {
@@ -5536,6 +5778,7 @@ fn panels_page() -> SettingsPage {
                 title: "Git 面板停靠位置",
                 description: "Git 面板停靠的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.dock"),
                     pick: |settings_content| settings_content.git_panel.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
@@ -5549,6 +5792,7 @@ fn panels_page() -> SettingsPage {
                 title: "Git 面板默认宽度",
                 description: "Git 面板的默认宽度，以像素为单位。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.default_width"),
                     pick: |settings_content| {
                         settings_content.git_panel.as_ref()?.default_width.as_ref()
@@ -5567,6 +5811,7 @@ fn panels_page() -> SettingsPage {
                 title: "Git 面板状态样式",
                 description: "条目状态的显示方式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.status_style"),
                     pick: |settings_content| {
                         settings_content.git_panel.as_ref()?.status_style.as_ref()
@@ -5585,6 +5830,7 @@ fn panels_page() -> SettingsPage {
                 title: "备用分支名称",
                 description: "当 Git 中未设置 init.defaultbranch 时使用的默认分支名称。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.fallback_branch_name"),
                     pick: |settings_content| {
                         settings_content
@@ -5607,6 +5853,7 @@ fn panels_page() -> SettingsPage {
                 title: "按路径排序",
                 description: "启用后按路径排序面板条目，禁用后按状态排序。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.sort_by_path"),
                     pick: |settings_content| {
                         settings_content.git_panel.as_ref()?.sort_by_path.as_ref()
@@ -5625,6 +5872,7 @@ fn panels_page() -> SettingsPage {
                 title: "折叠未追踪差异",
                 description: "是否在差异面板中折叠未追踪文件。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.collapse_untracked_diff"),
                     pick: |settings_content| {
                         settings_content
@@ -5647,6 +5895,7 @@ fn panels_page() -> SettingsPage {
                 title: "树形视图",
                 description: "启用后以树形列表显示条目，禁用后以平铺列表显示。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.tree_view"),
                     pick: |settings_content| {
                         settings_content.git_panel.as_ref()?.tree_view.as_ref()
@@ -5662,6 +5911,7 @@ fn panels_page() -> SettingsPage {
                 title: "文件图标",
                 description: "在 Git 状态图标旁显示文件图标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.file_icons"),
                     pick: |settings_content| {
                         settings_content.git_panel.as_ref()?.file_icons.as_ref()
@@ -5680,6 +5930,7 @@ fn panels_page() -> SettingsPage {
                 title: "文件夹图标",
                 description: "是否在 Git 面板中为目录显示文件夹图标或折叠箭头。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.folder_icons"),
                     pick: |settings_content| {
                         settings_content.git_panel.as_ref()?.folder_icons.as_ref()
@@ -5698,6 +5949,7 @@ fn panels_page() -> SettingsPage {
                 title: "差异统计",
                 description: "是否在 Git 面板中每个文件旁显示新增/删除数量。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.diff_stats"),
                     pick: |settings_content| {
                         settings_content.git_panel.as_ref()?.diff_stats.as_ref()
@@ -5716,6 +5968,7 @@ fn panels_page() -> SettingsPage {
                 title: "显示数量徽标",
                 description: "是否在 Git 面板图标上显示未提交更改数量的徽标。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.show_count_badge"),
                     pick: |settings_content| {
                         settings_content
@@ -5738,6 +5991,7 @@ fn panels_page() -> SettingsPage {
                 title: "提交标题最大长度",
                 description: "显示警告前允许的提交信息标题最大长度。设为 0 可禁用。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.commit_title_max_length"),
                     pick: |settings_content| {
                         settings_content
@@ -5760,6 +6014,7 @@ fn panels_page() -> SettingsPage {
                 title: "滚动条",
                 description: "滚动条显示的方式和时机。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git_panel.scrollbar.show"),
                     pick: |settings_content| {
                         show_scrollbar_or_editor(settings_content, |settings_content| {
@@ -5794,6 +6049,7 @@ fn panels_page() -> SettingsPage {
                 title: "调试器面板停靠位置",
                 description: "调试面板的停靠位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("debugger.dock"),
                     pick: |settings_content| settings_content.debugger.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
@@ -5813,6 +6069,7 @@ fn panels_page() -> SettingsPage {
                 title: "协作面板按钮",
                 description: "在状态栏中显示协作面板按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("collaboration_panel.button"),
                     pick: |settings_content| {
                         settings_content
@@ -5835,6 +6092,7 @@ fn panels_page() -> SettingsPage {
                 title: "协作面板停靠位置",
                 description: "协作面板停靠的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("collaboration_panel.dock"),
                     pick: |settings_content| {
                         settings_content.collaboration_panel.as_ref()?.dock.as_ref()
@@ -5853,6 +6111,7 @@ fn panels_page() -> SettingsPage {
                 title: "协作面板默认宽度",
                 description: "协作面板的默认宽度，以像素为单位。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("collaboration_panel.dock"),
                     pick: |settings_content| {
                         settings_content
@@ -5881,6 +6140,7 @@ fn panels_page() -> SettingsPage {
                 title: "代理面板按钮",
                 description: "是否在状态栏中显示代理面板按钮。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.button"),
                     pick: |settings_content| settings_content.agent.as_ref()?.button.as_ref(),
                     write: |settings_content, value, _| {
@@ -5894,6 +6154,7 @@ fn panels_page() -> SettingsPage {
                 title: "代理面板停靠位置",
                 description: "代理面板停靠的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.dock"),
                     pick: |settings_content| settings_content.agent.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
@@ -5907,6 +6168,7 @@ fn panels_page() -> SettingsPage {
                 title: "代理面板弹性尺寸",
                 description: "代理面板停靠在左侧或右侧时，是否使用弹性比例尺寸。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.flexible"),
                     pick: |settings_content| settings_content.agent.as_ref()?.flexible.as_ref(),
                     write: |settings_content, value, _| {
@@ -5920,6 +6182,7 @@ fn panels_page() -> SettingsPage {
                 title: "代理面板默认宽度",
                 description: "代理面板停靠在左侧或右侧时的默认宽度。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.default_width"),
                     pick: |settings_content| {
                         settings_content.agent.as_ref()?.default_width.as_ref()
@@ -5935,6 +6198,7 @@ fn panels_page() -> SettingsPage {
                 title: "代理面板默认高度",
                 description: "代理面板停靠在底部时的默认高度。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.default_height"),
                     pick: |settings_content| {
                         settings_content.agent.as_ref()?.default_height.as_ref()
@@ -5955,6 +6219,7 @@ fn panels_page() -> SettingsPage {
                     title: "限制内容宽度",
                     description: "是否将代理面板内容限制在最大宽度内；当面板更宽时居中显示，以获得更好的可读性。",
                     field: Box::new(SettingField::<bool> {
+                        organization_override: None,
                         json_path: Some("agent.limit_content_width"),
                         pick: |settings_content| {
                             settings_content
@@ -5987,6 +6252,7 @@ fn panels_page() -> SettingsPage {
                         title: "最大内容宽度",
                         description: "最大内容宽度，以像素为单位。当面板宽于该值时，内容会居中显示。",
                         field: Box::new(SettingField {
+                            organization_override: None,
                             json_path: Some("agent.max_content_width"),
                             pick: |settings_content| {
                                 settings_content.agent.as_ref()?.max_content_width.as_ref()
@@ -6027,6 +6293,7 @@ fn debugger_page() -> SettingsPage {
                 title: "单步粒度",
                 description: "决定调试操作的单步执行粒度。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("debugger.stepping_granularity"),
                     pick: |settings_content| {
                         settings_content
@@ -6049,6 +6316,7 @@ fn debugger_page() -> SettingsPage {
                 title: "保存断点",
                 description: "是否在不同 Zed 会话之间复用断点。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("debugger.save_breakpoints"),
                     pick: |settings_content| {
                         settings_content
@@ -6071,6 +6339,7 @@ fn debugger_page() -> SettingsPage {
                 title: "超时",
                 description: "连接 TCP 调试适配器时触发超时错误前的等待时间，单位为毫秒。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("debugger.timeout"),
                     pick: |settings_content| settings_content.debugger.as_ref()?.timeout.as_ref(),
                     write: |settings_content, value, _| {
@@ -6084,6 +6353,7 @@ fn debugger_page() -> SettingsPage {
                 title: "记录 DAP 通信",
                 description: "是否记录活动调试适配器与 Zed 之间的消息。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("debugger.log_dap_communications"),
                     pick: |settings_content| {
                         settings_content
@@ -6106,6 +6376,7 @@ fn debugger_page() -> SettingsPage {
                 title: "格式化 DAP 日志消息",
                 description: "将 DAP 消息添加到调试适配器日志时是否进行格式化。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("debugger.format_dap_log_messages"),
                     pick: |settings_content| {
                         settings_content
@@ -6143,6 +6414,7 @@ fn terminal_page() -> SettingsPage {
                     title: "Shell",
                     description: "打开终端时使用哪个 shell。",
                     field: Box::new(SettingField {
+                        organization_override: None,
                         json_path: Some("terminal.shell$"),
                         pick: |settings_content| {
                             Some(
@@ -6231,6 +6503,7 @@ fn terminal_page() -> SettingsPage {
                             title: "程序",
                             description: "要使用的 shell 程序。",
                             field: Box::new(SettingField {
+                                organization_override: None,
                                 json_path: Some("terminal.shell"),
                                 pick: |settings_content| match settings_content
                                     .terminal
@@ -6266,6 +6539,7 @@ fn terminal_page() -> SettingsPage {
                                 title: "程序",
                                 description: "要运行的 shell 程序。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("terminal.shell.program"),
                                     pick: |settings_content| match settings_content
                                         .terminal
@@ -6306,6 +6580,7 @@ fn terminal_page() -> SettingsPage {
                                 description: "传递给 shell 程序的参数。",
                                 field: Box::new(
                                     SettingField {
+                                        organization_override: None,
                                         json_path: Some("terminal.shell.args"),
                                         pick: |settings_content| match settings_content
                                             .terminal
@@ -6347,6 +6622,7 @@ fn terminal_page() -> SettingsPage {
                                 title: "标题覆盖",
                                 description: "用于覆盖终端标签页标题的可选字符串。",
                                 field: Box::new(SettingField {
+                                    organization_override: None,
                                     json_path: Some("terminal.shell.title_override"),
                                     pick: |settings_content| match settings_content
                                         .terminal
@@ -6387,6 +6663,7 @@ fn terminal_page() -> SettingsPage {
                     title: "工作目录",
                     description: "启动终端时使用哪个工作目录。",
                     field: Box::new(SettingField {
+                        organization_override: None,
                         json_path: Some("terminal.working_directory$"),
                         pick: |settings_content| {
                             Some(
@@ -6416,26 +6693,26 @@ fn terminal_page() -> SettingsPage {
                                     settings::WorkingDirectory::CurrentProjectDirectory
                                 });
                             *settings_value = match value {
-                                    settings::WorkingDirectoryDiscriminants::CurrentFileDirectory => {
-                                        settings::WorkingDirectory::CurrentFileDirectory
-                                    },
-                                    settings::WorkingDirectoryDiscriminants::CurrentProjectDirectory => {
-                                        settings::WorkingDirectory::CurrentProjectDirectory
-                                    }
-                                    settings::WorkingDirectoryDiscriminants::FirstProjectDirectory => {
-                                        settings::WorkingDirectory::FirstProjectDirectory
-                                    }
-                                    settings::WorkingDirectoryDiscriminants::AlwaysHome => {
-                                        settings::WorkingDirectory::AlwaysHome
-                                    }
-                                    settings::WorkingDirectoryDiscriminants::Always => {
-                                        let directory = match settings_value {
-                                            settings::WorkingDirectory::Always { .. } => return,
-                                            _ => String::new(),
-                                        };
-                                        settings::WorkingDirectory::Always { directory }
-                                    }
-                                };
+                                settings::WorkingDirectoryDiscriminants::CurrentFileDirectory => {
+                                    settings::WorkingDirectory::CurrentFileDirectory
+                                },
+                                settings::WorkingDirectoryDiscriminants::CurrentProjectDirectory => {
+                                    settings::WorkingDirectory::CurrentProjectDirectory
+                                }
+                                settings::WorkingDirectoryDiscriminants::FirstProjectDirectory => {
+                                    settings::WorkingDirectory::FirstProjectDirectory
+                                }
+                                settings::WorkingDirectoryDiscriminants::AlwaysHome => {
+                                    settings::WorkingDirectory::AlwaysHome
+                                }
+                                settings::WorkingDirectoryDiscriminants::Always => {
+                                    let directory = match settings_value {
+                                        settings::WorkingDirectory::Always { .. } => return,
+                                        _ => String::new(),
+                                    };
+                                    settings::WorkingDirectory::Always { directory }
+                                }
+                            };
                         },
                     }),
                     metadata: None,
@@ -6461,8 +6738,9 @@ fn terminal_page() -> SettingsPage {
                         settings::WorkingDirectoryDiscriminants::Always => vec![SettingItem {
                             files: USER | PROJECT,
                             title: "目录",
-                            description: "要使用的目录路径（会经过 shell 展开）。",
+                            description: "要使用的目录路径（会进行 shell 展开）。",
                             field: Box::new(SettingField {
+                                organization_override: None,
                                 json_path: Some("terminal.working_directory.always"),
                                 pick: |settings_content| match settings_content
                                     .terminal
@@ -6499,9 +6777,10 @@ fn terminal_page() -> SettingsPage {
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "环境变量",
-                description: "要添加到终端环境中的键值对。",
+                description: "要添加到终端环境的键值对。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("terminal.env"),
                         pick: |settings_content| {
                             settings_content.terminal.as_ref()?.project.env.as_ref()
@@ -6524,6 +6803,7 @@ fn terminal_page() -> SettingsPage {
                 description: "如果在终端工作目录中找到 Python 虚拟环境，则自动激活它。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("terminal.detect_venv"),
                         pick: |settings_content| {
                             settings_content
@@ -6556,6 +6836,7 @@ fn terminal_page() -> SettingsPage {
                 title: "字体大小",
                 description: "终端文本的字体大小。未设置时默认使用缓冲区字体大小。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.font_size"),
                     pick: |settings_content| {
                         settings_content
@@ -6575,6 +6856,7 @@ fn terminal_page() -> SettingsPage {
                 title: "字体族",
                 description: "终端文本的字体族。未设置时默认使用缓冲区字体族。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.font_family"),
                     pick: |settings_content| {
                         settings_content
@@ -6598,6 +6880,7 @@ fn terminal_page() -> SettingsPage {
                 description: "终端文本的备用字体。未设置时默认使用缓冲区备用字体。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("terminal.font_fallbacks"),
                         pick: |settings_content| {
                             settings_content
@@ -6622,6 +6905,7 @@ fn terminal_page() -> SettingsPage {
                 title: "字体粗细",
                 description: "终端文本的字体粗细，使用 CSS 字重单位（100-900）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.font_weight"),
                     pick: |settings_content| {
                         settings_content.terminal.as_ref()?.font_weight.as_ref()
@@ -6641,6 +6925,7 @@ fn terminal_page() -> SettingsPage {
                 description: "终端文本的字体特性。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("terminal.font_features"),
                         pick: |settings_content| {
                             settings_content
@@ -6672,6 +6957,7 @@ fn terminal_page() -> SettingsPage {
                 description: "终端文本的行高。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("terminal.line_height"),
                         pick: |settings_content| {
                             settings_content.terminal.as_ref()?.line_height.as_ref()
@@ -6692,6 +6978,7 @@ fn terminal_page() -> SettingsPage {
                 title: "光标形状",
                 description: "终端的默认光标形状（竖线、块、下划线或空心框）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.cursor_shape"),
                     pick: |settings_content| {
                         settings_content.terminal.as_ref()?.cursor_shape.as_ref()
@@ -6710,6 +6997,7 @@ fn terminal_page() -> SettingsPage {
                 title: "光标闪烁",
                 description: "设置终端中的光标闪烁行为。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.blinking"),
                     pick: |settings_content| settings_content.terminal.as_ref()?.blinking.as_ref(),
                     write: |settings_content, value, _| {
@@ -6723,6 +7011,7 @@ fn terminal_page() -> SettingsPage {
                 title: "备用滚动",
                 description: "是否默认启用备用滚动模式（在 Vim 等应用中将鼠标滚动转换为方向键）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.alternate_scroll"),
                     pick: |settings_content| {
                         settings_content
@@ -6745,6 +7034,7 @@ fn terminal_page() -> SettingsPage {
                 title: "最小对比度",
                 description: "前景色和背景色之间的最小 APCA 感知对比度（0-106）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.minimum_contrast"),
                     pick: |settings_content| {
                         settings_content
@@ -6773,6 +7063,7 @@ fn terminal_page() -> SettingsPage {
                 title: "Option 作为 Meta",
                 description: "Option 键是否作为 Meta 键使用。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.option_as_meta"),
                     pick: |settings_content| {
                         settings_content.terminal.as_ref()?.option_as_meta.as_ref()
@@ -6791,6 +7082,7 @@ fn terminal_page() -> SettingsPage {
                 title: "选择时复制",
                 description: "在终端中选择文本时是否自动复制到系统剪贴板。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.copy_on_select"),
                     pick: |settings_content| {
                         settings_content.terminal.as_ref()?.copy_on_select.as_ref()
@@ -6809,6 +7101,7 @@ fn terminal_page() -> SettingsPage {
                 title: "复制后保留选择",
                 description: "复制到剪贴板后是否保留文本选择。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.keep_selection_on_copy"),
                     pick: |settings_content| {
                         settings_content
@@ -6831,6 +7124,7 @@ fn terminal_page() -> SettingsPage {
                 title: "提示音",
                 description: "打印 BEL 字符（`\\a`、`0x07`）时是否播放声音。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.bell"),
                     pick: |settings_content| settings_content.terminal.as_ref()?.bell.as_ref(),
                     write: |settings_content, value, _| {
@@ -6850,6 +7144,7 @@ fn terminal_page() -> SettingsPage {
                 title: "默认宽度",
                 description: "终端停靠在左侧或右侧时的默认宽度（像素）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.default_width"),
                     pick: |settings_content| {
                         settings_content.terminal.as_ref()?.default_width.as_ref()
@@ -6868,6 +7163,7 @@ fn terminal_page() -> SettingsPage {
                 title: "默认高度",
                 description: "终端停靠在底部时的默认高度（像素）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.default_height"),
                     pick: |settings_content| {
                         settings_content.terminal.as_ref()?.default_height.as_ref()
@@ -6892,6 +7188,7 @@ fn terminal_page() -> SettingsPage {
                 title: "最大滚动历史行数",
                 description: "滚动历史中保留的最大行数（最大 100,000；0 表示禁用滚动）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.max_scroll_history_lines"),
                     pick: |settings_content| {
                         settings_content
@@ -6914,6 +7211,7 @@ fn terminal_page() -> SettingsPage {
                 title: "滚动倍率",
                 description: "在终端中使用鼠标滚轮滚动时的倍率。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.scroll_multiplier"),
                     pick: |settings_content| {
                         settings_content
@@ -6942,6 +7240,7 @@ fn terminal_page() -> SettingsPage {
                 title: "面包屑",
                 description: "在终端面板内的面包屑中显示终端标题。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.toolbar.breadcrumbs"),
                     pick: |settings_content| {
                         settings_content
@@ -6974,6 +7273,7 @@ fn terminal_page() -> SettingsPage {
                 title: "显示滚动条",
                 description: "何时在终端中显示滚动条。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("terminal.scrollbar.show"),
                     pick: |settings_content| {
                         show_scrollbar_or_editor(settings_content, |settings_content| {
@@ -7026,6 +7326,7 @@ fn version_control_page() -> SettingsPage {
                     title: "禁用 Git 集成",
                     description: "禁用 Zed 中的所有 Git 集成功能。",
                     field: Box::new(SettingField::<bool> {
+                        organization_override: None,
                         json_path: Some("git.disable_git"),
                         pick: |settings_content| {
                             settings_content
@@ -7065,6 +7366,7 @@ fn version_control_page() -> SettingsPage {
                             title: "启用 Git 状态",
                             description: "在编辑器中显示 Git 状态信息。",
                             field: Box::new(SettingField::<bool> {
+                                organization_override: None,
                                 json_path: Some("git.enable_status"),
                                 pick: |settings_content| {
                                     settings_content
@@ -7091,6 +7393,7 @@ fn version_control_page() -> SettingsPage {
                             title: "启用 Git 差异",
                             description: "在编辑器中显示 Git 差异信息。",
                             field: Box::new(SettingField::<bool> {
+                                organization_override: None,
                                 json_path: Some("git.enable_diff"),
                                 pick: |settings_content| {
                                     settings_content
@@ -7125,6 +7428,7 @@ fn version_control_page() -> SettingsPage {
                 title: "可见性",
                 description: "控制是否在编辑器边栏中显示 Git 状态。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.git_gutter"),
                     pick: |settings_content| settings_content.git.as_ref()?.git_gutter.as_ref(),
                     write: |settings_content, value, _| {
@@ -7139,6 +7443,7 @@ fn version_control_page() -> SettingsPage {
                 title: "防抖",
                 description: "变更反映到 Git 边栏前的防抖阈值，以毫秒为单位。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.gutter_debounce"),
                     pick: |settings_content| {
                         settings_content.git.as_ref()?.gutter_debounce.as_ref()
@@ -7160,6 +7465,7 @@ fn version_control_page() -> SettingsPage {
                 title: "启用",
                 description: "是否在当前聚焦行内联显示 Git 追溯数据。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.inline_blame.enabled"),
                     pick: |settings_content| {
                         settings_content
@@ -7186,6 +7492,7 @@ fn version_control_page() -> SettingsPage {
                 title: "延迟",
                 description: "显示内联追溯信息前的延迟。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.inline_blame.delay_ms"),
                     pick: |settings_content| {
                         settings_content
@@ -7212,6 +7519,7 @@ fn version_control_page() -> SettingsPage {
                 title: "间距",
                 description: "源码行末尾与内联追溯信息开头之间的列间距。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.inline_blame.padding"),
                     pick: |settings_content| {
                         settings_content
@@ -7238,6 +7546,7 @@ fn version_control_page() -> SettingsPage {
                 title: "最小列",
                 description: "显示内联追溯信息的最小列号。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.inline_blame.min_column"),
                     pick: |settings_content| {
                         settings_content
@@ -7264,6 +7573,7 @@ fn version_control_page() -> SettingsPage {
                 title: "显示提交摘要",
                 description: "将提交摘要作为内联追溯的一部分显示。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.inline_blame.show_commit_summary"),
                     pick: |settings_content| {
                         settings_content
@@ -7296,6 +7606,7 @@ fn version_control_page() -> SettingsPage {
                 title: "显示头像",
                 description: "显示提交作者的头像。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.blame.show_avatar"),
                     pick: |settings_content| {
                         settings_content
@@ -7328,6 +7639,7 @@ fn version_control_page() -> SettingsPage {
                 title: "显示作者名称",
                 description: "在分支选择器的提交信息中显示作者名称。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.branch_picker.show_author_name"),
                     pick: |settings_content| {
                         settings_content
@@ -7360,6 +7672,7 @@ fn version_control_page() -> SettingsPage {
                 title: "变更块样式",
                 description: "Git 变更块在编辑器中的视觉显示方式。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.hunk_style"),
                     pick: |settings_content| settings_content.git.as_ref()?.hunk_style.as_ref(),
                     write: |settings_content, value, _| {
@@ -7373,6 +7686,7 @@ fn version_control_page() -> SettingsPage {
                 title: "路径样式",
                 description: "在 Git 视图中优先显示名称还是路径。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.path_style"),
                     pick: |settings_content| settings_content.git.as_ref()?.path_style.as_ref(),
                     write: |settings_content, value, _| {
@@ -7386,6 +7700,7 @@ fn version_control_page() -> SettingsPage {
                 title: "Show Stage/Restore Buttons",
                 description: "Whether to show the stage and restore buttons on diff hunks.",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("git.show_stage_restore_buttons"),
                     pick: |settings_content| {
                         settings_content
@@ -7428,6 +7743,7 @@ fn collaboration_page() -> SettingsPage {
                 title: "加入时静音",
                 description: "加入频道或通话时是否将麦克风静音。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("calls.mute_on_join"),
                     pick: |settings_content| settings_content.calls.as_ref()?.mute_on_join.as_ref(),
                     write: |settings_content, value, _| {
@@ -7441,6 +7757,7 @@ fn collaboration_page() -> SettingsPage {
                 title: "加入时共享",
                 description: "加入空频道时是否共享当前项目。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("calls.share_on_join"),
                     pick: |settings_content| {
                         settings_content.calls.as_ref()?.share_on_join.as_ref()
@@ -7470,6 +7787,7 @@ fn collaboration_page() -> SettingsPage {
                 title: "输出音频设备",
                 description: "选择输出音频设备",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("audio.experimental.output_audio_device"),
                     pick: |settings_content| {
                         settings_content
@@ -7493,6 +7811,7 @@ fn collaboration_page() -> SettingsPage {
                 title: "输入音频设备",
                 description: "选择输入音频设备",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("audio.experimental.input_audio_device"),
                     pick: |settings_content| {
                         settings_content
@@ -7529,6 +7848,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "禁用 AI",
                 description: "是否禁用 Zed 中的所有 AI 功能。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("disable_ai"),
                     pick: |settings_content| settings_content.project.disable_ai.as_ref(),
                     write: |settings_content, value, _| {
@@ -7542,6 +7862,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "会话侧边栏位置",
                 description: "会话侧边栏显示在窗口的哪一侧。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.sidebar_side"),
                     pick: |settings_content| settings_content.agent.as_ref()?.sidebar_side.as_ref(),
                     write: |settings_content, value, _| {
@@ -7584,6 +7905,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "单文件审查",
                 description: "启用后，代理的编辑也会显示在单文件缓冲区中以供审查。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.single_file_review"),
                     pick: |settings_content| {
                         settings_content.agent.as_ref()?.single_file_review.as_ref()
@@ -7602,6 +7924,11 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "启用反馈",
                 description: "显示点赞/点踩图标按钮，用于反馈代理编辑。",
                 field: Box::new(SettingField {
+                    organization_override: Some(|org_config| if org_config.is_agent_thread_feedback_enabled {
+                        None
+                    } else {
+                        Some(&false)
+                    }),
                     json_path: Some("agent.enable_feedback"),
                     pick: |settings_content| {
                         settings_content.agent.as_ref()?.enable_feedback.as_ref()
@@ -7620,6 +7947,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "代理等待时通知",
                 description: "当代理完成响应或在运行工具操作前需要确认时，通知显示在哪里。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.notify_when_agent_waiting"),
                     pick: |settings_content| {
                         settings_content
@@ -7642,6 +7970,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "代理完成时播放声音",
                 description: "当代理完成响应或需要用户输入时，何时播放提示音。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.play_sound_when_agent_done"),
                     pick: |settings_content| {
                         settings_content
@@ -7664,6 +7993,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "展开编辑卡片",
                 description: "是否在代理面板中展开编辑卡片，显示差异预览。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.expand_edit_card"),
                     pick: |settings_content| {
                         settings_content.agent.as_ref()?.expand_edit_card.as_ref()
@@ -7682,6 +8012,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "展开终端卡片",
                 description: "是否在代理面板中展开终端卡片，显示完整命令输出。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.expand_terminal_card"),
                     pick: |settings_content| {
                         settings_content
@@ -7704,6 +8035,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "思考显示",
                 description: "默认如何显示思考块。\"自动\"会在流式输出时完全展开，完成后自动折叠。\"预览\"会在流式输出时以高度限制自动展开。\"始终展开\"显示完整内容。\"始终折叠\"保持折叠。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.thinking_display"),
                     pick: |settings_content| {
                         settings_content
@@ -7726,6 +8058,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "停止终端时取消生成",
                 description: "点击正在运行的终端工具的停止按钮时，是否同时取消代理生成。注意，这只适用于停止按钮，不适用于终端中的 ctrl+c。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.cancel_generation_on_terminal_stop"),
                     pick: |settings_content| {
                         settings_content
@@ -7748,6 +8081,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "使用修饰键发送",
                 description: "是否始终使用 cmd-enter（Linux 或 Windows 上为 ctrl-enter）发送消息。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.use_modifier_to_send"),
                     pick: |settings_content| {
                         settings_content
@@ -7770,6 +8104,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "消息编辑器最小行数",
                 description: "代理消息编辑器显示的最小行数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.message_editor_min_lines"),
                     pick: |settings_content| {
                         settings_content
@@ -7792,6 +8127,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "显示轮次统计",
                 description: "是否显示生成期间的耗时和最终轮次时长等轮次统计信息。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.show_turn_stats"),
                     pick: |settings_content| {
                         settings_content.agent.as_ref()?.show_turn_stats.as_ref()
@@ -7810,6 +8146,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "显示合并冲突指示器",
                 description: "是否在状态栏显示合并冲突指示器，用于通过代理解决冲突。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("agent.show_merge_conflict_indicator"),
                     pick: |settings_content| {
                         settings_content.agent.as_ref()?.show_merge_conflict_indicator.as_ref()
@@ -7836,6 +8173,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 title: "上下文服务器超时",
                 description: "上下文服务器工具调用的默认超时时间，单位为秒。可在 context_servers 配置中按服务器覆盖。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("context_server_timeout"),
                     pick: |settings_content| {
                         settings_content.project.context_server_timeout.as_ref()
@@ -7855,6 +8193,7 @@ fn ai_page(cx: &App) -> SettingsPage {
             title: "显示模式",
             description: "何时在缓冲区中显示编辑预测预览。主动模式会内联显示，低调模式仅在按住修饰键时显示。",
             field: Box::new(SettingField {
+                organization_override: None,
                 json_path: Some("edit_prediction.display_mode"),
                 pick: |settings_content| {
                     settings_content
@@ -7899,6 +8238,7 @@ fn network_page() -> SettingsPage {
                 title: "代理",
                 description: "用于网络请求的代理。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("proxy"),
                     pick: |settings_content| settings_content.proxy.as_ref(),
                     write: |settings_content, value, _| {
@@ -7915,6 +8255,7 @@ fn network_page() -> SettingsPage {
                 title: "服务器 URL",
                 description: "要连接的 Zed 服务器 URL。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("server_url"),
                     pick: |settings_content| settings_content.server_url.as_ref(),
                     write: |settings_content, value, _| {
@@ -7979,6 +8320,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "Tab 大小",
                 description: "一个 Tab 应占用的列数。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).tab_size"), // TODO(cameron): not JQ syntax because not URL-safe
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -7998,6 +8340,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "硬 Tab",
                 description: "缩进行时是否使用 Tab 字符，而不是多个空格。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).hard_tabs"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8017,6 +8360,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "自动缩进",
                 description: "控制输入时的自动缩进行为。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).auto_indent"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8036,6 +8380,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "粘贴时自动缩进",
                 description: "是否根据上下文调整粘贴内容的缩进。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).auto_indent_on_paste"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8061,6 +8406,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "软换行",
                 description: "如何对长文本行进行软换行。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).soft_wrap"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8080,6 +8426,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示换行参考线",
                 description: "在编辑器中显示换行参考线。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).show_wrap_guides"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8099,6 +8446,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "首选行长度",
                 description: "启用软换行的缓冲区中进行软换行的列位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).preferred_line_length"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8119,6 +8467,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "在编辑器中显示换行参考线的字符列位置。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).wrap_guides"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -8144,6 +8493,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "允许重新换行",
                 description: "控制此语言中允许执行 `editor::rewrap` 操作的位置。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).allow_rewrap"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8169,6 +8519,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "启用",
                 description: "在编辑器中显示缩进参考线。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).indent_guides.enabled"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8191,6 +8542,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "线宽",
                 description: "缩进参考线的宽度，以像素为单位，范围 1 到 10。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).indent_guides.line_width"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8213,6 +8565,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "活动线宽",
                 description: "活动缩进参考线的宽度，以像素为单位，范围 1 到 10。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).indent_guides.active_line_width"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8238,6 +8591,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "着色",
                 description: "决定缩进参考线如何着色。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).indent_guides.coloring"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8260,6 +8614,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "背景着色",
                 description: "决定缩进参考线背景如何着色。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).indent_guides.background_coloring"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8292,6 +8647,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 field: Box::new(
                     // TODO(settings_ui): this setting should just be a bool
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).format_on_save"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -8316,6 +8672,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "保存时移除行尾空白",
                 description: "保存缓冲区前是否移除各行的行尾空白。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).remove_trailing_whitespace_on_save"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8335,6 +8692,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "保存时确保末尾换行",
                 description: "保存缓冲区时是否确保末尾有一个换行符。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).ensure_final_newline_on_save"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8354,6 +8712,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "行尾符",
                 description: "新文件以及格式化和保存操作中应如何处理行尾符。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).line_ending"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8377,6 +8736,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "如何执行缓冲区格式化。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).formatter"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -8402,6 +8762,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "使用输入时格式化",
                 description: "是否在每次输入由 LSP 服务器能力定义的“触发”符号后，使用额外的 LSP 查询来格式化并修正代码。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).use_on_type_format"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8422,6 +8783,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "格式化时要运行的额外代码操作。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).code_actions_on_format"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -8453,6 +8815,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "使用自动闭合",
                 description: "是否自动为你输入闭合字符。例如，当你输入 '(' 时，Zed 会在正确位置自动添加闭合的 ')'。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).use_autoclose"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8472,6 +8835,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "使用自动包围",
                 description: "是否自动用字符包围所选文本。例如，当你选中文本并输入 '(' 时，Zed 会自动用 () 包围文本。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).use_auto_surround"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8491,6 +8855,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "始终将括号视为自动闭合",
                 description: "控制无论闭合字符如何插入，是否始终跳过并自动移除它们。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).always_treat_brackets_as_autoclosed"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8510,6 +8875,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "JSX 标签自动闭合",
                 description: "是否自动闭合 JSX 标签。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).jsx_tag_auto_close"),
                     // TODO(settings_ui): this setting should just be a bool
                     pick: |settings_content| {
@@ -8536,6 +8902,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示空白字符",
                 description: "是否在编辑器中显示 Tab 和空格。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).show_whitespaces"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8556,6 +8923,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "启用 show_whitespaces 时用于渲染空格字符的可见字符（默认：“•”）。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).whitespace_map.space"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -8582,6 +8950,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "启用 show_whitespaces 时用于渲染 Tab 字符的可见字符（默认：“→”）。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).whitespace_map.tab"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -8613,6 +8982,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "输入时显示补全",
                 description: "在编辑器中输入时，是否在未显式请求的情况下弹出补全菜单。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).show_completions_on_input"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8632,6 +9002,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示补全文档",
                 description: "是否为补全菜单中的条目内联或并排显示文档。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).show_completion_documentation"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8651,6 +9022,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "单词",
                 description: "控制单词如何补全。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).completions.words"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8670,6 +9042,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "单词最小长度",
                 description: "补全查询至少包含多少个字符时，才自动显示基于单词的补全。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).completions.words_min_length"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8692,6 +9065,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "补全菜单滚动条",
                 description: "何时在补全菜单中显示滚动条。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("editor.completion_menu_scrollbar"),
                     pick: |settings_content| {
                         settings_content.editor.completion_menu_scrollbar.as_ref()
@@ -8707,6 +9081,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "补全详情对齐方式",
                 description: "代码补全上下文菜单中的详情文本是左对齐还是右对齐。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("editor.completion_detail_alignment"),
                     pick: |settings_content| {
                         settings_content.editor.completion_detail_alignment.as_ref()
@@ -8722,6 +9097,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "Completion Menu Item Kind",
                 description: "How to display the LSP item kind (function, method, variable, etc.) of each entry in the completions menu.",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("editor.completion_menu_item_kind"),
                     pick: |settings_content| {
                         settings_content.editor.completion_menu_item_kind.as_ref()
@@ -8743,6 +9119,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "启用",
                 description: "用于开启或关闭提示的全局开关。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.enabled"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8762,6 +9139,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示值提示",
                 description: "调试时用于开启或关闭内联值的全局开关。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.show_value_hints"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8784,6 +9162,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示类型提示",
                 description: "是否显示类型提示。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.show_type_hints"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8803,6 +9182,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示参数提示",
                 description: "是否显示参数提示。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.show_parameter_hints"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8825,6 +9205,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示其他提示",
                 description: "是否显示其他提示。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.show_other_hints"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8847,6 +9228,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "显示背景",
                 description: "为内联提示显示背景。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.show_background"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8866,6 +9248,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "编辑防抖毫秒数",
                 description: "缓冲区编辑后是否对内联提示更新进行防抖（设为 0 可禁用防抖）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.edit_debounce_ms"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8888,6 +9271,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "滚动防抖毫秒数",
                 description: "缓冲区滚动后是否对内联提示更新进行防抖（设为 0 可禁用防抖）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).inlay_hints.scroll_debounce_ms"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8911,6 +9295,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "用户按下指定修饰键时切换内联提示（隐藏或显示）。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some(
                             "languages.$(language).inlay_hints.toggle_on_modifiers_press",
                         ),
@@ -8951,6 +9336,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "启用",
                 description: "此语言是否启用任务。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).tasks.enabled"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -8971,6 +9357,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "为特定语言设置的额外任务变量。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).tasks.variables"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -8996,6 +9383,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "优先使用 LSP",
                 description: "优先使用 LSP 任务，而不是 Zed 语言扩展任务。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).tasks.prefer_lsp"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9021,6 +9409,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "启用单词差异",
                 description: "是否在编辑器中启用单词级差异高亮。启用后，修改行中的变化单词会被高亮，以准确显示更改内容。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).word_diff_enabled"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9041,6 +9430,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "此语言的首选调试器。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).debuggers"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -9066,6 +9456,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "中键粘贴",
                 description: "在 Linux 上启用鼠标中键粘贴。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).editor.middle_click_paste"),
                     pick: |settings_content| settings_content.editor.middle_click_paste.as_ref(),
                     write: |settings_content, value, _| {
@@ -9079,6 +9470,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "换行时延续注释",
                 description: "当前一行也是注释时，是否以注释开始新行。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).extend_comment_on_newline"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9098,6 +9490,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "括号着色",
                 description: "是否在编辑器中为括号着色。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).colorize_brackets"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9117,6 +9510,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "Vim/Emacs Modeline 支持",
                 description: "搜索 modeline 的行数（设为 0 可禁用）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("modeline_lines"),
                     pick: |settings_content| settings_content.modeline_lines.as_ref(),
                     write: |settings_content, value, _| {
@@ -9135,6 +9529,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "图像查看器",
                 description: "图像文件大小的单位。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("image_viewer.unit"),
                     pick: |settings_content| {
                         settings_content
@@ -9153,6 +9548,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "自动替换 Emoji 短代码",
                 description: "是否自动将 Emoji 短代码替换为 Emoji 字符。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("message_editor.auto_replace_emoji_shortcode"),
                     pick: |settings_content| {
                         settings_content
@@ -9176,6 +9572,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "拖放目标大小",
                 description: "编辑器中拖放目标的相对大小，拖入文件会以拆分窗格打开。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("drop_target_size"),
                     pick: |settings_content| settings_content.workspace.drop_target_size.as_ref(),
                     write: |settings_content, value, _| {
@@ -9194,6 +9591,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
         title: "代码透镜",
         description: "是否以及如何显示来自语言服务器的代码透镜。",
         field: Box::new(SettingField {
+            organization_override: None,
             json_path: Some("code_lens"),
             pick: |settings_content| settings_content.editor.code_lens.as_ref(),
             write: |settings_content, value, _| {
@@ -9208,6 +9606,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
         title: "LSP 文档颜色",
         description: "如何在编辑器中渲染 LSP 颜色预览。",
         field: Box::new(SettingField {
+            organization_override: None,
             json_path: Some("lsp_document_colors"),
             pick: |settings_content| settings_content.editor.lsp_document_colors.as_ref(),
             write: |settings_content, value, _| {
@@ -9261,6 +9660,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "启用语言服务器",
                 description: "是否使用语言服务器提供代码智能。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).enable_language_server"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9281,6 +9681,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "此语言要使用（或禁用）的语言服务器列表。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).language_servers"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -9306,6 +9707,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "联动编辑",
                 description: "如果语言服务器支持，是否对关联范围执行联动编辑。例如，编辑开始 <html> 标签时，结束 </html> 标签的内容也会一起编辑。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).linked_edits"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9325,6 +9727,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "跳转定义回退",
                 description: "当语言服务器返回空的跳转定义响应时，是否继续尝试回退处理。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("go_to_definition_fallback"),
                     pick: |settings_content| {
                         settings_content.editor.go_to_definition_fallback.as_ref()
@@ -9340,6 +9743,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "跳转定义滚动策略",
                 description: "跳转到定义或引用时，如何滚动使目标进入视图。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("go_to_definition_scroll_strategy"),
                     pick: |settings_content| {
                         settings_content
@@ -9369,6 +9773,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                     })
                 },
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).semantic_tokens"),
                     pick: |settings_content| {
                         settings_content
@@ -9393,6 +9798,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "LSP 折叠范围",
                 description: "启用后，使用语言服务器提供的折叠范围，而不是基于缩进的折叠。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).document_folding_ranges"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9412,6 +9818,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "LSP 文档符号",
                 description: "启用后，使用语言服务器的文档符号生成大纲和面包屑，而不是 tree-sitter。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).document_symbols"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9437,6 +9844,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "启用",
                 description: "是否获取 LSP 补全。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).completions.lsp"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9456,6 +9864,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "获取超时（毫秒）",
                 description: "获取 LSP 补全时，决定等待特定服务器响应的时长（设为 0 表示无限等待）。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).completions.lsp_fetch_timeout_ms"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9478,6 +9887,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "插入模式",
                 description: "控制如何插入 LSP 补全。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).completions.lsp_insert_mode"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9504,6 +9914,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "此语言的首选调试器。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).debuggers"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -9535,6 +9946,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "允许",
                 description: "为指定语言启用或禁用 Prettier 格式化。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).prettier.allowed"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9554,6 +9966,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 title: "解析器",
                 description: "强制 Prettier 集成在格式化该语言文件时使用指定解析器名称。",
                 field: Box::new(SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).prettier.parser"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {
@@ -9574,6 +9987,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "强制 Prettier 集成在格式化该语言文件时使用指定插件。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).prettier.plugins"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -9600,6 +10014,7 @@ fn non_editor_language_settings_data() -> Box<[SettingsPageItem]> {
                 description: "默认 Prettier 选项，格式与 package.json 中的 Prettier 配置段相同。",
                 field: Box::new(
                     SettingField {
+                        organization_override: None,
                         json_path: Some("languages.$(language).prettier.options"),
                         pick: |settings_content| {
                             language_settings_field(settings_content, |language| {
@@ -9648,6 +10063,15 @@ fn edit_prediction_language_settings_section() -> [SettingsPageItem; 5] {
             title: "数据收集",
             description: "控制使用 Zed 编辑预测时是否允许收集训练数据。数据只会从检测为开源项目的文件中收集。默认值会使用之前通过状态栏开关设置的偏好；如果没有保存过偏好，则为 false。",
             field: Box::new(SettingField {
+                organization_override: Some(|org_settings| {
+                    const DATA_COLLECTION_DISABLED: EditPredictionDataCollectionChoice = EditPredictionDataCollectionChoice::No;
+
+                    if !org_settings.edit_prediction.is_feedback_enabled {
+                        Some(&DATA_COLLECTION_DISABLED)
+                    } else {
+                        None
+                    }
+                }),
                 json_path: Some("edit_predictions.allow_data_collection"),
                 pick: |settings_content| {
                     settings_content
@@ -9674,6 +10098,7 @@ fn edit_prediction_language_settings_section() -> [SettingsPageItem; 5] {
             title: "显示编辑预测",
             description: "控制编辑预测是立即显示还是手动显示。",
             field: Box::new(SettingField {
+                organization_override: None,
                 json_path: Some("languages.$(language).show_edit_predictions"),
                 pick: |settings_content| {
                     language_settings_field(settings_content, |language| {
@@ -9694,6 +10119,7 @@ fn edit_prediction_language_settings_section() -> [SettingsPageItem; 5] {
             description: "控制是否在指定语言作用域中显示编辑预测。",
             field: Box::new(
                 SettingField {
+                    organization_override: None,
                     json_path: Some("languages.$(language).edit_predictions_disabled_in"),
                     pick: |settings_content| {
                         language_settings_field(settings_content, |language| {

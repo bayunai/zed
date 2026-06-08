@@ -615,6 +615,7 @@ impl EditPredictionButton {
                     window.dispatch_action(
                         OpenSettingsAt {
                             path: "edit_predictions.providers".to_string(),
+                            target: None,
                         }
                         .boxed_clone(),
                         cx,
@@ -1111,7 +1112,7 @@ impl EditPredictionButton {
                     .link_with_handler(
                         "Learn More",
                         OpenBrowser {
-                            url: zed_urls::edit_prediction_docs(cx),
+                            url: zed_urls::edit_prediction_docs(cx).into(),
                         }
                         .boxed_clone(),
                         |_window, _cx| {
@@ -1624,12 +1625,10 @@ fn emit_edit_prediction_menu_opened(
     );
 }
 
-fn copilot_settings_url(enterprise_uri: Option<&str>) -> String {
+fn copilot_settings_url(enterprise_uri: Option<&str>) -> Arc<str> {
     match enterprise_uri {
-        Some(uri) => {
-            format!("{}{}", uri.trim_end_matches('/'), COPILOT_SETTINGS_PATH)
-        }
-        None => COPILOT_SETTINGS_URL.to_string(),
+        Some(uri) => format!("{}{}", uri.trim_end_matches('/'), COPILOT_SETTINGS_PATH).into(),
+        None => COPILOT_SETTINGS_URL.into(),
     }
 }
 
@@ -1665,7 +1664,7 @@ mod tests {
             )
         });
 
-        assert_eq!(url, "https://my-company.ghe.com/settings/copilot");
+        assert_eq!(url.as_ref(), "https://my-company.ghe.com/settings/copilot");
     }
 
     #[gpui::test]
@@ -1695,7 +1694,7 @@ mod tests {
             )
         });
 
-        assert_eq!(url, "https://my-company.ghe.com/settings/copilot");
+        assert_eq!(url.as_ref(), "https://my-company.ghe.com/settings/copilot");
     }
 
     #[gpui::test]
@@ -1716,6 +1715,6 @@ mod tests {
             )
         });
 
-        assert_eq!(url, "https://github.com/settings/copilot");
+        assert_eq!(url.as_ref(), "https://github.com/settings/copilot");
     }
 }

@@ -132,7 +132,12 @@ pub fn init(cx: &mut App) {
                             Err(err) => {
                                 workspace_handle
                                     .update(cx, |workspace, cx| {
-                                        workspace.show_portal_error(err.to_string(), cx);
+                                        workspace.show_error(
+                                            workspace::workspace_error::PortalError::new(
+                                                err.to_string(),
+                                            ),
+                                            cx,
+                                        );
                                     })
                                     .ok();
                                 return None;
@@ -149,12 +154,10 @@ pub fn init(cx: &mut App) {
                                 log::error!("安装开发扩展失败: {:?}", err);
                                 workspace_handle
                                     .update(cx, |workspace, cx| {
-                                        workspace.show_error(
-                                            // NOTE: using `anyhow::context` here ends up not printing
-                                            // the error
-                                            &format!("安装开发扩展失败: {}", err),
-                                            cx,
-                                        );
+                                        // NOTE: using `anyhow::context` here ends up not printing
+                                        // the error
+                                        workspace
+                                            .show_error(format!("安装开发扩展失败: {}", err), cx);
                                     })
                                     .ok();
                             }
@@ -1136,38 +1139,39 @@ impl ExtensionsPage {
                     None
                 } else {
                     Some(
-                        Button::new(extension_button_id(&extension.id, ExtensionOperation::Upgrade), "升级")
-                          .style(ButtonStyle::Tinted(ui::TintColor::Accent))
-                            .when(!is_compatible, |upgrade_button| {
-                                upgrade_button.disabled(true).tooltip({
-                                    let version = extension.manifest.version.clone();
-                                    move |_, cx| {
-                                        Tooltip::simple(
-                                            format!(
-                                                "v{version} 与此版本的 Zed 不兼容。",
-                                            ),
-                                             cx,
-                                        )
-                                    }
-                                })
-                            })
-                            .disabled(!is_compatible)
-                            .on_click({
-                                let extension_id = extension.id.clone();
+                        Button::new(
+                            extension_button_id(&extension.id, ExtensionOperation::Upgrade),
+                            "升级",
+                        )
+                        .style(ButtonStyle::Tinted(ui::TintColor::Accent))
+                        .when(!is_compatible, |upgrade_button| {
+                            upgrade_button.disabled(true).tooltip({
                                 let version = extension.manifest.version.clone();
-                                move |_, _, cx| {
-                                    telemetry::event!("Extension Installed", extension_id, version);
-                                    ExtensionStore::global(cx).update(cx, |store, cx| {
-                                        store
-                                            .upgrade_extension(
-                                                extension_id.clone(),
-                                                version.clone(),
-                                                cx,
-                                            )
-                                            .detach_and_log_err(cx)
-                                    });
+                                move |_, cx| {
+                                    Tooltip::simple(
+                                        format!("v{version} 与此版本的 Zed 不兼容。",),
+                                        cx,
+                                    )
                                 }
-                            }),
+                            })
+                        })
+                        .disabled(!is_compatible)
+                        .on_click({
+                            let extension_id = extension.id.clone();
+                            let version = extension.manifest.version.clone();
+                            move |_, _, cx| {
+                                telemetry::event!("Extension Installed", extension_id, version);
+                                ExtensionStore::global(cx).update(cx, |store, cx| {
+                                    store
+                                        .upgrade_extension(
+                                            extension_id.clone(),
+                                            version.clone(),
+                                            cx,
+                                        )
+                                        .detach_and_log_err(cx)
+                                });
+                            }
+                        }),
                     )
                 },
             },
