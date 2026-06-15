@@ -630,7 +630,7 @@ impl TitleBar {
                     Some(recent_projects::RemoteServerProjects::popover(
                         fs,
                         workspace.clone(),
-                        false,
+                        None,
                         window,
                         cx,
                     ))
@@ -657,10 +657,7 @@ impl TitleBar {
                     move |_window, cx| {
                         Tooltip::with_meta(
                             tooltip_title,
-                            Some(&OpenRemote {
-                                from_existing_connection: false,
-                                create_new_window: false,
-                            }),
+                            Some(&OpenRemote::default()),
                             meta.clone(),
                             cx,
                         )
@@ -741,10 +738,8 @@ impl TitleBar {
                 .color(Color::Player(participant_index.0))
                 .label_size(LabelSize::Small)
                 .tooltip(move |_, cx| {
-                    let tooltip_title = format!(
-                        "{} 正在共享此项目。点击以跟随。",
-                        host_user.github_login
-                    );
+                    let tooltip_title =
+                        format!("{} 正在共享此项目。点击以跟随。", host_user.github_login);
 
                     Tooltip::with_meta(tooltip_title, None, "Click to Follow", cx)
                 })
@@ -816,7 +811,7 @@ impl TitleBar {
                 Some(recent_projects::RecentProjects::popover(
                     workspace.clone(),
                     window_project_groups.clone(),
-                    false,
+                    None,
                     focus_handle.clone(),
                     window,
                     cx,
@@ -835,13 +830,7 @@ impl TitleBar {
                     .selected_style(ButtonStyle::Tinted(TintColor::Accent))
                     .when(!is_project_selected, |s| s.color(Color::Muted)),
                 move |_window, cx| {
-                    Tooltip::for_action(
-                        "最近的项目",
-                        &zed_actions::OpenRecent {
-                            create_new_window: false,
-                        },
-                        cx,
-                    )
+                    Tooltip::for_action("最近的项目", &zed_actions::OpenRecent::default(), cx)
                 },
             )
             .anchor(gpui::Anchor::TopLeft)
@@ -873,7 +862,7 @@ impl TitleBar {
                 Some(recent_projects::RecentProjects::popover(
                     workspace.clone(),
                     window_project_groups.clone(),
-                    false,
+                    None,
                     focus_handle.clone(),
                     window,
                     cx,
@@ -892,13 +881,7 @@ impl TitleBar {
                     .selected_style(ButtonStyle::Tinted(TintColor::Accent))
                     .when(!is_project_selected, |s| s.color(Color::Muted)),
                 move |_window, cx| {
-                    Tooltip::for_action(
-                        "最近的项目",
-                        &zed_actions::OpenRecent {
-                            create_new_window: false,
-                        },
-                        cx,
-                    )
+                    Tooltip::for_action("最近的项目", &zed_actions::OpenRecent::default(), cx)
                 },
             )
             .anchor(gpui::Anchor::TopLeft)
@@ -1377,10 +1360,7 @@ impl TitleBar {
                         "图标主题…",
                         zed_actions::icon_theme_selector::Toggle::default().boxed_clone(),
                     )
-                    .action(
-                        "扩展",
-                        zed_actions::Extensions::default().boxed_clone(),
-                    )
+                    .action("扩展", zed_actions::Extensions::default().boxed_clone())
                     .when(ai_enabled, |menu| {
                         menu.separator()
                             .submenu("Panel Layout", move |menu, _window, _cx| {

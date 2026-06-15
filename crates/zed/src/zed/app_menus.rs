@@ -20,10 +20,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             "重置缩放",
             zed_actions::ResetBufferFontSize { persist: false },
         ),
-        MenuItem::action(
-            "重置所有缩放",
-            zed_actions::ResetAllZoom { persist: false },
-        ),
+        MenuItem::action("重置所有缩放", zed_actions::ResetAllZoom { persist: false }),
         MenuItem::separator(),
         MenuItem::action("切换左侧停靠栏", workspace::ToggleLeftDock),
         MenuItem::action("切换右侧停靠栏", workspace::ToggleRightDock),
@@ -51,10 +48,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
     ];
 
     if ReleaseChannel::try_global(cx) == Some(ReleaseChannel::Dev) {
-        view_items.push(MenuItem::action(
-            "切换 GPUI 检查器",
-            dev::ToggleInspector,
-        ));
+        view_items.push(MenuItem::action("切换 GPUI 检查器", dev::ToggleInspector));
         view_items.push(MenuItem::separator());
     }
 
@@ -121,19 +115,8 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                     },
                     workspace::Open::default(),
                 ),
-                MenuItem::action(
-                    "打开最近项目...",
-                    zed_actions::OpenRecent {
-                        create_new_window: false,
-                    },
-                ),
-                MenuItem::action(
-                    "打开远程项目...",
-                    zed_actions::OpenRemote {
-                        create_new_window: false,
-                        from_existing_connection: false,
-                    },
-                ),
+                MenuItem::action("打开最近项目…", zed_actions::OpenRecent::default()),
+                MenuItem::action("打开远程项目…", zed_actions::OpenRemote::default()),
                 MenuItem::separator(),
                 MenuItem::action("将文件夹添加到项目…", workspace::AddFolderToProject),
                 MenuItem::separator(),
@@ -167,21 +150,14 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action("查找", search::buffer_search::Deploy::find()),
                 MenuItem::action("在项目中查找", workspace::DeploySearch::default()),
                 MenuItem::separator(),
-                MenuItem::action(
-                    "切换行注释",
-                    editor::actions::ToggleComments::default(),
-                ),
+                MenuItem::action("切换行注释", editor::actions::ToggleComments::default()),
             ],
         },
         Menu {
             name: "选择".into(),
             disabled: false,
             items: vec![
-                MenuItem::os_action(
-                    "全选",
-                    editor::actions::SelectAll,
-                    OsAction::SelectAll,
-                ),
+                MenuItem::os_action("全选", editor::actions::SelectAll, OsAction::SelectAll),
                 MenuItem::action("扩大选择范围", editor::actions::SelectLargerSyntaxNode),
                 MenuItem::action("缩小选择范围", editor::actions::SelectSmallerSyntaxNode),
                 MenuItem::action("选择下一个同级节点", editor::actions::SelectNextSyntaxNode),
@@ -237,10 +213,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::separator(),
                 MenuItem::action("转到文件...", workspace::ToggleFileFinder::default()),
                 // MenuItem::action("Go to Symbol in Project", project_symbols::Toggle),
-                MenuItem::action(
-                    "转到编辑器中的符号...",
-                    zed_actions::outline::ToggleOutline,
-                ),
+                MenuItem::action("转到编辑器中的符号...", zed_actions::outline::ToggleOutline),
                 MenuItem::action("转到行/列...", editor::actions::ToggleGoToLine),
                 MenuItem::separator(),
                 MenuItem::action("转到定义", editor::actions::GoToDefinition),
@@ -296,10 +269,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             name: "帮助".into(),
             disabled: false,
             items: vec![
-                MenuItem::action(
-                    "本地查看发行说明",
-                    auto_update_ui::ViewReleaseNotesLocally,
-                ),
+                MenuItem::action("本地查看发行说明", auto_update_ui::ViewReleaseNotesLocally),
                 MenuItem::action("查看遥测", zed_actions::OpenTelemetryLog),
                 MenuItem::action("查看依赖许可证", zed_actions::OpenLicenses),
                 MenuItem::action("显示欢迎页", onboarding::ShowWelcome),
