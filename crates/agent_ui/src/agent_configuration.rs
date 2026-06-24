@@ -506,6 +506,7 @@ impl AgentConfiguration {
                 Plan::ZedProTrial => ("专业版试用", Color::Accent, pro_chip_bg),
                 Plan::ZedPro => ("专业版", Color::Accent, pro_chip_bg),
                 Plan::ZedBusiness => ("商业版", Color::Accent, pro_chip_bg),
+                Plan::ZedVip => ("VIP", Color::Accent, pro_chip_bg),
                 Plan::ZedStudent => ("学生版", Color::Accent, pro_chip_bg),
             };
 
@@ -537,7 +538,18 @@ impl AgentConfiguration {
                     Some(ContextMenu::build(window, cx, |menu, _window, _cx| {
                         menu.entry("添加自定义服务器", None, {
                             |window, cx| {
-                                window.dispatch_action(crate::AddContextServer.boxed_clone(), cx)
+                                window.dispatch_action(
+                                    crate::AddContextServer::local().boxed_clone(),
+                                    cx,
+                                )
+                            }
+                        })
+                        .entry("Add Remote Server", None, {
+                            |window, cx| {
+                                window.dispatch_action(
+                                    crate::AddContextServer::remote().boxed_clone(),
+                                    cx,
+                                )
                             }
                         })
                         .entry("从扩展安装", None, {

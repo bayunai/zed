@@ -304,7 +304,7 @@ impl ManageProfilesModal {
                 window,
                 cx,
             )
-            .modal(false)
+            .embedded()
         });
 
         let dismiss_subscription = cx.subscribe_in(&model_picker, window, {

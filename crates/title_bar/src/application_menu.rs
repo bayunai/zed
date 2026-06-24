@@ -167,8 +167,9 @@ impl ApplicationMenu {
                             ui::IconName::Menu,
                         )
                         .style(ButtonStyle::Subtle)
-                        .icon_size(IconSize::Small),
-                        Tooltip::text("打开程序目录"),
+                        .icon_size(IconSize::Small)
+                        .aria_label("应用菜单"),
+                        Tooltip::text("打开应用菜单"),
                     )
                     .with_handle(handle),
             )
