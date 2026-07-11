@@ -2,11 +2,9 @@ use collab_ui::collab_panel;
 use gpui::{App, Menu, MenuItem, OsAction};
 use release_channel::ReleaseChannel;
 use terminal_view::terminal_panel;
-use zed_actions::{debug_panel, dev};
+use zed_actions::{Quit, assistant, debug_panel, dev, git_panel, project_panel};
 
 pub fn app_menus(cx: &mut App) -> Vec<Menu> {
-    use zed_actions::Quit;
-
     let mut view_items = vec![
         MenuItem::action(
             "放大",
@@ -37,11 +35,13 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             ],
         }),
         MenuItem::separator(),
-        MenuItem::action("项目面板", zed_actions::project_panel::ToggleFocus),
+        MenuItem::action("项目面板", project_panel::ToggleFocus),
         MenuItem::action("大纲面板", outline_panel::ToggleFocus),
         MenuItem::action("协作面板", collab_panel::ToggleFocus),
-        MenuItem::action("终端面板", terminal_panel::ToggleFocus),
+        MenuItem::action("终端面板", terminal_panel::Toggle),
         MenuItem::action("调试器面板", debug_panel::ToggleFocus),
+        MenuItem::action("代理面板", assistant::ToggleFocus),
+        MenuItem::action("Git 面板", git_panel::ToggleFocus),
         MenuItem::separator(),
         MenuItem::action("诊断", diagnostics::Deploy),
         MenuItem::separator(),

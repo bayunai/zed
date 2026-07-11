@@ -905,40 +905,43 @@ impl EditPredictionButton {
             }
         }
 
-        menu = menu
-            .item(
-                ContextMenuEntry::new("配置排除文件")
-                    .icon(IconName::LockOutlined)
-                    .icon_color(Color::Muted)
-                    .documentation_aside(DocumentationSide::Left, |_| {
-                        Label::new(indoc! {"
-                        打开设置，添加 Zed 永远不会预测编辑的敏感路径。"})
-                        .into_any_element()
-                    })
-                    .handler(move |window, cx| {
-                        telemetry::event!(
-                            "Edit Prediction Menu Action",
-                            action = "configure_excluded_files",
-                        );
-                        if let Some(workspace) = Workspace::for_window(window, cx) {
-                            let workspace = workspace.downgrade();
-                            window
-                                .spawn(cx, async |cx| {
-                                    open_disabled_globs_setting_in_editor(workspace, cx).await
-                                })
-                                .detach_and_log_err(cx);
-                        }
-                    }),
-            )
-            .item(
-                ContextMenuEntry::new("查看文档")
-                    .icon(IconName::FileGeneric)
-                    .icon_color(Color::Muted)
-                    .handler(move |_, cx| {
-                        telemetry::event!("Edit Prediction Menu Action", action = "view_docs",);
-                        cx.open_url(PRIVACY_DOCS);
-                    }),
-            );
+        menu = menu.item(
+            ContextMenuEntry::new("配置排除文件")
+                .icon(IconName::Lock)
+                .icon_color(Color::Muted)
+                .documentation_aside(DocumentationSide::Left, |_| {
+                    Label::new(indoc!{"
+                        打开设置，添加 Zed 永远不会预测编辑的敏感路径。"}).into_any_element()
+                })
+                .handler(move |window, cx| {
+                    telemetry::event!(
+                        "Edit Prediction Menu Action",
+                        action = "configure_excluded_files",
+                    );
+                    if let Some(workspace) = Workspace::for_window(window, cx) {
+                        let workspace = workspace.downgrade();
+                        window
+                            .spawn(cx, async |cx| {
+                                open_disabled_globs_setting_in_editor(
+                                    workspace,
+                                    cx,
+                                ).await
+                            })
+                            .detach_and_log_err(cx);
+                    }
+                }),
+        ).item(
+            ContextMenuEntry::new("查看文档")
+                .icon(IconName::FileGeneric)
+                .icon_color(Color::Muted)
+                .handler(move |_, cx| {
+                    telemetry::event!(
+                        "Edit Prediction Menu Action",
+                        action = "view_docs",
+                    );
+                    cx.open_url(PRIVACY_DOCS);
+                })
+        );
 
         if !self.editor_enabled.unwrap_or(true) {
             let icons = self

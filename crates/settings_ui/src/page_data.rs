@@ -94,6 +94,7 @@ fn developer_page(cx: &App) -> SettingsPage {
             title: "功能开关".into(),
             r#type: Default::default(),
             description: None,
+            search_aliases: &[],
             json_path: Some("feature_flags"),
             in_json: true,
             files: USER,
@@ -1161,6 +1162,67 @@ fn appearance_page() -> SettingsPage {
         ]
     }
 
+    fn markdown_preview_font_section() -> [SettingsPageItem; 4] {
+        [
+            SettingsPageItem::SectionHeader("Markdown Preview Font"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "Font Family",
+                description: "Font family for the markdown preview. Falls back to the UI font family.",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("markdown_preview_font_family"),
+                    pick: |settings_content| {
+                        settings_content.theme.markdown_preview_font_family.as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content.theme.markdown_preview_font_family = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "Code Font Family",
+                description: "Font family for code blocks in the markdown preview. Falls back to the editor font family.",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("markdown_preview_code_font_family"),
+                    pick: |settings_content| {
+                        settings_content
+                            .theme
+                            .markdown_preview_code_font_family
+                            .as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content.theme.markdown_preview_code_font_family = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "Font Size",
+                description: "Font size for the markdown preview. Falls back to the editor font size.",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("markdown_preview_font_size"),
+                    pick: |settings_content| {
+                        settings_content
+                            .theme
+                            .markdown_preview_font_size
+                            .as_ref()
+                            .or(settings_content.theme.buffer_font_size.as_ref())
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content.theme.markdown_preview_font_size = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+        ]
+    }
+
     fn text_rendering_section() -> [SettingsPageItem; 2] {
         [
             SettingsPageItem::SectionHeader("文本渲染"),
@@ -1389,6 +1451,7 @@ fn appearance_page() -> SettingsPage {
         buffer_font_section(),
         ui_font_section(),
         agent_panel_font_section(),
+        markdown_preview_font_section(),
         text_rendering_section(),
         cursor_section(),
         highlighting_section(),
@@ -3314,6 +3377,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
                     title: language_name,
                     r#type: crate::SubPageType::Language,
                     description: None,
+                    search_aliases: &[],
                     json_path: Some(link.leak()),
                     in_json: true,
                     files: USER | PROJECT,
@@ -7107,7 +7171,7 @@ fn terminal_page() -> SettingsPage {
         ]
     }
 
-    fn behavior_settings_section() -> [SettingsPageItem; 5] {
+    fn behavior_settings_section() -> [SettingsPageItem; 6] {
         [
             SettingsPageItem::SectionHeader("行为设置"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -7166,6 +7230,29 @@ fn terminal_page() -> SettingsPage {
                             .terminal
                             .get_or_insert_default()
                             .keep_selection_on_copy = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "鼠标模式下打开链接",
+                description: "当终端应用启用了鼠标报告时，cmd-点击（Linux 和 Windows 上为 ctrl-点击）是否仍可打开超链接。禁用时，这些点击会转发给应用；仍可通过 shift-cmd-点击打开链接。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("terminal.open_links_in_mouse_mode"),
+                    pick: |settings_content| {
+                        settings_content
+                            .terminal
+                            .as_ref()?
+                            .open_links_in_mouse_mode
+                            .as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .terminal
+                            .get_or_insert_default()
+                            .open_links_in_mouse_mode = value;
                     },
                 }),
                 metadata: None,
@@ -7512,32 +7599,75 @@ fn version_control_page() -> SettingsPage {
     fn inline_git_blame_section() -> [SettingsPageItem; 6] {
         [
             SettingsPageItem::SectionHeader("内联 Git 追溯"),
-            SettingsPageItem::SettingItem(SettingItem {
-                title: "启用",
-                description: "是否在当前聚焦行内联显示 Git 追溯数据。",
-                field: Box::new(SettingField {
-                    organization_override: None,
-                    json_path: Some("git.inline_blame.enabled"),
-                    pick: |settings_content| {
-                        settings_content
+            SettingsPageItem::DynamicItem(DynamicItem {
+                discriminant: SettingItem {
+                    title: "启用",
+                    description: "是否在当前聚焦行内联显示 Git 追溯数据。",
+                    field: Box::new(SettingField {
+                        organization_override: None,
+                        json_path: Some("git.inline_blame.enabled"),
+                        pick: |settings_content| {
+                            settings_content
+                                .git
+                                .as_ref()?
+                                .inline_blame
+                                .as_ref()?
+                                .enabled
+                                .as_ref()
+                        },
+                        write: |settings_content, value, _| {
+                            settings_content
+                                .git
+                                .get_or_insert_default()
+                                .inline_blame
+                                .get_or_insert_default()
+                                .enabled = value;
+                        },
+                    }),
+                    metadata: None,
+                    files: USER,
+                },
+                pick_discriminant: |settings_content| {
+                    Some(
+                        *settings_content
                             .git
                             .as_ref()?
                             .inline_blame
                             .as_ref()?
                             .enabled
-                            .as_ref()
-                    },
-                    write: |settings_content, value, _| {
-                        settings_content
-                            .git
-                            .get_or_insert_default()
-                            .inline_blame
-                            .get_or_insert_default()
-                            .enabled = value;
-                    },
-                }),
-                metadata: None,
-                files: USER,
+                            .as_ref()? as usize,
+                    )
+                },
+                fields: vec![
+                    vec![],
+                    vec![SettingItem {
+                        title: "位置",
+                        description: "启用时 Git 追溯信息的显示位置。",
+                        field: Box::new(SettingField {
+                            organization_override: None,
+                            json_path: Some("git.inline_blame.location"),
+                            pick: |settings_content| {
+                                settings_content
+                                    .git
+                                    .as_ref()?
+                                    .inline_blame
+                                    .as_ref()?
+                                    .location
+                                    .as_ref()
+                            },
+                            write: |settings_content, value, _| {
+                                settings_content
+                                    .git
+                                    .get_or_insert_default()
+                                    .inline_blame
+                                    .get_or_insert_default()
+                                    .location = value;
+                            },
+                        }),
+                        metadata: None,
+                        files: USER,
+                    }],
+                ],
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "延迟",
@@ -7892,7 +8022,7 @@ fn collaboration_page() -> SettingsPage {
 }
 
 fn ai_page(cx: &App) -> SettingsPage {
-    fn general_section() -> [SettingsPageItem; 3] {
+    fn general_section() -> [SettingsPageItem; 6] {
         [
             SettingsPageItem::SectionHeader("通用"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -7923,29 +8053,86 @@ fn ai_page(cx: &App) -> SettingsPage {
                 metadata: None,
                 files: USER,
             }),
-        ]
-    }
-
-    fn agent_configuration_section(cx: &App) -> Box<[SettingsPageItem]> {
-        use feature_flags::FeatureFlagAppExt as _;
-
-        // The LLM provider and MCP server pages are gated behind a feature flag
-        // while their configuration is being moved out of the agent panel.
-        let agent_settings_ui_enabled = cx.has_flag::<feature_flags::AgentSettingsUiFeatureFlag>();
-
-        let mut items = vec![SettingsPageItem::SectionHeader("代理配置")];
-
-        if agent_settings_ui_enabled {
-            items.push(SettingsPageItem::SubPageLink(SubPageLink {
+            SettingsPageItem::SubPageLink(SubPageLink {
                 title: "LLM 提供商".into(),
                 r#type: Default::default(),
                 json_path: Some("llm_providers"),
-                description: Some("配置 LLM 提供商的 API 密钥和设置。".into()),
+                description: Some("配置原生包含的模型提供商。".into()),
+                search_aliases: &[
+                    "ai",
+                    "amazon",
+                    "anthropic",
+                    "api key",
+                    "azure",
+                    "bedrock",
+                    "chat",
+                    "claude",
+                    "copilot",
+                    "gemini",
+                    "github",
+                    "google",
+                    "gpt",
+                    "grok",
+                    "llama",
+                    "llm",
+                    "lm studio",
+                    "mistral",
+                    "ollama",
+                    "openai",
+                    "opencode",
+                    "provider",
+                    "vercel",
+                    "xai",
+                ],
                 in_json: false,
                 files: USER,
                 render: render_llm_providers_page,
-            }));
-        }
+            }),
+            SettingsPageItem::SubPageLink(SubPageLink {
+                title: "外部代理".into(),
+                r#type: Default::default(),
+                json_path: Some("agent_servers"),
+                description: Some(
+                    "查看、添加和移除通过 Agent Client Protocol 连接的代理。"
+                        .into(),
+                ),
+                search_aliases: &[
+                    "acp",
+                    "agent client protocol",
+                    "amp",
+                    "claude agent",
+                    "claude code",
+                    "codex",
+                    "copilot cli",
+                    "cursor",
+                    "external agent",
+                    "factory droid",
+                    "github copilot",
+                    "grok build",
+                    "junie",
+                    "opencode",
+                ],
+                in_json: false,
+                files: USER,
+                render: render_external_agents_page,
+            }),
+            SettingsPageItem::SubPageLink(SubPageLink {
+                title: "MCP 服务器".into(),
+                r#type: Default::default(),
+                json_path: Some("context_servers"),
+                description: Some(
+                    "查看、添加、配置和移除 Model Context Protocol 服务器。".into(),
+                ),
+                search_aliases: &["context server", "mcp", "model context protocol"],
+                in_json: false,
+                files: USER,
+                render: render_mcp_servers_page,
+            }),
+        ]
+    }
+
+    fn agent_configuration_section(_cx: &App) -> Box<[SettingsPageItem]> {
+        let mut items = vec![SettingsPageItem::SectionHeader("代理配置")];
 
         items.extend([
             SettingsPageItem::SubPageLink(SubPageLink {
@@ -7953,6 +8140,7 @@ fn ai_page(cx: &App) -> SettingsPage {
                 r#type: Default::default(),
                 json_path: Some(zed_actions::AGENT_SKILLS_SETTINGS_PATH),
                 description: Some("查看和管理全局或项目工作树中安装的代理技能。".into()),
+                search_aliases: &["agent skill", "agent skills", "custom instructions", "skill", "skills"],
                 in_json: false,
                 files: USER | PROJECT,
                 render: render_skills_setup_page,
@@ -7964,6 +8152,15 @@ fn ai_page(cx: &App) -> SettingsPage {
                 description: Some(
                     "查看和更改提升终端沙箱权限，这些权限将始终允许且无需提示。".into(),
                 ),
+                search_aliases: &[
+                    "allow",
+                    "domain",
+                    "filesystem",
+                    "network",
+                    "sandbox",
+                    "unsandboxed",
+                    "permissions",
+                ],
                 in_json: true,
                 files: USER,
                 render: render_sandbox_settings_page,
@@ -7975,36 +8172,13 @@ fn ai_page(cx: &App) -> SettingsPage {
                 description: Some(
                     "为特定工具输入设置正则模式，以自动允许、自动拒绝或始终请求确认。".into(),
                 ),
+                search_aliases: &[],
                 in_json: true,
                 files: USER,
                 render: render_tool_permissions_setup_page,
             }),
         ]);
 
-        if agent_settings_ui_enabled {
-            items.push(SettingsPageItem::SubPageLink(SubPageLink {
-                title: "MCP 服务器".into(),
-                r#type: Default::default(),
-                json_path: Some("context_servers"),
-                description: Some(
-                    "查看、添加、配置和移除 Model Context Protocol 服务器。".into(),
-                ),
-                in_json: false,
-                files: USER,
-                render: render_mcp_servers_page,
-            }));
-            items.push(SettingsPageItem::SubPageLink(SubPageLink {
-                title: "外部代理".into(),
-                r#type: Default::default(),
-                json_path: Some("agent_servers"),
-                description: Some(
-                    "查看、添加和移除通过 Agent Client Protocol 连接的代理。".into(),
-                ),
-                in_json: false,
-                files: USER,
-                render: render_external_agents_page,
-            }));
-        }
 
         items.extend([
             SettingsPageItem::SettingItem(SettingItem {
@@ -8362,28 +8536,6 @@ fn ai_page(cx: &App) -> SettingsPage {
         items.into_boxed_slice()
     }
 
-    fn context_servers_section() -> [SettingsPageItem; 2] {
-        [
-            SettingsPageItem::SectionHeader("上下文服务器"),
-            SettingsPageItem::SettingItem(SettingItem {
-                title: "上下文服务器超时",
-                description: "上下文服务器工具调用的默认超时时间，单位为秒。可在 context_servers 配置中按服务器覆盖。",
-                field: Box::new(SettingField {
-                    organization_override: None,
-                    json_path: Some("context_server_timeout"),
-                    pick: |settings_content| {
-                        settings_content.project.context_server_timeout.as_ref()
-                    },
-                    write: |settings_content, value, _| {
-                        settings_content.project.context_server_timeout = value;
-                    },
-                }),
-                metadata: None,
-                files: USER | PROJECT,
-            }),
-        ]
-    }
-
     fn edit_prediction_display_sub_section() -> [SettingsPageItem; 1] {
         [SettingsPageItem::SettingItem(SettingItem {
             title: "显示模式",
@@ -8416,13 +8568,14 @@ fn ai_page(cx: &App) -> SettingsPage {
 
     SettingsPage {
         title: "AI",
-        items: concat_sections![
+        items: concat_sections!(
+            @vec,
             general_section(),
             agent_configuration_section(cx),
-            context_servers_section(),
             edit_prediction_language_settings_section(),
-            edit_prediction_display_sub_section()
-        ],
+            edit_prediction_display_sub_section(),
+        )
+        .into(),
     }
 }
 
@@ -8839,7 +8992,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
             SettingsPageItem::SectionHeader("格式化"),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "保存时格式化",
-                description: "保存前是否对缓冲区进行格式化。",
+                description: "开启：格式化整个缓冲区。\n关闭：不格式化。\n仅修改：仅格式化有未暂存更改的行；当 git diff 或 LSP 范围格式化不可用时跳过格式化。\n尽可能仅修改：同上，但会回退为格式化整个缓冲区。",
                 field: Box::new(
                     // TODO(settings_ui): this setting should just be a bool
                     SettingField {
@@ -9719,7 +9872,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
         ]
     }
 
-    fn global_only_miscellaneous_sub_section() -> [SettingsPageItem; 4] {
+    fn global_only_miscellaneous_sub_section() -> [SettingsPageItem; 3] {
         [
             SettingsPageItem::SettingItem(SettingItem {
                 title: "图像查看器",
@@ -9798,30 +9951,6 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                         metadata: None,
                     }],
                 ],
-            }),
-            SettingsPageItem::SettingItem(SettingItem {
-                title: "自动替换 Emoji 短代码",
-                description: "是否自动将 Emoji 短代码替换为 Emoji 字符。",
-                field: Box::new(SettingField {
-                    organization_override: None,
-                    json_path: Some("message_editor.auto_replace_emoji_shortcode"),
-                    pick: |settings_content| {
-                        settings_content
-                            .message_editor
-                            .as_ref()
-                            .and_then(|message_editor| {
-                                message_editor.auto_replace_emoji_shortcode.as_ref()
-                            })
-                    },
-                    write: |settings_content, value, _| {
-                        settings_content
-                            .message_editor
-                            .get_or_insert_default()
-                            .auto_replace_emoji_shortcode = value;
-                    },
-                }),
-                metadata: None,
-                files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "拖放目标大小",
@@ -10310,6 +10439,7 @@ fn edit_prediction_language_settings_section() -> [SettingsPageItem; 5] {
             r#type: Default::default(),
             json_path: Some("edit_predictions.providers"),
             description: Some("Set up different edit prediction providers in complement to Zed's built-in Zeta model.".into()),
+            search_aliases: &[],
             in_json: false,
             files: USER,
             render: render_edit_prediction_setup_page

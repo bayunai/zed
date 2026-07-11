@@ -127,7 +127,7 @@ impl Render for IncomingCallNotification {
             )
             .child(Label::new(format!(
                 "{} 正在 Zed 中共享项目",
-                self.state.call.calling_user.github_login
+                self.state.call.calling_user.username
             ))),
         )
     }

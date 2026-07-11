@@ -138,6 +138,9 @@ pub struct TerminalView {
     cursor_shape: CursorShape,
     blink_manager: Entity<BlinkManager>,
     mode: TerminalMode,
+    // Explicit override for whether workspace-specific context menu actions are shown.
+    // When `None`, visibility is derived from `mode` (hidden for embedded terminals).
+    show_workspace_actions: Option<bool>,
     blinking_terminal_enabled: bool,
     needs_serialize: bool,
     custom_title: Option<String>,
@@ -287,6 +290,7 @@ impl TerminalView {
             hover: None,
             hover_tooltip_update: Task::ready(()),
             mode: TerminalMode::Standalone,
+            show_workspace_actions: None,
             workspace_id,
             show_breadcrumbs: TerminalSettings::get_global(cx).toolbar.breadcrumbs,
             block_below_cursor: None,
@@ -313,6 +317,22 @@ impl TerminalView {
             max_lines_when_unfocused,
         };
         cx.notify();
+    }
+
+    /// Explicitly override whether workspace-specific context menu actions (e.g. creating or
+    /// closing terminal tabs, inline assist) are shown.
+    ///
+    /// This lets hosts that aren't workspace panes (such as the agent panel) hide these
+    /// actions without `terminal_view` needing to know about those hosts. When never called,
+    /// visibility is derived from the terminal's `mode`.
+    pub fn set_show_workspace_actions(&mut self, show: bool, cx: &mut Context<Self>) {
+        self.show_workspace_actions = Some(show);
+        cx.notify();
+    }
+
+    fn shows_workspace_actions(&self) -> bool {
+        self.show_workspace_actions
+            .unwrap_or_else(|| !matches!(self.mode, TerminalMode::Embedded { .. }))
     }
 
     const MAX_EMBEDDED_LINES: usize = 1_000;
@@ -507,32 +527,46 @@ impl TerminalView {
             .is_some_and(|terminal_panel| terminal_panel.read(cx).assistant_enabled());
         let context_menu = ContextMenu::build(window, cx, |menu, _, _| {
             menu.context(self.focus_handle.clone())
-                .action("新建终端", Box::new(NewTerminal::default()))
-                .action("新建中央终端", Box::new(NewCenterTerminal::default()))
-                .separator()
+                .when(self.shows_workspace_actions(), |menu| {
+                    menu.action("新建终端", Box::new(NewTerminal::default()))
+                        .action(
+                            "新建中央终端",
+                            Box::new(NewCenterTerminal::default()),
+                        )
+                        .separator()
+                })
                 .action("复制", Box::new(Copy))
-                .action("粘贴", Box::new(Paste))
-                .action("粘贴文本", Box::new(PasteText))
+                .when(
+                    !matches!(self.mode, TerminalMode::Embedded { .. }),
+                    |menu| {
+                        menu.action("粘贴", Box::new(Paste))
+                            .action("粘贴文本", Box::new(PasteText))
+                    },
+                )
                 .action("全选", Box::new(SelectAll))
-                .action("清空", Box::new(Clear))
+                .when(
+                    !matches!(self.mode, TerminalMode::Embedded { .. }),
+                    |menu| menu.action("清空", Box::new(Clear)),
+                )
                 .when(
                     assistant_enabled && !matches!(self.mode, TerminalMode::Embedded { .. }),
                     |menu| {
                         menu.separator()
                             .action("内联辅助", Box::new(InlineAssist::default()))
-                            .when(has_selection, |menu| {
+                            .when(has_selection && self.shows_workspace_actions(), |menu| {
                                 menu.action("添加到代理会话", Box::new(AddSelectionToThread))
                             })
                     },
                 )
-                .separator()
-                .action(
-                    "关闭终端标签页",
-                    Box::new(CloseActiveItem {
-                        save_intent: None,
-                        close_pinned: true,
-                    }),
-                )
+                .when(self.shows_workspace_actions(), |menu| {
+                    menu.separator().action(
+                        "关闭终端标签页",
+                        Box::new(CloseActiveItem {
+                            save_intent: None,
+                            close_pinned: true,
+                        }),
+                    )
+                })
         });
 
         window.focus(&context_menu.focus_handle(cx), cx);
@@ -925,7 +959,7 @@ impl TerminalView {
     pub fn add_paths_to_terminal(&self, paths: &[PathBuf], window: &mut Window, cx: &mut App) {
         let mut text = paths
             .iter()
-            .map(|path| format!(" {path:?}"))
+            .filter_map(|path| Some(format!(" {}", shlex::try_quote(path.to_str()?).ok()?)))
             .collect::<String>();
         text.push(' ');
         window.focus(&self.focus_handle(cx), cx);
@@ -1095,6 +1129,7 @@ fn subscribe_for_terminal_events(
             match event {
                 Event::Wakeup => {
                     cx.notify();
+                    window.invalidate_character_coordinates();
                     cx.emit(Event::Wakeup);
                     cx.emit(ItemEvent::UpdateTab);
                     cx.emit(SearchEvent::MatchesInvalidated);
@@ -2142,7 +2177,7 @@ mod tests {
         let mut text = String::new();
         for path in paths {
             text.push(' ');
-            text.push_str(&format!("{path:?}"));
+            text.push_str(&shlex::try_quote(path.to_str().unwrap()).unwrap());
         }
         text.push(' ');
         text
@@ -2278,6 +2313,28 @@ mod tests {
             terminal.update(&mut cx, |terminal, _| terminal.take_input_log()),
             vec![SHIFT_UP_ESCAPE.to_vec()],
             "shift-up should be forwarded to the program in the alternate screen",
+        );
+    }
+
+    #[cfg(target_os = "linux")]
+    #[gpui::test]
+    async fn ctrl_q_is_forwarded_to_terminal_not_quit(cx: &mut TestAppContext) {
+        let (project, _workspace, window_handle) = init_test_with_window(cx).await;
+        cx.update(load_default_keymap);
+        let (_pane, terminal, _terminal_view) =
+            add_display_only_terminal(&project, window_handle, true, cx);
+
+        let mut cx = VisualTestContext::from_window(window_handle.into(), cx);
+        cx.update(|window, cx| {
+            let _ = window.draw(cx);
+        });
+        cx.run_until_parked();
+
+        cx.simulate_keystrokes("ctrl-q");
+        assert_eq!(
+            terminal.update(&mut cx, |terminal, _| terminal.take_input_log()),
+            vec![vec![0x11]],
+            "ctrl-q in a focused terminal should send 0x11 to the PTY, not trigger zed::Quit",
         );
     }
 
