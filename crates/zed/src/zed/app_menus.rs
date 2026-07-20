@@ -216,7 +216,10 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action("转到编辑器中的符号...", zed_actions::outline::ToggleOutline),
                 MenuItem::action("转到行/列...", editor::actions::ToggleGoToLine),
                 MenuItem::separator(),
-                MenuItem::action("转到定义", editor::actions::GoToDefinition),
+                MenuItem::action(
+                    "转到定义",
+                    editor::actions::GoToDefinition::default(),
+                ),
                 MenuItem::action("转到声明", editor::actions::GoToDeclaration),
                 MenuItem::action("转到类型定义", editor::actions::GoToTypeDefinition),
                 MenuItem::action(

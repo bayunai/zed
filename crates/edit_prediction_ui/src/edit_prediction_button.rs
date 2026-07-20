@@ -108,6 +108,8 @@ impl Render for EditPredictionButton {
                     return div().child(
                         IconButton::new("copilot-error", icon)
                             .icon_size(IconSize::Small)
+                            .tab_index(0isize)
+                            .aria_label("GitHub Copilot")
                             .on_click(cx.listener(move |_, _, window, cx| {
                                 if let Some(workspace) = Workspace::for_window(window, cx) {
                                     workspace.update(cx, |workspace, cx| {
@@ -172,7 +174,9 @@ impl Render for EditPredictionButton {
                         })
                         .anchor(Anchor::BottomRight)
                         .trigger_with_tooltip(
-                            IconButton::new("copilot-icon", icon),
+                            IconButton::new("copilot-icon", icon)
+                                .tab_index(0isize)
+                                .aria_label("GitHub Copilot"),
                             |_window, cx| Tooltip::for_action("GitHub Copilot", &ToggleMenu, cx),
                         )
                         .with_handle(self.popover_menu_handle.clone()),
@@ -218,6 +222,8 @@ impl Render for EditPredictionButton {
                         .trigger_with_tooltip(
                             IconButton::new("codestral-icon", IconName::AiMistral)
                                 .shape(IconButtonShape::Square)
+                                .tab_index(0isize)
+                                .aria_label("Edit Prediction")
                                 .when(!has_api_key, |this| {
                                     this.indicator(Indicator::dot().color(Color::Error))
                                         .indicator_border_color(Some(
@@ -257,6 +263,8 @@ impl Render for EditPredictionButton {
                         .trigger(
                             IconButton::new("openai-compatible-api-icon", IconName::AiOpenAiCompat)
                                 .shape(IconButtonShape::Square)
+                                .tab_index(0isize)
+                                .aria_label("Edit Prediction")
                                 .when(!enabled, |this| {
                                     this.indicator(Indicator::dot().color(Color::Ignored))
                                         .indicator_border_color(Some(
@@ -287,6 +295,8 @@ impl Render for EditPredictionButton {
                         .trigger_with_tooltip(
                             IconButton::new("ollama-icon", IconName::AiOllama)
                                 .shape(IconButtonShape::Square)
+                                .tab_index(0isize)
+                                .aria_label("Edit Prediction")
                                 .when(!enabled, |this| {
                                     this.indicator(Indicator::dot().color(Color::Ignored))
                                         .indicator_border_color(Some(
@@ -365,6 +375,8 @@ impl Render for EditPredictionButton {
                     return div().child(
                         IconButton::new("zed-predict-pending-button", ep_icon)
                             .shape(IconButtonShape::Square)
+                            .tab_index(0isize)
+                            .aria_label("Edit Predictions")
                             .indicator(Indicator::dot().color(Color::Muted))
                             .indicator_border_color(Some(cx.theme().colors().status_bar_background))
                             .tooltip(move |_window, cx| {
@@ -420,6 +432,8 @@ impl Render for EditPredictionButton {
 
                 let icon_button = IconButton::new("zed-predict-pending-button", ep_icon)
                     .shape(IconButtonShape::Square)
+                    .tab_index(0isize)
+                    .aria_label("Edit Prediction")
                     .when_some(indicator_color, |this, color| {
                         this.indicator(Indicator::dot().color(color))
                             .indicator_border_color(Some(cx.theme().colors().status_bar_background))

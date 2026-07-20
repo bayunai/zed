@@ -256,10 +256,13 @@ pub fn deploy_context_menu(
                     run_to_cursor || (evaluate_selection && has_selections),
                     |builder| builder.separator(),
                 )
-                .action("转到定义", Box::new(GoToDefinition))
+                .action("转到定义", Box::new(GoToDefinition::default()))
                 .action("转到声明", Box::new(GoToDeclaration))
                 .action("转到类型定义", Box::new(GoToTypeDefinition))
-                .action("转到实现", Box::new(GoToImplementation))
+                .action(
+                    "转到实现",
+                    Box::new(GoToImplementation::default()),
+                )
                 .action(
                     "查找所有引用",
                     Box::new(FindAllReferences::default()),
