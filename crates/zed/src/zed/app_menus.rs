@@ -246,7 +246,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 ),
                 MenuItem::action("启动调试器", debugger_ui::Start),
                 MenuItem::separator(),
-                MenuItem::action("编辑 tasks.json...", crate::zed::OpenProjectTasks),
+                MenuItem::action("编辑 tasks.json...", zed_actions::OpenProjectTasks),
                 MenuItem::action("编辑 debug.json...", zed_actions::OpenProjectDebugTasks),
                 MenuItem::separator(),
                 MenuItem::action("继续", debugger_ui::Continue),
