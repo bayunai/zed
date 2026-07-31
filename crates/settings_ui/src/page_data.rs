@@ -1130,9 +1130,29 @@ fn appearance_page() -> SettingsPage {
         ]
     }
 
-    fn agent_panel_font_section() -> [SettingsPageItem; 3] {
+    fn agent_panel_font_section() -> [SettingsPageItem; 5] {
         [
             SettingsPageItem::SectionHeader("代理面板字体"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "UI 字体族",
+                description: "代理面板中代理回复文本的字体族。未设置时使用常规界面字体族。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("agent_ui_font_family"),
+                    pick: |settings_content| {
+                        settings_content
+                            .theme
+                            .agent_ui_font_family
+                            .as_ref()
+                            .or(settings_content.theme.ui_font_family.as_ref())
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content.theme.agent_ui_font_family = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "UI 字体大小",
                 description: "代理面板中代理回复文本的字体大小。未设置时使用常规界面字体大小。",
@@ -1148,6 +1168,26 @@ fn appearance_page() -> SettingsPage {
                     },
                     write: |settings_content, value, _| {
                         settings_content.theme.agent_ui_font_size = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "缓冲区字体族",
+                description: "代理面板中用户消息的字体族。未设置时使用常规缓冲区字体族。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("agent_buffer_font_family"),
+                    pick: |settings_content| {
+                        settings_content
+                            .theme
+                            .agent_buffer_font_family
+                            .as_ref()
+                            .or(settings_content.theme.buffer_font_family.as_ref())
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content.theme.agent_buffer_font_family = value;
                     },
                 }),
                 metadata: None,
