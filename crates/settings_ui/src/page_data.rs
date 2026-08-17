@@ -952,8 +952,10 @@ fn appearance_page() -> SettingsPage {
                                 }
                                 settings::BufferLineHeightDiscriminants::Custom => {
                                     let custom_value =
-                                        theme_settings::BufferLineHeight::from(*settings_value)
-                                            .value();
+                                        theme_settings::buffer_line_height_from_settings(
+                                            *settings_value,
+                                        )
+                                        .value();
                                     settings::BufferLineHeight::Custom(custom_value)
                                 }
                             };
@@ -3744,7 +3746,7 @@ fn search_and_files_page() -> SettingsPage {
         ]
     }
 
-    fn file_scan_section() -> [SettingsPageItem; 6] {
+    fn file_scan_section() -> [SettingsPageItem; 7] {
         [
             SettingsPageItem::SectionHeader("文件扫描"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -3792,6 +3794,22 @@ fn search_and_files_page() -> SettingsPage {
                 ),
                 metadata: None,
                 files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "文件扫描深度",
+                description: "在 Git 仓库之外预先索引的最大目录深度；达到或超过该深度的目录内容按需索引。根目录浅于该深度的仓库始终完整索引。若项目本身不以 Git 仓库为根，则根文件夹直接子级的仓库会立即启用 Git 功能，更深的仓库在首次使用时启用。0 表示不限制并立即激活所有 Git 仓库。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("file_scan_depth"),
+                    pick: |settings_content| {
+                        settings_content.project.worktree.file_scan_depth.as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content.project.worktree.file_scan_depth = value;
+                    },
+                }),
+                metadata: None,
+                files: USER | PROJECT,
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "扫描符号链接",
@@ -5679,7 +5697,7 @@ fn panels_page() -> SettingsPage {
         ]
     }
 
-    fn terminal_panel_section() -> [SettingsPageItem; 4] {
+    fn terminal_panel_section() -> [SettingsPageItem; 5] {
         [
             SettingsPageItem::SectionHeader("终端面板"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -5691,6 +5709,25 @@ fn panels_page() -> SettingsPage {
                     pick: |settings_content| settings_content.terminal.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
                         settings_content.terminal.get_or_insert_default().dock = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "启动时打开",
+                description: "终端面板是否在启动时打开。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("terminal.starts_open"),
+                    pick: |settings_content| {
+                        settings_content.terminal.as_ref()?.starts_open.as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .terminal
+                            .get_or_insert_default()
+                            .starts_open = value;
                     },
                 }),
                 metadata: None,
@@ -5955,7 +5992,7 @@ fn panels_page() -> SettingsPage {
         ]
     }
 
-    fn git_panel_section() -> [SettingsPageItem; 17] {
+    fn git_panel_section() -> [SettingsPageItem; 18] {
         [
             SettingsPageItem::SectionHeader("Git 面板"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -5981,6 +6018,25 @@ fn panels_page() -> SettingsPage {
                     pick: |settings_content| settings_content.git_panel.as_ref()?.dock.as_ref(),
                     write: |settings_content, value, _| {
                         settings_content.git_panel.get_or_insert_default().dock = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "启动时打开",
+                description: "Git 面板是否在启动时打开。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git_panel.starts_open"),
+                    pick: |settings_content| {
+                        settings_content.git_panel.as_ref()?.starts_open.as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .git_panel
+                            .get_or_insert_default()
+                            .starts_open = value;
                     },
                 }),
                 metadata: None,

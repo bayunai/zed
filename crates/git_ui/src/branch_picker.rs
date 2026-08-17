@@ -2010,7 +2010,7 @@ impl PickerDelegate for BranchListDelegate {
                                     &focus_handle,
                                     cx,
                                 )
-                                .map(|kb| kb.size(rems_from_px(12.))),
+                                .map(|kb| kb.size(rems_from_px(12_f32))),
                             )
                             .on_click(cx.listener(|this, _, window, cx| {
                                 this.delegate.confirm(true, window, cx);
@@ -2032,7 +2032,7 @@ impl PickerDelegate for BranchListDelegate {
                                             &focus_handle,
                                             cx,
                                         )
-                                        .map(|kb| kb.size(rems_from_px(12.))),
+                                        .map(|kb| kb.size(rems_from_px(12_f32))),
                                     )
                                     .on_click(|_, window, cx| {
                                         window.dispatch_action(
@@ -2047,7 +2047,7 @@ impl PickerDelegate for BranchListDelegate {
                         Button::new("switch_branch", "切换")
                             .key_binding(
                                 KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
-                                    .map(|kb| kb.size(rems_from_px(12.))),
+                                    .map(|kb| kb.size(rems_from_px(12_f32))),
                             )
                             .on_click(cx.listener(|this, _, window, cx| {
                                 this.delegate.confirm(false, window, cx);
@@ -2066,7 +2066,7 @@ impl PickerDelegate for BranchListDelegate {
                                             &focus_handle,
                                             cx,
                                         )
-                                        .map(|kb| kb.size(rems_from_px(12.))),
+                                        .map(|kb| kb.size(rems_from_px(12_f32))),
                                     )
                                     .on_click(cx.listener(|this, _, window, cx| {
                                         this.delegate.confirm(false, window, cx);
@@ -2089,7 +2089,7 @@ impl PickerDelegate for BranchListDelegate {
                                     &focus_handle,
                                     cx,
                                 )
-                                .map(|kb| kb.size(rems_from_px(12.))),
+                                .map(|kb| kb.size(rems_from_px(12_f32))),
                             )
                             .on_click(cx.listener(|this, _, window, cx| {
                                 this.delegate.confirm(true, window, cx);
@@ -2107,7 +2107,7 @@ impl PickerDelegate for BranchListDelegate {
                             Button::new("create-new-branch", "创建")
                                 .key_binding(
                                     KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
-                                        .map(|kb| kb.size(rems_from_px(12.))),
+                                        .map(|kb| kb.size(rems_from_px(12_f32))),
                                 )
                                 .on_click(cx.listener(|this, _, window, cx| {
                                     this.delegate.confirm(false, window, cx);
@@ -2123,7 +2123,7 @@ impl PickerDelegate for BranchListDelegate {
                         Button::new("confirm-create-remote", "确认")
                             .key_binding(
                                 KeyBinding::for_action_in(&menu::Confirm, &focus_handle, cx)
-                                    .map(|kb| kb.size(rems_from_px(12.))),
+                                    .map(|kb| kb.size(rems_from_px(12_f32))),
                             )
                             .on_click(cx.listener(|this, _, window, cx| {
                                 this.delegate.confirm(false, window, cx);

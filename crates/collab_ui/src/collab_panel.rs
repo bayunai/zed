@@ -56,7 +56,7 @@ const COLLABORATION_PANEL_KEY: &str = "CollaborationPanel";
 const TOAST_DURATION: Duration = Duration::from_secs(5);
 
 fn panel_row_height() -> Rems {
-    rems_from_px(26.)
+    rems_from_px(26_f32)
 }
 
 actions!(
@@ -3219,15 +3219,15 @@ impl CollabPanel {
             .when(open_context_menu.is_none(), |this| {
                 this.tooltip(move |_, cx| {
                     let text = if !online {
-                        format!("{} 离线", &username)
+                        format!(" {username} 离线")
                     } else if busy {
-                        format!("{} 正在通话", &username)
+                        format!(" {username} 正在通话")
                     } else {
                         let room = ActiveCall::global(cx).read(cx).room();
                         if room.is_some() {
-                            format!("邀请 {} 加入通话", &username)
+                            format!("邀请 {username} 加入通话")
                         } else {
-                            format!("呼叫 {}", &username)
+                            format!("呼叫 {username}")
                         }
                     };
                     Tooltip::simple(text, cx)
