@@ -2341,29 +2341,96 @@ fn editor_page() -> SettingsPage {
                 metadata: None,
                 files: USER,
             }),
-            SettingsPageItem::SettingItem(SettingItem {
-                title: "Git 边栏宽度",
-                description: "边栏中 Git 差异指示器的宽度（像素）。未设置时，宽度随缓冲区字体大小缩放。",
-                field: Box::new(SettingField {
-                    organization_override: None,
-                    json_path: Some("gutter.git_gutter_width"),
-                    pick: |settings_content| {
+            SettingsPageItem::DynamicItem(DynamicItem {
+                discriminant: SettingItem {
+                    title: "Git 边栏宽度",
+                    description: "边栏中 Git 差异指示器的宽度（像素）。未设置时，宽度随缓冲区字体大小缩放。",
+                    field: Box::new(SettingField {
+                        organization_override: None,
+                        json_path: Some("gutter.git_gutter_width$"),
+                        pick: |settings_content| {
+                            Some(
+                                &dynamic_variants::<settings::GitGutterWidth>()[settings_content
+                                    .editor
+                                    .gutter
+                                    .as_ref()?
+                                    .git_gutter_width
+                                    .as_ref()?
+                                    .discriminant()
+                                    as usize],
+                            )
+                        },
+                        write: |settings_content, value, _| {
+                            let gutter = settings_content.editor.gutter.get_or_insert_default();
+                            gutter.git_gutter_width = value.map(|value| match value {
+                                settings::GitGutterWidthDiscriminants::Default => {
+                                    settings::GitGutterWidth::Default
+                                }
+                                settings::GitGutterWidthDiscriminants::Custom => {
+                                    let width = match gutter.git_gutter_width {
+                                        Some(settings::GitGutterWidth::Custom(width)) => {
+                                            settings::PixelSetting(*width)
+                                        }
+                                        _ => settings::PixelSetting(3.0),
+                                    };
+                                    settings::GitGutterWidth::Custom(width)
+                                }
+                            });
+                        },
+                    }),
+                    metadata: None,
+                    files: USER,
+                },
+                pick_discriminant: |settings_content| {
+                    Some(
                         settings_content
                             .editor
                             .gutter
-                            .as_ref()
-                            .and_then(|gutter| gutter.git_gutter_width.as_ref())
-                    },
-                    write: |settings_content, value, _| {
-                        settings_content
-                            .editor
-                            .gutter
-                            .get_or_insert_default()
-                            .git_gutter_width = value;
-                    },
-                }),
-                metadata: None,
-                files: USER,
+                            .as_ref()?
+                            .git_gutter_width
+                            .as_ref()?
+                            .discriminant() as usize,
+                    )
+                },
+                fields: dynamic_variants::<settings::GitGutterWidth>()
+                    .into_iter()
+                    .map(|variant| match variant {
+                        settings::GitGutterWidthDiscriminants::Default => vec![],
+                        settings::GitGutterWidthDiscriminants::Custom => vec![SettingItem {
+                            files: USER,
+                            title: "自定义宽度",
+                            description: "Git 差异指示器的宽度（像素）。",
+                            field: Box::new(SettingField {
+                                organization_override: None,
+                                json_path: Some("gutter.git_gutter_width"),
+                                pick: |settings_content| match settings_content
+                                    .editor
+                                    .gutter
+                                    .as_ref()
+                                    .and_then(|gutter| gutter.git_gutter_width.as_ref())
+                                {
+                                    Some(settings::GitGutterWidth::Custom(value)) => Some(value),
+                                    _ => None,
+                                },
+                                write: |settings_content, value, _| {
+                                    let Some(value) = value else {
+                                        return;
+                                    };
+                                    if let Some(settings::GitGutterWidth::Custom(width)) =
+                                        settings_content
+                                            .editor
+                                            .gutter
+                                            .as_mut()
+                                            .and_then(|gutter| gutter.git_gutter_width.as_mut())
+                                    {
+                                        *width = value;
+                                    }
+                                },
+                            }),
+                            metadata: None,
+                        }],
+                    })
+                    .collect(),
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "内联代码操作",
@@ -3511,7 +3578,7 @@ fn languages_and_tools_page(cx: &App) -> SettingsPage {
 }
 
 fn search_and_files_page() -> SettingsPage {
-    fn search_section() -> [SettingsPageItem; 9] {
+    fn search_section() -> [SettingsPageItem; 10] {
         [
             SettingsPageItem::SectionHeader("搜索"),
             SettingsPageItem::SettingItem(SettingItem {
@@ -3647,6 +3714,30 @@ fn search_and_files_page() -> SettingsPage {
                             .search
                             .get_or_insert_default()
                             .center_on_match = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "输入时搜索",
+                description: "在项目搜索中边输入边搜索，无需按 Enter。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("editor.search.search_on_type"),
+                    pick: |settings_content| {
+                        settings_content
+                            .editor
+                            .search
+                            .as_ref()
+                            .and_then(|search| search.search_on_type.as_ref())
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .editor
+                            .search
+                            .get_or_insert_default()
+                            .search_on_type = value;
                     },
                 }),
                 metadata: None,
@@ -4886,7 +4977,7 @@ fn window_and_layout_page() -> SettingsPage {
         ]
     }
 
-    fn window_section() -> [SettingsPageItem; 3] {
+    fn window_section() -> [SettingsPageItem; 4] {
         [
             SettingsPageItem::SectionHeader("窗口"),
             // todo(settings_ui): Should we filter by platform.as_ref()?
@@ -4901,6 +4992,20 @@ fn window_and_layout_page() -> SettingsPage {
                     },
                     write: |settings_content, value, _| {
                         settings_content.workspace.use_system_window_tabs = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "全屏模式",
+                description: "（仅 macOS）切换全屏操作进入的全屏模式。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("fullscreen_mode"),
+                    pick: |settings_content| settings_content.workspace.fullscreen_mode.as_ref(),
+                    write: |settings_content, value, _| {
+                        settings_content.workspace.fullscreen_mode = value;
                     },
                 }),
                 metadata: None,
