@@ -30,6 +30,13 @@ jobs:
         with:
           targets: aarch64-apple-darwin
 
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: zed-chinese-macos-aarch64
+          cache-targets: true
+          cache-on-failure: true
+
       - name: Prepare version
         id: version
         shell: bash
