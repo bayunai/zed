@@ -864,7 +864,7 @@ impl ToolchainSelectorDelegate {
                 Some(())
             }
         });
-        let placeholder_text = "选择工具链…".to_string().into();
+        let placeholder_text = Arc::from("选择工具链…");
         Self {
             toolchain_selector,
             candidates: Default::default(),
@@ -878,7 +878,7 @@ impl ToolchainSelectorDelegate {
             _fetch_candidates_task,
             project,
             focus_handle: cx.focus_handle(),
-            add_toolchain_text: Arc::from("Add Toolchain"),
+            add_toolchain_text: Arc::from("添加工具链"),
         }
     }
     fn relativize_path(
@@ -957,7 +957,7 @@ impl PickerDelegate for ToolchainSelectorDelegate {
     fn dismissed(&mut self, _: &mut Window, cx: &mut Context<Picker<Self>>) {
         self.toolchain_selector
             .update(cx, |_, cx| cx.emit(DismissEvent))
-            .log_err();
+            .ok();
     }
 
     fn selected_index(&self) -> usize {

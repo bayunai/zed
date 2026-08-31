@@ -270,6 +270,14 @@ pub fn deploy_context_menu(
                     "查找所有引用",
                     Box::new(FindAllReferences::default()),
                 )
+                .action(
+                    "Show Incoming Calls",
+                    Box::new(zed_actions::ShowIncomingCalls),
+                )
+                .action(
+                    "Show Outgoing Calls",
+                    Box::new(zed_actions::ShowOutgoingCalls),
+                )
                 .separator()
                 .action("重命名符号", Box::new(Rename))
                 .action("格式化缓冲区", Box::new(Format))

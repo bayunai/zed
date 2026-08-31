@@ -274,6 +274,20 @@ fn general_page(cx: &App) -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
+                title: "Reveal If Open",
+                description: "when enabled, zed will prefer already-open buffers.",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("reveal_if_open"),
+                    pick: |settings_content| settings_content.workspace.reveal_if_open.as_ref(),
+                    write: |settings_content, value, _| {
+                        settings_content.workspace.reveal_if_open = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
                 title: "Default Open Behavior",
                 description: "How projects open from the UI by default.",
                 field: Box::new(SettingField {
@@ -5265,23 +5279,23 @@ fn panels_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "文件夹图标",
-                description: "是否在项目面板中为目录显示文件夹图标或折叠箭头。",
+                title: "文件夹指示器",
+                description: "在项目面板中为目录显示什么。",
                 field: Box::new(SettingField {
                     organization_override: None,
-                    json_path: Some("project_panel.folder_icons"),
+                    json_path: Some("project_panel.folder_indicator"),
                     pick: |settings_content| {
                         settings_content
                             .project_panel
                             .as_ref()?
-                            .folder_icons
+                            .folder_indicator
                             .as_ref()
                     },
                     write: |settings_content, value, _| {
                         settings_content
                             .project_panel
                             .get_or_insert_default()
-                            .folder_icons = value;
+                            .folder_indicator = value;
                     },
                 }),
                 metadata: None,
@@ -5957,23 +5971,23 @@ fn panels_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "文件夹图标",
-                description: "是否在大纲面板中为目录显示文件夹图标或折叠箭头。",
+                title: "文件夹指示器",
+                description: "在大纲面板中为目录显示什么。",
                 field: Box::new(SettingField {
                     organization_override: None,
-                    json_path: Some("outline_panel.folder_icons"),
+                    json_path: Some("outline_panel.folder_indicator"),
                     pick: |settings_content| {
                         settings_content
                             .outline_panel
                             .as_ref()?
-                            .folder_icons
+                            .folder_indicator
                             .as_ref()
                     },
                     write: |settings_content, value, _| {
                         settings_content
                             .outline_panel
                             .get_or_insert_default()
-                            .folder_icons = value;
+                            .folder_indicator = value;
                     },
                 }),
                 metadata: None,
@@ -6295,19 +6309,23 @@ fn panels_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "文件夹图标",
-                description: "是否在 Git 面板中为目录显示文件夹图标或折叠箭头。",
+                title: "文件夹指示器",
+                description: "在 Git 面板中为目录显示什么。",
                 field: Box::new(SettingField {
                     organization_override: None,
-                    json_path: Some("git_panel.folder_icons"),
+                    json_path: Some("git_panel.folder_indicator"),
                     pick: |settings_content| {
-                        settings_content.git_panel.as_ref()?.folder_icons.as_ref()
+                        settings_content
+                            .git_panel
+                            .as_ref()?
+                            .folder_indicator
+                            .as_ref()
                     },
                     write: |settings_content, value, _| {
                         settings_content
                             .git_panel
                             .get_or_insert_default()
-                            .folder_icons = value;
+                            .folder_indicator = value;
                     },
                 }),
                 metadata: None,
@@ -10075,9 +10093,23 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
         ]
     }
 
-    fn miscellaneous_section() -> [SettingsPageItem; 7] {
+    fn miscellaneous_section() -> [SettingsPageItem; 8] {
         [
             SettingsPageItem::SectionHeader("杂项"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "语言检测",
+                description: "是否在未保存缓冲区中启用自动语言检测。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("language_detection"),
+                    pick: |settings_content| settings_content.editor.language_detection.as_ref(),
+                    write: |settings_content, value, _| {
+                        settings_content.editor.language_detection = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "启用单词差异",
                 description: "是否在编辑器中启用单词级差异高亮。启用后，修改行中的变化单词会被高亮，以准确显示更改内容。",
