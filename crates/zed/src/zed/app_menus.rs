@@ -1,6 +1,8 @@
 use collab_ui::collab_panel;
 use gpui::{App, Menu, MenuItem, OsAction};
+use project::DisableAiSettings;
 use release_channel::ReleaseChannel;
+use settings::Settings;
 use terminal_view::terminal_panel;
 use zed_actions::{Quit, assistant, debug_panel, dev, git_panel, project_panel};
 
@@ -40,12 +42,18 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
         MenuItem::action("协作面板", collab_panel::ToggleFocus),
         MenuItem::action("终端面板", terminal_panel::Toggle),
         MenuItem::action("调试器面板", debug_panel::ToggleFocus),
-        MenuItem::action("代理面板", assistant::ToggleFocus),
+    ];
+
+    if !DisableAiSettings::get_global(cx).disable_ai {
+        view_items.push(MenuItem::action("代理面板", assistant::ToggleFocus));
+    }
+
+    view_items.extend([
         MenuItem::action("Git 面板", git_panel::ToggleFocus),
         MenuItem::separator(),
         MenuItem::action("诊断", diagnostics::Deploy),
         MenuItem::separator(),
-    ];
+    ]);
 
     if ReleaseChannel::try_global(cx) == Some(ReleaseChannel::Dev) {
         view_items.push(MenuItem::action("切换 GPUI 检查器", dev::ToggleInspector));
@@ -216,14 +224,8 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action("转到编辑器中的符号...", zed_actions::outline::ToggleOutline),
                 MenuItem::action("转到行/列...", editor::actions::ToggleGoToLine),
                 MenuItem::separator(),
-                MenuItem::action(
-                    "转到定义",
-                    editor::actions::GoToDefinition::default(),
-                ),
-                MenuItem::action(
-                    "转到声明",
-                    editor::actions::GoToDeclaration::default(),
-                ),
+                MenuItem::action("转到定义", editor::actions::GoToDefinition::default()),
+                MenuItem::action("转到声明", editor::actions::GoToDeclaration::default()),
                 MenuItem::action(
                     "转到类型定义",
                     editor::actions::GoToTypeDefinition::default(),
