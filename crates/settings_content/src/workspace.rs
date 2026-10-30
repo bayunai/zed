@@ -19,6 +19,10 @@ pub struct WorkspaceSettingsContent {
     ///
     /// Default: platform_default
     pub text_rendering_mode: Option<TextRenderingMode>,
+    /// Whether to render windows using the Display P3 color space (macOS only).
+    ///
+    /// Default: false
+    pub use_display_p3: Option<bool>,
     /// Layout mode for the bottom dock
     ///
     /// Default: contained
@@ -110,7 +114,7 @@ pub struct WorkspaceSettingsContent {
     /// Default: none
     pub max_tabs: Option<NonZeroUsize>,
     /// What to show when opening a new window.
-    /// Values: empty_tab, launchpad
+    /// Values: empty_tab, launchpad, readme
     /// Default: launchpad
     pub on_new_window: Option<OnNewWindow>,
     /// What to do when the last window is closed
@@ -125,7 +129,7 @@ pub struct WorkspaceSettingsContent {
     ///
     /// Default: false
     pub close_on_file_delete: Option<bool>,
-    /// Whether to allow windows to tab together based on the user’s tabbing preference (macOS only).
+    /// Whether to allow windows to tab together based on the user's tabbing preference (macOS only).
     ///
     /// Default: false
     pub use_system_window_tabs: Option<bool>,
@@ -212,7 +216,8 @@ pub struct PreviewTabsSettingsContent {
     ///
     /// Default: true
     pub enabled: Option<bool>,
-    /// Whether to open tabs in preview mode when opened from the project panel with a single click.
+    /// Whether to open tabs in preview mode when opened from the project panel
+    /// with a single click or the `project_panel::Open` action.
     ///
     /// Default: true
     pub enable_preview_from_project_panel: Option<bool>,
@@ -583,8 +588,8 @@ pub struct StatusBarSettingsContent {
     ///
     /// Default: non_utf8
     pub active_encoding_button: Option<EncodingDisplayOptions>,
-    /// Whether to show an indicator with a countdown while timed multi-stroke input is pending.
-    /// Hovering the indicator pauses the timeout.
+    /// Whether to show an indicator while multi-stroke input is pending.
+    /// If the input has a timeout, a countdown is shown and hovering the indicator pauses it.
     /// Its binding preview popover is disabled when the which-key popup is enabled.
     ///
     /// Default: true
@@ -736,6 +741,9 @@ pub enum OnNewWindow {
     /// Show the launchpad with recent projects when opening a new window
     #[default]
     Launchpad,
+    /// Open a root-level README in a preview tab when opening a project with no open items.
+    /// Leave the pane empty if no README is found.
+    Readme,
 }
 
 #[derive(
@@ -1063,6 +1071,11 @@ pub enum ProjectPanelSortOrder {
     /// Uppercase ASCII sorts before lowercase. Accented characters sort after ASCII.
     #[strum(serialize = "Unicode")]
     Unicode,
+    /// Files are grouped by their last extension (case-insensitive) in ascending order,
+    /// with extensionless files, including dotfiles such as `.gitignore`, first.
+    /// Dotfiles with a further suffix, such as `.config.json`, keep that extension.
+    /// Within a group, names use the default natural sort.
+    Extension,
 }
 
 impl From<ProjectPanelSortMode> for util::paths::SortMode {
@@ -1082,6 +1095,7 @@ impl From<ProjectPanelSortOrder> for util::paths::SortOrder {
             ProjectPanelSortOrder::Upper => Self::Upper,
             ProjectPanelSortOrder::Lower => Self::Lower,
             ProjectPanelSortOrder::Unicode => Self::Unicode,
+            ProjectPanelSortOrder::Extension => Self::Extension,
         }
     }
 }

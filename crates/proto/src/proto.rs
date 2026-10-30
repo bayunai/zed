@@ -19,6 +19,23 @@ include!(concat!(env!("OUT_DIR"), "/zed.messages.rs"));
 pub const REMOTE_SERVER_PEER_ID: PeerId = PeerId { owner_id: 0, id: 0 };
 pub const REMOTE_SERVER_PROJECT_ID: u64 = 0;
 
+impl Envelope {
+    #[inline(never)]
+    pub fn decode_from_slice(buffer: &[u8]) -> Result<Self, DecodeError> {
+        Self::decode(buffer)
+    }
+
+    #[inline(never)]
+    pub fn encode_to_buffer(&self, buffer: &mut Vec<u8>) -> Result<(), prost::EncodeError> {
+        self.encode(buffer)
+    }
+
+    #[inline(never)]
+    pub fn encoded_size(&self) -> usize {
+        self.encoded_len()
+    }
+}
+
 messages!(
     (Ack, Foreground),
     (AckBufferOperation, Background),
@@ -126,6 +143,8 @@ messages!(
     (GetReferencesResponse, Background),
     (GetSignatureHelp, Background),
     (GetSignatureHelpResponse, Background),
+    (GetTerminalShell, Background),
+    (GetTerminalShellResponse, Background),
     (GetTypeDefinition, Background),
     (GetTypeDefinitionResponse, Background),
     (GetImplementation, Background),
@@ -162,6 +181,7 @@ messages!(
     (LanguageServerLog, Foreground),
     (LanguageServerPromptRequest, Foreground),
     (LanguageServerPromptResponse, Foreground),
+    (LanguageServerShowDocumentRequest, Background),
     (LeaveChannelBuffer, Background),
     (LeaveChannelChat, Foreground),
     (LeaveProject, Foreground),
@@ -186,6 +206,8 @@ messages!(
     (LspExtSwitchSourceHeaderResponse, Background),
     (LspExtGoToParentModule, Background),
     (LspExtGoToParentModuleResponse, Background),
+    (ExecuteLspCommand, Background),
+    (ExecuteLspCommandResponse, Background),
     (LspExtCancelFlycheck, Background),
     (LspExtRunFlycheck, Background),
     (LspExtClearFlycheck, Background),
@@ -218,6 +240,7 @@ messages!(
     (RefreshSemanticTokens, Background),
     (RefreshDocumentColors, Background),
     (RefreshDocumentLinks, Background),
+    (RefreshDocumentHighlights, Background),
     (RefreshFoldingRanges, Background),
     (RefreshDocumentSymbols, Background),
     (RegisterBufferWithLanguageServers, Background),
@@ -323,16 +346,9 @@ messages!(
     (GitAddPathToGitInfoExclude, Background),
     (GitShow, Background),
     (GitCommitDetails, Background),
-    (GitCreateCheckpoint, Background),
-    (GitCreateCheckpointResponse, Background),
     (GitCreateArchiveCheckpoint, Background),
     (GitCreateArchiveCheckpointResponse, Background),
-    (GitRestoreCheckpoint, Background),
     (GitRestoreArchiveCheckpoint, Background),
-    (GitCompareCheckpoints, Background),
-    (GitCompareCheckpointsResponse, Background),
-    (GitDiffCheckpoints, Background),
-    (GitDiffCheckpointsResponse, Background),
     (SetIndexText, Background),
     (Push, Background),
     (Fetch, Background),
@@ -374,7 +390,8 @@ messages!(
     (LoadCommitTemplateResponse, Background),
     (GitClone, Background),
     (GitCloneResponse, Background),
-    (ToggleLspLogs, Background),
+    // Reconnect reconciliation must stay ordered with subsequent user toggles.
+    (ToggleLspLogs, Foreground),
     (GetDirectoryEnvironment, Background),
     (DirectoryEnvironment, Background),
     (GetAgentServerCommand, Background),
@@ -501,6 +518,7 @@ request_messages!(
     (RefreshCodeLens, Ack),
     (RefreshDocumentColors, Ack),
     (RefreshDocumentLinks, Ack),
+    (RefreshDocumentHighlights, Ack),
     (RefreshFoldingRanges, Ack),
     (RefreshDocumentSymbols, Ack),
     (RejoinChannelBuffers, RejoinChannelBuffersResponse),
@@ -561,6 +579,7 @@ request_messages!(
     (StopLanguageServers, Ack),
     (LspExtSwitchSourceHeader, LspExtSwitchSourceHeaderResponse),
     (LspExtGoToParentModule, LspExtGoToParentModuleResponse),
+    (ExecuteLspCommand, ExecuteLspCommandResponse),
     (LspExtCancelFlycheck, Ack),
     (LspExtRunFlycheck, Ack),
     (LspExtClearFlycheck, Ack),
@@ -572,6 +591,7 @@ request_messages!(
     (GetPermalinkToLine, GetPermalinkToLineResponse),
     (FlushBufferedMessages, Ack),
     (LanguageServerPromptRequest, LanguageServerPromptResponse),
+    (LanguageServerShowDocumentRequest, Ack),
     (GitGetBranches, GitBranchesResponse),
     (UpdateGitBranch, Ack),
     (ListToolchains, ListToolchainsResponse),
@@ -585,15 +605,11 @@ request_messages!(
     (InstallExtension, Ack),
     (RegisterBufferWithLanguageServers, Ack),
     (GitShow, GitCommitDetails),
-    (GitCreateCheckpoint, GitCreateCheckpointResponse),
     (
         GitCreateArchiveCheckpoint,
         GitCreateArchiveCheckpointResponse
     ),
-    (GitRestoreCheckpoint, Ack),
     (GitRestoreArchiveCheckpoint, Ack),
-    (GitCompareCheckpoints, GitCompareCheckpointsResponse),
-    (GitDiffCheckpoints, GitDiffCheckpointsResponse),
     (GitReset, Ack),
     (GitDeleteBranch, Ack),
     (GitCheckoutFiles, Ack),
@@ -624,8 +640,8 @@ request_messages!(
     (LoadCommitTemplate, LoadCommitTemplateResponse),
     (GetTreeDiff, GetTreeDiffResponse),
     (GitClone, GitCloneResponse),
-    (ToggleLspLogs, Ack),
     (GetDirectoryEnvironment, DirectoryEnvironment),
+    (GetTerminalShell, GetTerminalShellResponse),
     (GetProcesses, GetProcessesResponse),
     (GetAgentServerCommand, AgentServerCommand),
     (GetContextServerCommand, ContextServerCommand),
@@ -755,6 +771,7 @@ entity_messages!(
     RefreshCodeLens,
     RefreshDocumentColors,
     RefreshDocumentLinks,
+    RefreshDocumentHighlights,
     RefreshFoldingRanges,
     RefreshDocumentSymbols,
     ReloadBuffers,
@@ -792,6 +809,7 @@ entity_messages!(
     LspExtRunnables,
     LspExtSwitchSourceHeader,
     LspExtGoToParentModule,
+    ExecuteLspCommand,
     LspExtCancelFlycheck,
     LspExtRunFlycheck,
     LspExtClearFlycheck,
@@ -803,6 +821,7 @@ entity_messages!(
     GetFilePermalink,
     GetPermalinkToLine,
     LanguageServerPromptRequest,
+    LanguageServerShowDocumentRequest,
     GitGetBranches,
     UpdateGitBranch,
     ListToolchains,
@@ -814,10 +833,6 @@ entity_messages!(
     CancelLanguageServerWork,
     RegisterBufferWithLanguageServers,
     GitShow,
-    GitCreateCheckpoint,
-    GitRestoreCheckpoint,
-    GitCompareCheckpoints,
-    GitDiffCheckpoints,
     GitReset,
     GitDeleteBranch,
     GitCheckoutFiles,
@@ -826,6 +841,7 @@ entity_messages!(
     SetIndexText,
     ToggleLspLogs,
     GetDirectoryEnvironment,
+    GetTerminalShell,
 
     Push,
     Fetch,
