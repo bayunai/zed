@@ -35,7 +35,7 @@ const TOOLS: &[ToolInfo] = &[
     ToolInfo {
         id: "write_file",
         name: "Write File",
-        description: "File creation and overwrite operations",
+        description: "创建和覆盖文件的操作",
         regex_explanation: "Patterns are matched against the file path being written.",
     },
     ToolInfo {
@@ -77,7 +77,7 @@ const TOOLS: &[ToolInfo] = &[
     ToolInfo {
         id: "skill",
         name: "Skill",
-        description: "Loading agent skill instructions",
+        description: "加载代理技能说明",
         regex_explanation: "Patterns are matched against the absolute path to the skill's SKILL.md file.",
     },
 ];
@@ -536,7 +536,7 @@ fn render_verification_section(
                 .border_color(color.border_variant)
                 .rounded_sm()
                 .child(
-                    Label::new("Test Your Rules")
+                    Label::new("测试规则")
                         .color(Color::Muted)
                         .size(LabelSize::Small),
                 )
@@ -556,7 +556,7 @@ fn render_verification_section(
                     this.when(patterns_agree, |this| {
                         if matched_patterns.is_empty() {
                             this.child(
-                                Label::new("No regex matches, using the default action.")
+                                Label::new("没有正则表达式匹配项，将使用默认操作。")
                                     .size(LabelSize::Small)
                                     .color(Color::Muted),
                             )
@@ -569,7 +569,7 @@ fn render_verification_section(
                             this.child(render_hardcoded_rules(true, cx))
                         } else if let Some(reason) = &denial_reason {
                             this.child(
-                                Label::new(format!("Denied: {}", reason))
+                                Label::new(format!("已拒绝：{}", reason))
                                     .size(LabelSize::XSmall)
                                     .color(Color::Warning),
                             )
@@ -591,7 +591,7 @@ fn render_verification_section(
                         denial_reason.filter(|_| patterns_agree && !is_hardcoded_denial),
                         |this, reason| {
                             this.child(
-                                Label::new(format!("Reason: {}", reason))
+                                Label::new(format!("原因：{}", reason))
                                     .size(LabelSize::XSmall)
                                     .color(Color::Error),
                             )
@@ -685,9 +685,9 @@ fn render_matched_patterns(patterns: &[MatchedPattern], cx: &App) -> AnyElement 
         .gap_1()
         .children(patterns.iter().map(|pattern| {
             let (type_label, color) = match pattern.rule_type {
-                ToolPermissionMode::Deny => ("Always Deny", Color::Error),
-                ToolPermissionMode::Confirm => ("Always Confirm", Color::Warning),
-                ToolPermissionMode::Allow => ("Always Allow", Color::Success),
+                ToolPermissionMode::Deny => ("始终拒绝", Color::Error),
+                ToolPermissionMode::Confirm => ("始终确认", Color::Warning),
+                ToolPermissionMode::Allow => ("始终允许", Color::Success),
             };
 
             let type_color = if pattern.is_overridden {
@@ -770,9 +770,9 @@ fn implied_mode_from_patterns(
 
 fn mode_display_label(mode: ToolPermissionMode) -> &'static str {
     match mode {
-        ToolPermissionMode::Allow => "Allow",
-        ToolPermissionMode::Deny => "Deny",
-        ToolPermissionMode::Confirm => "Confirm",
+        ToolPermissionMode::Allow => "允许",
+        ToolPermissionMode::Deny => "拒绝",
+        ToolPermissionMode::Confirm => "确认",
     }
 }
 
@@ -788,7 +788,7 @@ fn render_verdict_label(mode: ToolPermissionMode) -> AnyElement {
     h_flex()
         .gap_1()
         .child(
-            Label::new("Result:")
+            Label::new("结果：")
                 .size(LabelSize::Small)
                 .color(Color::Muted),
         )
@@ -818,15 +818,12 @@ fn render_invalid_patterns_section(
                         .size(IconSize::Small)
                         .color(Color::Error),
                 )
-                .child(Label::new("Invalid Patterns").color(Color::Error)),
+                .child(Label::new("无效模式").color(Color::Error)),
         )
         .child(
-            Label::new(
-                "These patterns failed to compile as regular expressions. \
-                 The tool will be blocked until they are fixed or removed.",
-            )
-            .size(LabelSize::Small)
-            .color(Color::Muted),
+            Label::new("这些模式无法编译为正则表达式。在修复或移除前，此工具将被阻止使用。")
+                .size(LabelSize::Small)
+                .color(Color::Muted),
         )
         .child(
             v_flex()
@@ -835,9 +832,9 @@ fn render_invalid_patterns_section(
                 .gap_1p5()
                 .children(invalid_patterns.iter().map(|invalid| {
                     let rule_type_label = match invalid.rule_type.as_str() {
-                        "always_allow" => "Always Allow",
-                        "always_deny" => "Always Deny",
-                        "always_confirm" => "Always Confirm",
+                        "always_allow" => "始终允许",
+                        "always_deny" => "始终拒绝",
+                        "always_confirm" => "始终确认",
                         other => other,
                     };
 
@@ -881,7 +878,7 @@ fn render_invalid_patterns_section(
                                     IconButton::new(delete_id, IconName::Trash)
                                         .icon_size(IconSize::Small)
                                         .icon_color(Color::Muted)
-                                        .tooltip(Tooltip::text("Delete Invalid Pattern"))
+                                        .tooltip(Tooltip::text("删除无效模式"))
                                         .on_click(cx.listener(move |_, _, _, cx| {
                                             delete_pattern(
                                                 &tool_id_for_delete,
@@ -893,7 +890,7 @@ fn render_invalid_patterns_section(
                                 ),
                         )
                         .child(
-                            Label::new(format!("Error: {}", invalid.error))
+                            Label::new(format!("错误：{}", invalid.error))
                                 .size(LabelSize::XSmall)
                                 .color(Color::Muted),
                         )
@@ -956,7 +953,7 @@ fn render_pattern_empty_state(cx: &mut Context<SettingsWindow>) -> AnyElement {
         .border_dashed()
         .border_color(cx.theme().colors().border_variant)
         .child(
-            Label::new("No patterns configured")
+            Label::new("尚未配置模式")
                 .size(LabelSize::Small)
                 .color(Color::Disabled),
         )
@@ -987,7 +984,7 @@ fn render_user_pattern_row(
             IconButton::new(delete_id, IconName::Trash)
                 .icon_size(IconSize::Small)
                 .icon_color(Color::Muted)
-                .tooltip(Tooltip::text("Delete Pattern"))
+                .tooltip(Tooltip::text("删除模式"))
                 .on_click(cx.listener(move |_, _, _, cx| {
                     delete_pattern(&tool_id_for_delete, rule_type, &pattern_for_delete, cx);
                 })),
@@ -1006,13 +1003,13 @@ fn render_user_pattern_row(
 
                     let validation_error = if !updated {
                         Some(
-                            "A pattern with that name already exists in this rule list."
+                            "此规则列表中已存在同名模式。"
                                 .to_string(),
                         )
                     } else {
                         match regex::Regex::new(&new_pattern) {
                             Err(err) => Some(format!(
-                                "Invalid regex: {err}. Pattern saved but will block this tool until fixed or removed."
+                                "无效的正则表达式：{err}。模式已保存，但在修复或移除前会阻止使用此工具。"
                             )),
                             Ok(_) => None,
                         }
@@ -1039,7 +1036,7 @@ fn render_add_pattern_input(
     let settings_window = cx.entity().downgrade();
 
     SettingsInputField::new(input_id)
-        .with_placeholder("Add regex pattern…")
+        .with_placeholder("添加正则表达式模式…")
         .tab_index(0)
         .with_buffer_font()
         .display_clear_button()
@@ -1053,7 +1050,7 @@ fn render_add_pattern_input(
 
                     let validation_error = match regex::Regex::new(&trimmed) {
                         Err(err) => Some(format!(
-                            "Invalid regex: {err}. Pattern saved but will block this tool until fixed or removed."
+                            "无效的正则表达式：{err}。模式已保存，但在修复或移除前会阻止使用此工具。"
                         )),
                         Ok(_) => None,
                     };
@@ -1080,13 +1077,11 @@ fn render_global_default_mode_section(current_mode: ToolPermissionMode) -> AnyEl
             v_flex()
                 .w_full()
                 .min_w_0()
-                .child(Label::new("Default Permission"))
+                .child(Label::new("默认权限"))
                 .child(
-                    Label::new(
-                        "Controls the default behavior for all tool actions. Per-tool rules and patterns can override this.",
-                    )
-                    .size(LabelSize::Small)
-                    .color(Color::Muted),
+                    Label::new("控制所有工具操作的默认行为。各工具的规则和模式可覆盖此设置。")
+                        .size(LabelSize::Small)
+                        .color(Color::Muted),
                 ),
         )
         .child(
@@ -1100,13 +1095,13 @@ fn render_global_default_mode_section(current_mode: ToolPermissionMode) -> AnyEl
                 )
                 .menu(move |window, cx| {
                     Some(ContextMenu::build(window, cx, move |menu, _, _| {
-                        menu.entry("Confirm", None, move |_, cx| {
+                        menu.entry("确认", None, move |_, cx| {
                             set_global_default_permission(ToolPermissionMode::Confirm, cx);
                         })
-                        .entry("Allow", None, move |_, cx| {
+                        .entry("允许", None, move |_, cx| {
                             set_global_default_permission(ToolPermissionMode::Allow, cx);
                         })
-                        .entry("Deny", None, move |_, cx| {
+                        .entry("拒绝", None, move |_, cx| {
                             set_global_default_permission(ToolPermissionMode::Deny, cx);
                         })
                     }))
@@ -1122,9 +1117,9 @@ fn render_default_mode_section(
     _cx: &mut Context<SettingsWindow>,
 ) -> AnyElement {
     let mode_label = match current_mode {
-        ToolPermissionMode::Allow => "Allow",
-        ToolPermissionMode::Deny => "Deny",
-        ToolPermissionMode::Confirm => "Confirm",
+        ToolPermissionMode::Allow => "允许",
+        ToolPermissionMode::Deny => "拒绝",
+        ToolPermissionMode::Confirm => "确认",
     };
 
     let tool_id_owned = tool_id.to_string();
@@ -1136,9 +1131,9 @@ fn render_default_mode_section(
             v_flex()
                 .w_full()
                 .min_w_0()
-                .child(Label::new("Default Action"))
+                .child(Label::new("默认操作"))
                 .child(
-                    Label::new("Action to take when no patterns match.")
+                    Label::new("没有模式匹配时要执行的操作。")
                         .size(LabelSize::Small)
                         .color(Color::Muted),
                 ),
@@ -1159,13 +1154,13 @@ fn render_default_mode_section(
                         let tool_id_allow = tool_id.clone();
                         let tool_id_deny = tool_id;
 
-                        menu.entry("Confirm", None, move |_, cx| {
+                        menu.entry("确认", None, move |_, cx| {
                             set_default_mode(&tool_id_confirm, ToolPermissionMode::Confirm, cx);
                         })
-                        .entry("Allow", None, move |_, cx| {
+                        .entry("允许", None, move |_, cx| {
                             set_default_mode(&tool_id_allow, ToolPermissionMode::Allow, cx);
                         })
-                        .entry("Deny", None, move |_, cx| {
+                        .entry("拒绝", None, move |_, cx| {
                             set_default_mode(&tool_id_deny, ToolPermissionMode::Deny, cx);
                         })
                     }))

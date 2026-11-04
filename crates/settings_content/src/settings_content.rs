@@ -166,9 +166,11 @@ pub enum HideMouseMode {
 #[serde(rename_all = "snake_case")]
 pub enum ReduceMotionMode {
     /// Always reduce motion
+    #[strum(serialize = "开启")]
     On,
     /// Never reduce motion
     #[default]
+    #[strum(serialize = "关闭")]
     Off,
 }
 

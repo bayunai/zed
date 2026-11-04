@@ -1155,15 +1155,15 @@ impl EditPredictionButton {
                 menu = menu
                     .custom_row(move |_window, cx| {
                         let description = indoc! {
-                            "Suggestions at every keystroke, powered by Zeta, our open-source, \
-                            open-data model. Included with Zed Pro and the Pro trial."
+                            "每次按键时提供建议，由我们的开源、开放数据模型 Zeta 驱动。\
+                            包含在 Zed Pro 和 Pro 试用版中。"
                         };
 
                         v_flex()
                             .max_w_64()
                             .h(rems_from_px(148_f32))
                             .child(render_zeta_tab_animation(cx))
-                            .child(Label::new("Edit Prediction"))
+                            .child(Label::new("编辑预测"))
                             .child(
                                 Label::new(description)
                                     .color(Color::Muted)
@@ -1172,7 +1172,7 @@ impl EditPredictionButton {
                             .into_any_element()
                     })
                     .separator()
-                    .entry("Sign In", None, |window, cx| {
+                    .entry("登录", None, |window, cx| {
                         telemetry::event!(
                             "Edit Prediction Menu Action",
                             action = "sign_in",
@@ -1189,7 +1189,7 @@ impl EditPredictionButton {
                             .detach();
                     })
                     .link_with_handler(
-                        "Learn More",
+                        "了解更多",
                         OpenBrowser {
                             url: zed_urls::edit_prediction_docs(cx).into(),
                         }

@@ -168,7 +168,7 @@ impl SkillCreatorPage {
 
         let name_editor = cx.new(|cx| {
             InputField::new(window, cx, "my-new-skill")
-                .label("Name")
+                .label("名称")
                 .tab_index(NAME_FIELD_TAB_INDEX)
                 .tab_stop(true)
         });
@@ -176,14 +176,10 @@ impl SkillCreatorPage {
         window.focus(&name_editor.focus_handle(cx), cx);
 
         let description_editor = cx.new(|cx| {
-            InputField::new(
-                window,
-                cx,
-                "e.g., Fill the PR description following this template.",
-            )
-            .label("Description")
-            .tab_index(DESCRIPTION_FIELD_TAB_INDEX)
-            .tab_stop(true)
+            InputField::new(window, cx, "例如：按照此模板填写 PR 描述。")
+                .label("描述")
+                .tab_index(DESCRIPTION_FIELD_TAB_INDEX)
+                .tab_stop(true)
         });
 
         let body_editor = cx.new(|cx| {
@@ -193,7 +189,7 @@ impl SkillCreatorPage {
                 buffer
             });
             let mut editor = Editor::for_buffer(buffer, None, window, cx);
-            editor.set_placeholder_text("Add skill content…", window, cx);
+            editor.set_placeholder_text("添加技能内容…", window, cx);
             editor.set_soft_wrap_mode(SoftWrap::EditorWidth, cx);
             editor.set_show_gutter(false, cx);
             editor.set_show_wrap_guides(false, cx);
@@ -397,7 +393,7 @@ impl SkillCreatorPage {
     fn recompute_body_error(&mut self, cx: &App) {
         let body = self.current_body(cx);
         self.body_error = if body.trim().is_empty() {
-            Some("Body is required.")
+            Some("必须填写技能内容。")
         } else {
             None
         };
@@ -704,20 +700,19 @@ impl SkillCreatorPage {
             .child(
                 h_flex()
                     .gap_1()
-                    .child(Label::new("Import from URL"))
-                    .child(Label::new("(optional)").color(Color::Muted)),
+                    .child(Label::new("从 URL 导入"))
+                    .child(Label::new("（可选）").color(Color::Muted)),
             )
             .child(self.url_editor.clone())
             .child(match &self.url_import_status {
                 UrlImportStatus::Idle => Label::new(
-                    "Paste a GitHub .md URL to fetch it and fill out the form. \
-                     For private files, Zed retries using GITHUB_TOKEN, if set.",
+                    "粘贴 GitHub .md URL 以获取内容并填写表单。对于私有文件，如已设置 GITHUB_TOKEN，Zed 会使用它重试。",
                 )
                 .size(LabelSize::Small)
                 .color(Color::Muted)
                 .into_any_element(),
                 UrlImportStatus::Fetching => {
-                    LoadingLabel::new("Fetching and parsing…").into_any_element()
+                    LoadingLabel::new("正在获取并解析…").into_any_element()
                 }
                 UrlImportStatus::Error(error) => h_flex()
                     .gap_1()
@@ -744,7 +739,7 @@ impl SkillCreatorPage {
             .child(
                 v_flex()
                     .gap_2()
-                    .child(Label::new("Front-matter"))
+                    .child(Label::new("前置元数据"))
                     .child(self.name_editor.clone())
                     .child(self.description_editor.clone()),
             )
@@ -755,7 +750,7 @@ impl SkillCreatorPage {
                     .flex_grow_1()
                     .flex_shrink_0()
                     .gap_2()
-                    .child(Label::new("Skill Content"))
+                    .child(Label::new("技能内容"))
                     .child(self.render_body_field(window, cx))
                     .when_some(self.body_error, |this, error| {
                         this.child(Label::new(error).size(LabelSize::Small).color(Color::Error))
@@ -768,11 +763,8 @@ impl SkillCreatorPage {
 
         SwitchField::new(
             "disable-model-invocation",
-            Some("Disable model invocation"),
-            Some(
-                "Hide this skill from the model's catalog. It can still be invoked via slash command."
-                    .into(),
-            ),
+            Some("禁止模型调用"),
+            Some("在模型的技能目录中隐藏此技能，但仍可通过斜杠命令调用。".into()),
             toggle_state,
             cx.listener(|this, _state: &ToggleState, _window, cx| {
                 this.toggle_disable_model_invocation(cx);
@@ -836,7 +828,11 @@ impl SkillCreatorPage {
 
     fn render_footer(&self, _window: &Window, cx: &mut Context<Self>) -> impl IntoElement {
         let saving = self.saving;
-        let main_action = if saving { "Saving…" } else { "Save Skill" };
+        let main_action = if saving {
+            "正在保存…"
+        } else {
+            "保存技能"
+        };
 
         v_flex()
             .w_full()

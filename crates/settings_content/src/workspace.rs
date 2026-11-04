@@ -503,10 +503,10 @@ pub enum CliDefaultOpenBehavior {
 pub enum DefaultOpenBehavior {
     /// Open projects in the current Zed window.
     #[default]
-    #[strum(serialize = "Add to Existing Window")]
+    #[strum(serialize = "添加到现有窗口")]
     ExistingWindow,
     /// Open projects in a new window.
-    #[strum(serialize = "Open a New Window")]
+    #[strum(serialize = "打开新窗口")]
     NewWindow,
 }
 
@@ -786,10 +786,13 @@ pub enum OnLastWindowClosed {
 pub enum TextRenderingMode {
     /// Use platform default behavior.
     #[default]
+    #[strum(serialize = "平台默认")]
     PlatformDefault,
     /// Use subpixel (ClearType-style) text rendering.
+    #[strum(serialize = "子像素")]
     Subpixel,
     /// Use grayscale text rendering.
+    #[strum(serialize = "灰度")]
     Grayscale,
 }
 

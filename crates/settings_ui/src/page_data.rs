@@ -288,8 +288,8 @@ fn general_page(cx: &App) -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Reveal If Open",
-                description: "when enabled, zed will prefer already-open buffers.",
+                title: "打开时定位已有缓冲区",
+                description: "启用后，Zed 会优先定位已打开的缓冲区。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("reveal_if_open"),
@@ -302,8 +302,8 @@ fn general_page(cx: &App) -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Default Open Behavior",
-                description: "How projects open from the UI by default.",
+                title: "默认打开方式",
+                description: "通过界面打开项目时默认采用的方式。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("default_open_behavior"),
@@ -473,8 +473,8 @@ fn general_page(cx: &App) -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Anthropic Data Retention",
-                description: "Allow sending requests to Anthropic models that cannot be offered with Zero Data Retention.",
+                title: "Anthropic 数据保留",
+                description: "允许向无法提供零数据保留服务的 Anthropic 模型发送请求。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("telemetry.anthropic_retention"),
@@ -519,10 +519,10 @@ fn general_page(cx: &App) -> SettingsPage {
 
     fn extensions_section() -> [SettingsPageItem; 2] {
         [
-            SettingsPageItem::SectionHeader("Extensions"),
+            SettingsPageItem::SectionHeader("扩展"),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Suggest Extensions",
-                description: "Whether to suggest installing extensions based on the files you open.",
+                title: "推荐扩展",
+                description: "是否根据打开的文件推荐安装扩展。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("suggest_extensions"),
@@ -1269,10 +1269,10 @@ fn appearance_page() -> SettingsPage {
 
     fn markdown_preview_font_section() -> [SettingsPageItem; 5] {
         [
-            SettingsPageItem::SectionHeader("Markdown Preview Font"),
+            SettingsPageItem::SectionHeader("Markdown 预览字体"),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Font Family",
-                description: "Font family for the markdown preview. Falls back to the UI font family.",
+                title: "字体族",
+                description: "Markdown 预览使用的字体族。未设置时使用界面字体族。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("markdown_preview.font_family"),
@@ -1295,8 +1295,8 @@ fn appearance_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Code Font Family",
-                description: "Font family for code blocks in the markdown preview. Falls back to the editor font family.",
+                title: "代码字体族",
+                description: "Markdown 预览中代码块使用的字体族。未设置时使用编辑器字体族。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("markdown_preview.code_font_family"),
@@ -1319,8 +1319,8 @@ fn appearance_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Font Size",
-                description: "Font size for the markdown preview. Falls back to the editor font size.",
+                title: "字体大小",
+                description: "Markdown 预览使用的字体大小。未设置时使用编辑器字体大小。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("markdown_preview.font_size"),
@@ -1342,8 +1342,8 @@ fn appearance_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Heading Font Weight",
-                description: "Font weight for headings in the markdown preview, in CSS units from 100 to 900.",
+                title: "标题字体粗细",
+                description: "Markdown 预览中标题的字体粗细，使用 CSS 单位，取值范围为 100 至 900。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("markdown_preview.heading_font_weight"),
@@ -1369,10 +1369,10 @@ fn appearance_page() -> SettingsPage {
 
     fn mermaid_font_section() -> [SettingsPageItem; 2] {
         [
-            SettingsPageItem::SectionHeader("Mermaid Font"),
+            SettingsPageItem::SectionHeader("Mermaid 字体"),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Font Family",
-                description: "Font family for Mermaid diagrams in the agent panel and markdown preview. Falls back to the UI font family.",
+                title: "字体族",
+                description: "代理面板和 Markdown 预览中 Mermaid 图表使用的字体族。未设置时使用界面字体族。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("mermaid_font_family"),
@@ -1414,7 +1414,7 @@ fn appearance_page() -> SettingsPage {
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Display P3",
-                description: "(macOS only) render windows using the Display P3 color space.",
+                description: "仅 macOS：使用 Display P3 色彩空间渲染窗口。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("use_display_p3"),
@@ -1514,8 +1514,8 @@ fn appearance_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Reduce Motion",
-                description: "Whether to reduce non-essential motion, such as loading spinners, by rendering them in a static state.",
+                title: "减少动态效果",
+                description: "是否将加载旋转图标等非必要动态效果渲染为静态状态。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("reduce_motion"),
@@ -1719,7 +1719,7 @@ fn keymap_page() -> SettingsPage {
             SettingsPageItem::SectionHeader("基础快捷键映射"),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "基础快捷键映射",
-                description: "The name of a base set of key bindings to use.",
+                description: "要使用的基础快捷键绑定集名称。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("base_keymap"),
@@ -1742,7 +1742,7 @@ fn keymap_page() -> SettingsPage {
             SettingsPageItem::SectionHeader("模态编辑"),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Vim 模式",
-                description: "Enable Vim mode and key bindings.",
+                description: "启用 Vim 模式及其快捷键绑定。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("vim_mode"),
@@ -1754,7 +1754,7 @@ fn keymap_page() -> SettingsPage {
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Helix 模式",
-                description: "Enable Helix mode and key bindings.",
+                description: "启用 Helix 模式及其快捷键绑定。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("helix_mode"),
@@ -4018,8 +4018,8 @@ fn search_and_files_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Prefill Query From Selection",
-                description: "Whether to pre-fill the file finder's query with the text selected in the focused item (e.g. an editor or a terminal).",
+                title: "用选中文本预填搜索内容",
+                description: "是否使用当前焦点项目（例如编辑器或终端）中选中的文本预填文件查找器的搜索内容。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("file_finder.prefill_query_from_selection"),
@@ -4713,8 +4713,8 @@ fn window_and_layout_page() -> SettingsPage {
                     .collect(),
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Open Menus on Hover",
-                description: "Automatically open menus in the titlebar on hover.",
+                title: "悬停时打开菜单",
+                description: "鼠标悬停在标题栏菜单上时自动打开菜单。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("title_bar.open_menus_on_hover"),
@@ -5388,8 +5388,8 @@ fn window_and_layout_page() -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Close Panel on Toggle",
-                description: "Whether invoking a panel's ToggleFocus action while it's already focused closes the panel, instead of just moving focus back to the editor.",
+                title: "再次切换时关闭面板",
+                description: "面板已获得焦点时，调用其“切换焦点”操作是否关闭面板，而不是只将焦点移回编辑器。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("close_panel_on_toggle"),
@@ -6502,8 +6502,8 @@ fn panels_page() -> SettingsPage {
                 metadata: None,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Hide Symbols in Multi-Buffers",
-                description: "Whether to hide symbols, excerpts and search matches in the outline panel when a multi-buffer view is active.",
+                title: "在多缓冲区中隐藏符号",
+                description: "多缓冲区视图处于活动状态时，是否在大纲面板中隐藏符号、摘录和搜索匹配项。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("outline_panel.multi_buffer_hide_symbols"),
@@ -8288,8 +8288,8 @@ fn version_control_page() -> SettingsPage {
             SettingsPageItem::DynamicItem(DynamicItem {
                 discriminant: SettingItem {
                     files: USER,
-                    title: "Auto Fetch",
-                    description: "Automatically fetch the default branch's remote and the current branch's upstream remote.",
+                    title: "自动获取",
+                    description: "自动获取默认分支的远程仓库以及当前分支的上游远程仓库。",
                     field: Box::new(SettingField::<bool> {
                         organization_override: None,
                         json_path: Some("git.auto_fetch.enabled"),
@@ -8328,8 +8328,8 @@ fn version_control_page() -> SettingsPage {
                     vec![],
                     vec![SettingItem {
                         files: USER,
-                        title: "Auto Fetch Interval",
-                        description: "How long to wait between automatic fetches, in seconds. (min: 15)",
+                        title: "自动获取间隔",
+                        description: "两次自动获取之间的等待时间，单位为秒，最小值为 15。",
                         field: Box::new(SettingField::<u64> {
                             organization_override: None,
                             json_path: Some("git.auto_fetch.interval_secs"),
@@ -8718,10 +8718,10 @@ fn version_control_page() -> SettingsPage {
 
     fn file_diff_section() -> [SettingsPageItem; 2] {
         [
-            SettingsPageItem::SectionHeader("File Diff"),
+            SettingsPageItem::SectionHeader("文件差异"),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Show Full File by Default",
-                description: "Whether newly opened file diffs show the full file instead of changes only.",
+                title: "默认显示完整文件",
+                description: "新打开的文件差异是否显示完整文件，而非只显示变更内容。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("git.file_diff.show_full_file"),
@@ -8912,8 +8912,8 @@ fn ai_page(cx: &App) -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Threads Sidebar Default Width",
-                description: "Default width of the Threads Sidebar. Changing this setting also updates a manually resized sidebar. Double-click the divider to reset to this width.",
+                title: "线程边栏默认宽度",
+                description: "线程边栏的默认宽度。修改此设置也会更新手动调整过宽度的边栏；双击分隔线可重置为此宽度。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("agent.threads_sidebar.default_width"),
@@ -8937,8 +8937,8 @@ fn ai_page(cx: &App) -> SettingsPage {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Threads Sidebar Auto Open",
-                description: "Whether opening a folder in an existing window automatically opens the Threads Sidebar.",
+                title: "自动打开线程边栏",
+                description: "是否在现有窗口中打开文件夹时自动打开线程边栏。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("agent.threads_sidebar.auto_open"),
@@ -10413,8 +10413,8 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Completion Menu Item Kind",
-                description: "How to display the LSP item kind (function, method, variable, etc.) of each entry in the completions menu.",
+                title: "补全菜单项类型",
+                description: "如何在补全菜单的每个条目中显示 LSP 项目类型，例如函数、方法和变量。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("editor.completion_menu_item_kind"),
@@ -10878,8 +10878,8 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                 files: USER,
             }),
             SettingsPageItem::SettingItem(SettingItem {
-                title: "Open Markdown Files in Preview",
-                description: "Whether to automatically open Markdown files in the preview.",
+                title: "在预览中打开 Markdown 文件",
+                description: "是否自动在预览中打开 Markdown 文件。",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("markdown_preview.open_markdown_files_in_preview"),
@@ -10903,8 +10903,8 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
             SettingsPageItem::DynamicItem(DynamicItem {
                 discriminant: SettingItem {
                     files: USER,
-                    title: "Limit Markdown Preview Width",
-                    description: "Whether to constrain the markdown preview content to a maximum width, centering it when the pane is wider, for optimal readability.",
+                    title: "限制 Markdown 预览宽度",
+                    description: "是否限制 Markdown 预览内容的最大宽度；窗格宽于该值时，内容会居中以提升可读性。",
                     field: Box::new(SettingField::<bool> {
                         organization_override: None,
                         json_path: Some("markdown_preview.limit_content_width"),
@@ -10936,8 +10936,8 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
                     vec![],
                     vec![SettingItem {
                         files: USER,
-                        title: "Max Width",
-                        description: "Maximum content width in pixels. Content will be centered when the pane is wider than this value.",
+                        title: "最大宽度",
+                        description: "内容最大宽度，单位为像素。窗格宽于该值时内容会居中。",
                         field: Box::new(SettingField {
                             organization_override: None,
                             json_path: Some("markdown_preview.max_width"),

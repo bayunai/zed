@@ -155,7 +155,7 @@ fn render_provider_dropdown(window: &mut Window, cx: &mut App) -> AnyElement {
         .id("provider-selector")
         .min_w_0()
         .gap_1p5()
-        .child(SettingsSectionHeader::new("Active Provider").no_padding(true))
+        .child(SettingsSectionHeader::new("当前提供者").no_padding(true))
         .child(
             h_flex()
                 .pt_2p5()
@@ -287,13 +287,13 @@ fn render_api_key_provider(
     let container = if has_key {
         base_container.child(header).child(
             ConfiguredApiCard::new(format!("{title}-reset-key"), configured_card_label)
-                .button_label("Reset Key")
+                .button_label("重置密钥")
                 .button_tab_index(0)
                 .disabled(is_from_env_var)
                 .when_some(env_var_name, |this, env_var_name| {
                     this.when(is_from_env_var, |this| {
                         this.tooltip_label(format!(
-                            "To reset your API key, unset the {} environment variable.",
+                            "若要重置 API 密钥，请取消设置 {} 环境变量。",
                             env_var_name
                         ))
                     })
@@ -507,8 +507,8 @@ fn ollama_settings() -> Box<[SettingsPageItem]> {
             files: USER,
         }),
         SettingsPageItem::SettingItem(SettingItem {
-            title: "Prediction Debounce",
-            description: "Delay in milliseconds before automatically requesting a prediction after typing stops. Set to 0 to request predictions immediately.",
+            title: "预测防抖延迟",
+            description: "停止输入后自动请求预测前的延迟，单位为毫秒。设为 0 会立即请求预测。",
             field: Box::new(SettingField {
                 organization_override: None,
                 pick: |settings| {
@@ -673,8 +673,8 @@ fn open_ai_compatible_settings() -> Box<[SettingsPageItem]> {
             files: USER,
         }),
         SettingsPageItem::SettingItem(SettingItem {
-            title: "Prediction Debounce",
-            description: "Delay in milliseconds before automatically requesting a prediction after typing stops. Set to 0 to request predictions immediately.",
+            title: "预测防抖延迟",
+            description: "停止输入后自动请求预测前的延迟，单位为毫秒。设为 0 会立即请求预测。",
             field: Box::new(SettingField {
                 organization_override: None,
                 pick: |settings| {
@@ -808,8 +808,8 @@ fn codestral_settings() -> Box<[SettingsPageItem]> {
             files: USER,
         }),
         SettingsPageItem::SettingItem(SettingItem {
-            title: "Prediction Debounce",
-            description: "Delay in milliseconds before automatically requesting a prediction after typing stops. Set to 0 to request predictions immediately.",
+            title: "预测防抖延迟",
+            description: "停止输入后自动请求预测前的延迟，单位为毫秒。设为 0 会立即请求预测。",
             field: Box::new(SettingField {
                 organization_override: None,
                 pick: |settings| {
@@ -843,8 +843,8 @@ fn codestral_settings() -> Box<[SettingsPageItem]> {
 
 fn mercury_settings() -> Box<[SettingsPageItem]> {
     Box::new([SettingsPageItem::SettingItem(SettingItem {
-        title: "Prediction Debounce",
-        description: "Delay in milliseconds before automatically requesting a prediction after typing stops. Set to 0 to request predictions immediately.",
+        title: "预测防抖延迟",
+        description: "停止输入后自动请求预测前的延迟，单位为毫秒。设为 0 会立即请求预测。",
         field: Box::new(SettingField {
             organization_override: None,
             pick: |settings| {
@@ -877,8 +877,8 @@ fn mercury_settings() -> Box<[SettingsPageItem]> {
 
 fn zed_settings() -> Box<[SettingsPageItem]> {
     Box::new([SettingsPageItem::SettingItem(SettingItem {
-        title: "Prediction Debounce",
-        description: "Delay in milliseconds before automatically requesting a prediction after typing stops. Set to 0 to request predictions immediately.",
+        title: "预测防抖延迟",
+        description: "停止输入后自动请求预测前的延迟，单位为毫秒。设为 0 会立即请求预测。",
         field: Box::new(SettingField {
             organization_override: None,
             pick: |settings| {
@@ -934,8 +934,8 @@ fn render_zed_provider(
 
 fn copilot_settings() -> Box<[SettingsPageItem]> {
     Box::new([SettingsPageItem::SettingItem(SettingItem {
-        title: "Prediction Debounce",
-        description: "Delay in milliseconds before automatically requesting a prediction after typing stops. Set to 0 to request predictions immediately.",
+        title: "预测防抖延迟",
+        description: "停止输入后自动请求预测前的延迟，单位为毫秒。设为 0 会立即请求预测。",
         field: Box::new(SettingField {
             organization_override: None,
             pick: |settings| {

@@ -352,7 +352,9 @@ pub enum CompletionDetailAlignment {
 #[serde(rename_all = "snake_case")]
 pub enum CompletionMenuItemKind {
     #[default]
+    #[strum(serialize = "关闭")]
     Off,
+    #[strum(serialize = "符号")]
     Symbol,
 }
 

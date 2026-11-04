@@ -315,7 +315,7 @@ fn render_hideable_item(
 /// Appends a "Hide Button" entry aligned with surrounding toggleable entries.
 pub fn add_hide_button_entry(menu: ContextMenu, hide: HideStatusItem) -> ContextMenu {
     menu.toggleable_entry(
-        "Hide Button",
+        "隐藏按钮",
         false,
         IconPosition::Start,
         None,
