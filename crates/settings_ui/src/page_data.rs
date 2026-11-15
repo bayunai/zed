@@ -4423,9 +4423,23 @@ fn window_and_layout_page() -> SettingsPage {
         ]
     }
 
-    fn title_bar_section() -> [SettingsPageItem; 12] {
+    fn title_bar_section() -> [SettingsPageItem; 13] {
         [
             SettingsPageItem::SectionHeader("标题栏"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "显示标题栏",
+                description: "何时显示标题栏及其窗口控制按钮。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("title_bar.show"),
+                    pick: |settings_content| settings_content.title_bar.as_ref()?.show.as_ref(),
+                    write: |settings_content, value, _| {
+                        settings_content.title_bar.get_or_insert_default().show = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "显示分支状态图标",
                 description: "在标题栏分支图标上显示 Git 状态指示器。",
@@ -6554,9 +6568,23 @@ fn panels_page() -> SettingsPage {
         ]
     }
 
-    fn git_panel_section() -> [SettingsPageItem; 19] {
+    fn git_panel_section() -> [SettingsPageItem; 20] {
         [
             SettingsPageItem::SectionHeader("Git 面板"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "日期样式",
+                description: "在提交历史中显示相对日期或绝对日期。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git_panel.date_style"),
+                    pick: |content| content.git_panel.as_ref()?.date_style.as_ref(),
+                    write: |content, value, _| {
+                        content.git_panel.get_or_insert_default().date_style = value
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Git 面板按钮",
                 description: "在状态栏中显示 Git 面板按钮。",
@@ -8249,9 +8277,23 @@ fn terminal_page() -> SettingsPage {
 }
 
 fn version_control_page() -> SettingsPage {
-    fn git_integration_section() -> [SettingsPageItem; 3] {
+    fn git_integration_section() -> [SettingsPageItem; 4] {
         [
             SettingsPageItem::SectionHeader("Git 集成"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "日期格式",
+                description: "使用 locale、iso（YYYY-MM-DD HH:MM）或 strftime 格式（如 %Y-%m-%d %H:%M）格式化绝对日期。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git.date_format"),
+                    pick: |content| content.git.as_ref()?.date_format.as_ref(),
+                    write: |content, value, _| {
+                        content.git.get_or_insert_default().date_format = value
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::DynamicItem(DynamicItem {
                 discriminant: SettingItem {
                     files: USER,
@@ -8460,9 +8502,36 @@ fn version_control_page() -> SettingsPage {
         ]
     }
 
-    fn inline_git_blame_section() -> [SettingsPageItem; 6] {
+    fn inline_git_blame_section() -> [SettingsPageItem; 7] {
         [
             SettingsPageItem::SectionHeader("内联 Git 追溯"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "日期样式",
+                description: "在内联追溯和状态栏中显示相对日期或绝对日期。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git.inline_blame.date_style"),
+                    pick: |content| {
+                        content
+                            .git
+                            .as_ref()?
+                            .inline_blame
+                            .as_ref()?
+                            .date_style
+                            .as_ref()
+                    },
+                    write: |content, value, _| {
+                        content
+                            .git
+                            .get_or_insert_default()
+                            .inline_blame
+                            .get_or_insert_default()
+                            .date_style = value
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::DynamicItem(DynamicItem {
                 discriminant: SettingItem {
                     title: "启用",
@@ -8644,9 +8713,28 @@ fn version_control_page() -> SettingsPage {
         ]
     }
 
-    fn git_blame_view_section() -> [SettingsPageItem; 2] {
+    fn git_blame_view_section() -> [SettingsPageItem; 3] {
         [
             SettingsPageItem::SectionHeader("Git 追溯视图"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "日期样式",
+                description: "在追溯栏中显示相对日期或绝对日期。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git.blame.date_style"),
+                    pick: |content| content.git.as_ref()?.blame.as_ref()?.date_style.as_ref(),
+                    write: |content, value, _| {
+                        content
+                            .git
+                            .get_or_insert_default()
+                            .blame
+                            .get_or_insert_default()
+                            .date_style = value
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "显示头像",
                 description: "显示提交作者的头像。",
@@ -8677,9 +8765,36 @@ fn version_control_page() -> SettingsPage {
         ]
     }
 
-    fn branch_picker_section() -> [SettingsPageItem; 2] {
+    fn branch_picker_section() -> [SettingsPageItem; 3] {
         [
             SettingsPageItem::SectionHeader("分支选择器"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "日期样式",
+                description: "在分支选择器中显示相对日期或绝对日期。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git.branch_picker.date_style"),
+                    pick: |content| {
+                        content
+                            .git
+                            .as_ref()?
+                            .branch_picker
+                            .as_ref()?
+                            .date_style
+                            .as_ref()
+                    },
+                    write: |content, value, _| {
+                        content
+                            .git
+                            .get_or_insert_default()
+                            .branch_picker
+                            .get_or_insert_default()
+                            .date_style = value
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "显示作者名称",
                 description: "在分支选择器的提交信息中显示作者名称。",
@@ -8702,6 +8817,59 @@ fn version_control_page() -> SettingsPage {
                             .branch_picker
                             .get_or_insert_default()
                             .show_author_name = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+        ]
+    }
+
+    fn stash_picker_section() -> [SettingsPageItem; 2] {
+        [
+            SettingsPageItem::SectionHeader("Stash Picker"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "Date Style",
+                description: "Show relative or absolute dates in the stash picker.",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git.stash_picker.date_style"),
+                    pick: |content| {
+                        content
+                            .git
+                            .as_ref()?
+                            .stash_picker
+                            .as_ref()?
+                            .date_style
+                            .as_ref()
+                    },
+                    write: |content, value, _| {
+                        content
+                            .git
+                            .get_or_insert_default()
+                            .stash_picker
+                            .get_or_insert_default()
+                            .date_style = value
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+        ]
+    }
+
+    fn git_graph_section() -> [SettingsPageItem; 2] {
+        [
+            SettingsPageItem::SectionHeader("Git Graph"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "Date Style",
+                description: "Show relative or absolute dates in graph rows.",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git_graph.date_style"),
+                    pick: |content| content.git_graph.as_ref()?.date_style.as_ref(),
+                    write: |content, value, _| {
+                        content.git_graph.get_or_insert_default().date_style = value
                     },
                 }),
                 metadata: None,
@@ -8781,9 +8949,63 @@ fn version_control_page() -> SettingsPage {
         ]
     }
 
-    fn file_diff_section() -> [SettingsPageItem; 2] {
+    fn commit_view_section() -> [SettingsPageItem; 4] {
         [
-            SettingsPageItem::SectionHeader("文件差异"),
+            SettingsPageItem::SectionHeader("Git 提交视图"),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "默认展开提交描述",
+                description: "新打开的提交视图是否显示完整的提交描述。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git.commit_view.expand_description"),
+                    pick: |settings_content| {
+                        settings_content
+                            .git
+                            .as_ref()?
+                            .commit_view
+                            .as_ref()?
+                            .expand_description
+                            .as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .git
+                            .get_or_insert_default()
+                            .commit_view
+                            .get_or_insert_default()
+                            .expand_description = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "默认展开文件",
+                description: "新打开的提交视图是否展开所有已更改文件。",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("git.commit_view.expand_files"),
+                    pick: |settings_content| {
+                        settings_content
+                            .git
+                            .as_ref()?
+                            .commit_view
+                            .as_ref()?
+                            .expand_files
+                            .as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .git
+                            .get_or_insert_default()
+                            .commit_view
+                            .get_or_insert_default()
+                            .expand_files = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "默认显示完整文件",
                 description: "新打开的文件差异是否显示完整文件，而非只显示变更内容。",
@@ -8822,7 +9044,9 @@ fn version_control_page() -> SettingsPage {
             inline_git_blame_section(),
             git_blame_view_section(),
             branch_picker_section(),
-            file_diff_section(),
+            stash_picker_section(),
+            commit_view_section(),
+            git_graph_section(),
             git_hunks_section(),
         ],
     }
@@ -9481,6 +9705,29 @@ fn ai_page(cx: &App) -> SettingsPage {
                             .agent
                             .get_or_insert_default()
                             .show_merge_conflict_indicator = value;
+                    },
+                }),
+                metadata: None,
+                files: USER,
+            }),
+            SettingsPageItem::SettingItem(SettingItem {
+                title: "Auto-Generate Thread Titles",
+                description: "Whether to automatically generate a title for Zed Agent threads using the summary model. When disabled, titles are only created when manually requested.",
+                field: Box::new(SettingField {
+                    organization_override: None,
+                    json_path: Some("agent.auto_generate_thread_titles"),
+                    pick: |settings_content| {
+                        settings_content
+                            .agent
+                            .as_ref()?
+                            .auto_generate_thread_titles
+                            .as_ref()
+                    },
+                    write: |settings_content, value, _| {
+                        settings_content
+                            .agent
+                            .get_or_insert_default()
+                            .auto_generate_thread_titles = value;
                     },
                 }),
                 metadata: None,

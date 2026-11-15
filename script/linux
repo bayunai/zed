@@ -43,6 +43,15 @@ function ubuntu_codename {
 apt=$(command -v apt-get || true)
 if [[ -n $apt ]]; then
   install_modern_cmake=0
+  if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    # Namespace's Ubuntu sources use these mirror lists; other runners may not.
+    for mirror_file in /etc/apt/apt-mirrors.txt /etc/apt/apt-security-mirrors.txt; do
+      if [[ -f "$mirror_file" ]] && ! grep -Fxq 'https://mirror.clarkson.edu/ubuntu/' "$mirror_file"; then
+        printf '\n%s\n' 'https://mirror.clarkson.edu/ubuntu/' | \
+          $maysudo tee -a "$mirror_file" > /dev/null
+      fi
+    done
+  fi
   deps=(
     gcc
     g++
